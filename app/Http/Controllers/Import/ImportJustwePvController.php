@@ -1,0 +1,107 @@
+<?php
+
+namespace App\Http\Controllers\Import;
+
+use App\Events\OrderCreated;
+use App\Helpers\ShowroomHelper;
+use App\Http\Controllers\Controller;
+use App\Models\Order;
+use App\Models\Site;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Propaganistas\LaravelPhone\PhoneNumber;
+use Throwable;
+use App\Services\DistributeService;
+
+use App\Helpers\GeneralHelper;
+
+class ImportJustwePvController extends Controller
+{
+
+    public function import()
+    {
+        $distributeService = new DistributeService();
+
+        // Использование метода сервиса
+
+        $sites = Site::whereIn('id', [6700, 6701, 6702, 6703, 6734])->whereNotNull('token')->with(['request'])->get();
+        if (count($sites) > 0) {
+            foreach ($sites as $site) {
+                if (isset($site->request->last_request_time)) {
+                    $last_request = $site->request->last_request_time->format('Y-m-d H:i:s');
+
+                } else {
+                    $last_request = Carbon::now()->subMinutes(1)->format('Y-m-d H:i:s');
+                }
+
+                $response = null;
+
+
+                try {
+                    $response = Http::withHeaders([
+                        'Authorization' => 'Bearer ' . $site->token,
+                    ])->get($site->post_url . '?from=' . $last_request . '&limit=5000');
+                    DB::table('last_request_time')->updateOrInsert(
+                        ['site_id' => $site->id], // Add the site_id as the first argument
+                        ['last_request_time' => now()]
+                    );
+                } catch (Throwable $e) {
+                    Log::emergency($e);
+                    Log::error("justwe agency error", [$site]);
+                    continue;
+                }
+
+
+                try {
+                    $data = $response->json();
+
+                    if (isset($data['data']['items']) && is_array($data['data']['items'])) {
+
+                        foreach ($data['data']['items'] as $item) {
+
+                            try {
+                                $clientName = trim(implode(' ', array_filter([$item['clientFirstName'], $item['clientMiddleName'], $item['clientLastName']])));
+                                try {
+                                    $phone = PhoneNumber::make($item['clientPhoneNumber'], 'RU')->formatE164();
+                                } catch (Throwable $e) {
+                                    $phone = preg_replace('/[^0-9+]/', '', $item['clientPhoneNumber']) ?? null;
+                                }
+
+                                $order = new Order();
+                                $order->client_name = $clientName ?? " ";
+                                $order->phone = $phone;
+                                $order->utm_campaign = $item['utmCampaign'] ?? null;
+                                $order->utm_content = $item['utmContent'] ?? null;
+                                $order->utm_medium = $item['utmMedium'] ?? null;
+                                $order->utm_source = $item['utmSource'] ?? null;
+                                $order->utm_term = $item['utmTerm'] ?? null;
+                                $order->site_id = $site->id;
+                                $order->source_id = 89;
+                                $order->operator_id = $distributeService->distribute($site->showroom_id);
+                                $order->showroom_id = ShowroomHelper::getShowroomPair($site->showroom_id);
+                                $order->status_id = 1;
+                                $order->save();
+
+                                OrderCreated::dispatch($order);
+                            } catch (Throwable $e) {
+                                Log::emergency($e);
+                                Log::error("agency error", [$item]);
+                                continue;
+                            }
+                        }
+                    }
+
+                } catch (Throwable $e) {
+                    Log::emergency($e);
+                    continue;
+                }
+
+            }
+            return response()->json("Done");
+
+        }
+
+    }
+}
