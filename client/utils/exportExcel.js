@@ -3,10 +3,13 @@ import { saveAs } from 'file-saver'
 
 export async function exportToExcel(params = {}) {
   try {
-    const response = await axios.get('https://accas.ru/api/orders/export-inhouse', {
-      responseType: 'blob',
-      params,
-    })
+    const response = await axios.get(
+      'https://a-c77.ru/api/orders/export-inhouse',
+      {
+        responseType: 'blob',
+        params,
+      }
+    )
 
     const contentDisposition = response.headers['content-disposition']
     let filename = 'Orders.xlsx'

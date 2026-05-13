@@ -23,7 +23,7 @@ class ApiToken2
             try {
                 $chatId = '277174745';
                 Telegram::bot('pilight')->setAsyncRequest(false)
-                    ->sendMessage(['chat_id' => $chatId, 'text' => "Неправильный токен $request->api_token телефон: $request->phone точка входа: $request->entry_point (accas.ru)"]);
+                    ->sendMessage(['chat_id' => $chatId, 'text' => "Неправильный токен $request->api_token телефон: $request->phone точка входа: $request->entry_point (a-c77.ru)"]);
             } catch (Throwable $e) {
                 Log::error("bot error", [$e]);
             }

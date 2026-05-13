@@ -179,7 +179,7 @@
               dark
               :class="{ 'on-hover': hover }"
               color="#4caf50"
-              @click="redirect('https://ftp.accas.ru/shared/pilot')"
+              @click="redirect('https://ftp.a-c77.ru/shared/pilot')"
             >
               <div height="225px" class="bg-blue">
                 <v-card-title class="headline"> Файлобменник </v-card-title>
@@ -187,7 +187,7 @@
                 <v-card-actions>
                   <v-btn
                     text
-                    @click="redirect('https://ftp.accas.ru/shared/pilot')"
+                    @click="redirect('https://ftp.a-c77.ru/shared/pilot')"
                   >
                     Перейти
                   </v-btn>
@@ -203,7 +203,7 @@
               dark
               :class="{ 'on-hover': hover }"
               color="#4caf50"
-              @click="redirect('https://ftp.accas.ru/shared/light')"
+              @click="redirect('https://ftp.a-c77.ru/shared/light')"
             >
               <div height="225px" class="bg-blue">
                 <v-card-title class="headline"> Файлобменник </v-card-title>
@@ -211,7 +211,7 @@
                 <v-card-actions>
                   <v-btn
                     text
-                    @click="redirect('https://ftp.accas.ru/shared/light')"
+                    @click="redirect('https://ftp.a-c77.ru/shared/light')"
                   >
                     Перейти
                   </v-btn>

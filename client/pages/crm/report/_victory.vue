@@ -1,17 +1,12 @@
 <template>
   <div>
-    <v-card
-      class="mx-auto"
-    >
-      <v-toolbar
-        flat
-        dense
-      >
+    <v-card class="mx-auto">
+      <v-toolbar flat dense>
         <v-toolbar-title class="mr-3">
           Отчеты ({{ showroom?.name }})
         </v-toolbar-title>
 
-        <v-spacer/>
+        <v-spacer />
       </v-toolbar>
       <v-row class="px-2 d-flex flex-row">
         <v-col md="5" cols="12" class="px-2">
@@ -38,9 +33,7 @@
             hide-details
             dense
             clearable
-            @click:clear="
-                          $nextTick(() => site_id = null)
-                        "
+            @click:clear="$nextTick(() => (site_id = null))"
           />
         </v-col>
         <v-col md="2" cols="12" class="px-2">
@@ -50,7 +43,7 @@
             value-type="format"
             placeholder="Дата с"
             input-class="mx-input dtp"
-            style="width: 100%;"
+            style="width: 100%"
             type="datetime"
           />
         </v-col>
@@ -62,12 +55,12 @@
             type="datetime"
             placeholder="Дата до"
             input-class="mx-input dtp"
-            style="width: 100%;"
+            style="width: 100%"
           />
         </v-col>
       </v-row>
       <v-row dense class="px-2 mt-2" align="end">
-        <v-col cols="12" md="5" align-self="end"/>
+        <v-col cols="12" md="5" align-self="end" />
         <v-col cols="12" md="7" align-self="end" class="pl-4">
           <v-btn color="primary" dark class="mb-2" @click="fillDate('today')">
             Сегодня
@@ -75,7 +68,12 @@
           <v-btn color="primary" dark class="mb-2" @click="fillDate('seven')">
             19:00-19:00
           </v-btn>
-          <v-btn color="primary" dark class="mb-2" @click="fillDate('yesterday')">
+          <v-btn
+            color="primary"
+            dark
+            class="mb-2"
+            @click="fillDate('yesterday')"
+          >
             Вчера
           </v-btn>
           <v-btn color="primary" dark class="mb-2" @click="fillDate('week')">
@@ -87,48 +85,85 @@
           <v-btn color="primary" dark class="mb-2" @click="fillDate('clear')">
             За все время
           </v-btn>
-          <v-btn color="success" dark class="mb-2" :loading="loading" @click="fetchReport()">
+          <v-btn
+            color="success"
+            dark
+            class="mb-2"
+            :loading="loading"
+            @click="fetchReport()"
+          >
             Сформировать
           </v-btn>
-          <v-btn color="error" class="mb-2 " @click="reset()">
-            Сбросить
-          </v-btn>
+          <v-btn color="error" class="mb-2" @click="reset()"> Сбросить </v-btn>
         </v-col>
       </v-row>
 
       <ByOperatorVictory
-        v-if="type_id===1 && reportData.length" :date_from="date_from" :date_to="date_to"
-        :data="reportData"/>
+        v-if="type_id === 1 && reportData.length"
+        :date_from="date_from"
+        :date_to="date_to"
+        :data="reportData"
+      />
       <SummaryVictory
-        v-if="type_id===2 && reportData.length" :date_from="date_from" :date_to="date_to"
-        :data="reportData"/>
+        v-if="type_id === 2 && reportData.length"
+        :date_from="date_from"
+        :date_to="date_to"
+        :data="reportData"
+      />
       <ByAgencyVictorySites
-        v-else-if="type_id===3 && reportData.length" :date_from="date_from" :date_to="date_to"
-        :data="reportData"/>
+        v-else-if="type_id === 3 && reportData.length"
+        :date_from="date_from"
+        :date_to="date_to"
+        :data="reportData"
+      />
       <ReportByDate
-        v-else-if="type_id===4 && reportData.length" :date_from="date_from" :date_to="date_to"
-        :data="reportData"/>
+        v-else-if="type_id === 4 && reportData.length"
+        :date_from="date_from"
+        :date_to="date_to"
+        :data="reportData"
+      />
       <ReportBySource
-        v-else-if="type_id===5 && reportData.length" :date_from="date_from" :date_to="date_to"
-        :data="reportData"/>
+        v-else-if="type_id === 5 && reportData.length"
+        :date_from="date_from"
+        :date_to="date_to"
+        :data="reportData"
+      />
       <ReportByContent
-        v-else-if="type_id===6 && reportData.length" :date_from="date_from" :date_to="date_to"
-        :data="reportData"/>
+        v-else-if="type_id === 6 && reportData.length"
+        :date_from="date_from"
+        :date_to="date_to"
+        :data="reportData"
+      />
       <ReportByCampaign
-        v-else-if="type_id===7 && reportData.length" :date_from="date_from" :date_to="date_to"
-        :data="reportData"/>
+        v-else-if="type_id === 7 && reportData.length"
+        :date_from="date_from"
+        :date_to="date_to"
+        :data="reportData"
+      />
       <ReportByMedium
-        v-else-if="type_id===8 && reportData.length" :date_from="date_from" :date_to="date_to"
-        :data="reportData"/>
+        v-else-if="type_id === 8 && reportData.length"
+        :date_from="date_from"
+        :date_to="date_to"
+        :data="reportData"
+      />
       <ReportByTerm
-        v-else-if="type_id===9 && reportData.length" :date_from="date_from" :date_to="date_to"
-        :data="reportData"/>
+        v-else-if="type_id === 9 && reportData.length"
+        :date_from="date_from"
+        :date_to="date_to"
+        :data="reportData"
+      />
       <ReportByUtm
-        v-else-if="type_id===10 && reportData.length" :date_from="date_from" :date_to="date_to"
-        :data="reportData"/>
+        v-else-if="type_id === 10 && reportData.length"
+        :date_from="date_from"
+        :date_to="date_to"
+        :data="reportData"
+      />
       <ReportUtmExtend
-        v-else-if="type_id===11 && reportData.length" :date_from="date_from" :date_to="date_to"
-        :data="reportData"/>
+        v-else-if="type_id === 11 && reportData.length"
+        :date_from="date_from"
+        :date_to="date_to"
+        :data="reportData"
+      />
     </v-card>
   </div>
 </template>
@@ -143,13 +178,13 @@ import ReportByMedium from '~/components/report/ReportByMedium'
 import ReportByTerm from '~/components/report/ReportByTerm'
 import ReportByUtm from '~/components/report/ReportByUtm'
 import ReportUtmExtend from '~/components/report/ReportUtmExtend'
-import ByOperatorAgency from "~/components/report/ByOperatorAgency";
-import ByOperatorVictory from "~/components/report/ByOperatorVictory";
-import SummaryVictory from "~/components/report/SummaryVictory";
+import ByOperatorAgency from '~/components/report/ByOperatorAgency'
+import ByOperatorVictory from '~/components/report/ByOperatorVictory'
+import SummaryVictory from '~/components/report/SummaryVictory'
 
 export default {
   name: 'CrmReports',
-  middleware: "permission",
+  middleware: 'permission',
   layout: 'agency',
   components: {
     ByOperatorAgency,
@@ -185,70 +220,70 @@ export default {
         text: 'Оператор',
         align: 'start',
         sortable: false,
-        value: 'name'
+        value: 'name',
       },
-      {text: 'Новая', value: 'calories', sortable: false},
-      {text: 'В работе', value: 'fat', sortable: false},
-      {text: 'Не отвечает', value: 'fat', sortable: false},
-      {text: 'Приедет', value: 'carbs', sortable: false},
-      {text: 'Корзина', value: 'protein', sortable: false},
-      {text: 'Повтор', value: 'actions', sortable: false},
-      {text: 'Приехал', value: 'actions', sortable: false},
-      {text: 'Все', value: 'actions', sortable: false},
-      {text: 'Эффективность', value: 'actions', sortable: false}
+      { text: 'Новая', value: 'calories', sortable: false },
+      { text: 'В работе', value: 'fat', sortable: false },
+      { text: 'Не отвечает', value: 'fat', sortable: false },
+      { text: 'Приедет', value: 'carbs', sortable: false },
+      { text: 'Корзина', value: 'protein', sortable: false },
+      { text: 'Повтор', value: 'actions', sortable: false },
+      { text: 'Приехал', value: 'actions', sortable: false },
+      { text: 'Все', value: 'actions', sortable: false },
+      { text: 'Эффективность', value: 'actions', sortable: false },
     ],
     type_id: 1,
     types: [
       {
         id: 1,
-        name: 'Отчет по операторам'
+        name: 'Отчет по операторам',
       },
       {
         id: 2,
-        name: 'Отчет по статусам'
+        name: 'Отчет по статусам',
       },
       {
         id: 3,
-        name: 'Отчет по сайтам'
+        name: 'Отчет по сайтам',
       },
       {
         id: 4,
-        name: 'Отчет по датам'
+        name: 'Отчет по датам',
       },
       {
         id: 5,
-        name: 'Отчет по UTM SOURCE'
+        name: 'Отчет по UTM SOURCE',
       },
       {
         id: 6,
-        name: 'Отчет по UTM Content'
+        name: 'Отчет по UTM Content',
       },
       {
         id: 7,
-        name: 'Отчет по UTM Campaign'
+        name: 'Отчет по UTM Campaign',
       },
       {
         id: 8,
-        name: 'Отчет по UTM Medium'
+        name: 'Отчет по UTM Medium',
       },
       {
         id: 9,
-        name: 'Отчет по UTM Term'
+        name: 'Отчет по UTM Term',
       },
       {
         id: 10,
-        name: 'Отчет по UTM меткам'
+        name: 'Отчет по UTM меткам',
       },
       {
         id: 11,
-        name: 'Отчет по UTM (Расширенный)'
+        name: 'Отчет по UTM (Расширенный)',
       },
-    ]
+    ],
   }),
 
-  async fetch({store, params: {id}}) {
-    await store.dispatch('showroom/fetchSites', {id}),
-    await store.dispatch('showroom/fetchShowroom', {id})
+  async fetch({ store, params: { id } }) {
+    await store.dispatch('showroom/fetchSites', { id }),
+      await store.dispatch('showroom/fetchShowroom', { id })
     await store.dispatch('user/toggle', false)
   },
 
@@ -260,7 +295,9 @@ export default {
       return this.$store.state.showroom.showroom
     },
     sites() {
-      return this.$store.state.showroom.sites.filter(l => l.agency_id == this.$route.params.agency)
+      return this.$store.state.showroom.sites.filter(
+        (l) => l.agency_id == this.$route.params.agency
+      )
     },
   },
 
@@ -272,7 +309,7 @@ export default {
 
   methods: {
     execute() {
-      if (this.type_id >=1 && this.type_id <= 11) {
+      if (this.type_id >= 1 && this.type_id <= 11) {
         this.report = true
       }
     },
@@ -285,22 +322,34 @@ export default {
         case 'today':
           this.date_from = this.$moment().format('DD.MM.YYYY') + before_time
           this.date_to = this.$moment().format('DD.MM.YYYY') + after_time
-          console.log(this.$moment(this.date_from, 'DD.MM.YYYY HH:mm:ss').format('YYYY-MM-DD HH:mm:ss'))
+          console.log(
+            this.$moment(this.date_from, 'DD.MM.YYYY HH:mm:ss').format(
+              'YYYY-MM-DD HH:mm:ss'
+            )
+          )
           return
         case 'seven':
-          this.date_from = this.$moment().subtract(1, 'days').format('DD.MM.YYYY') + seven_time
+          this.date_from =
+            this.$moment().subtract(1, 'days').format('DD.MM.YYYY') + seven_time
           this.date_to = this.$moment().format('DD.MM.YYYY') + seven_time
           return
         case 'yesterday':
-          this.date_from = this.$moment().subtract(1, 'days').format('DD.MM.YYYY') + before_time
-          this.date_to = this.$moment().subtract(1, 'days').format('DD.MM.YYYY') + after_time
+          this.date_from =
+            this.$moment().subtract(1, 'days').format('DD.MM.YYYY') +
+            before_time
+          this.date_to =
+            this.$moment().subtract(1, 'days').format('DD.MM.YYYY') + after_time
           return
         case 'week':
-          this.date_from = this.$moment().subtract(7, 'days').format('DD.MM.YYYY HH:mm:ss')
+          this.date_from = this.$moment()
+            .subtract(7, 'days')
+            .format('DD.MM.YYYY HH:mm:ss')
           this.date_to = this.$moment().format('DD.MM.YYYY HH:mm:ss')
           return
         case 'month':
-          this.date_from = this.$moment().subtract(1, 'months').format('DD.MM.YYYY HH:mm:ss')
+          this.date_from = this.$moment()
+            .subtract(1, 'months')
+            .format('DD.MM.YYYY HH:mm:ss')
           this.date_to = this.$moment().format('DD.MM.YYYY HH:mm:ss')
           return
         default:
@@ -313,11 +362,11 @@ export default {
       const loader = this.$loading.show({
         // Optional parameters
         container: null,
-        canCancel: false
-      });
+        canCancel: false,
+      })
       const endpointMap = {
-        2: 'https://accas.ru/api/report/status',
-        3: 'https://accas.ru/api/reports/victory',
+        2: 'https://a-c77.ru/api/report/status',
+        3: 'https://a-c77.ru/api/reports/victory',
         4: 'report/agency/dates',
         5: 'report/source',
         6: 'report/content',
@@ -326,51 +375,63 @@ export default {
         9: 'report/term',
         10: 'report/utm',
         11: 'report/extend',
-      };
+      }
       try {
-        const query = this.getData();
-        const endpoint = endpointMap[this.type_id] || 'https://accas.ru/api/report/victory/operator';
-        const {data} = await this.$axios.post(endpoint, query);
-        this.report = true;
-        this.reportData = data;
-        loader.hide();
+        const query = this.getData()
+        const endpoint =
+          endpointMap[this.type_id] ||
+          'https://a-c77.ru/api/report/victory/operator'
+        const { data } = await this.$axios.post(endpoint, query)
+        this.report = true
+        this.reportData = data
+        loader.hide()
       } catch (error) {
-        this.handleError(error);
+        this.handleError(error)
       }
     },
     handleError(error) {
-      this.$nuxt.$toast.error('Произошла ошибка при формирование отчёта' + error, {
-        position: 'top-right',
-        timeout: 5000,
-        closeOnClick: true,
-        pauseOnFocusLoss: true,
-        pauseOnHover: true,
-        draggable: true,
-        draggablePercent: 0.6,
-        showCloseButtonOnHover: false,
-        hideProgressBar: true,
-        closeButton: 'button',
-        icon: true,
-        rtl: false
-      });
+      this.$nuxt.$toast.error(
+        'Произошла ошибка при формирование отчёта' + error,
+        {
+          position: 'top-right',
+          timeout: 5000,
+          closeOnClick: true,
+          pauseOnFocusLoss: true,
+          pauseOnHover: true,
+          draggable: true,
+          draggablePercent: 0.6,
+          showCloseButtonOnHover: false,
+          hideProgressBar: true,
+          closeButton: 'button',
+          icon: true,
+          rtl: false,
+        }
+      )
     },
     getData() {
       return {
         showroom_id: this.showroom_id,
         site_id: this.site_id,
         agency_id: +this.$route.params.agency,
-        from: this.date_from ? this.$moment(this.date_from, 'DD.MM.YYYY HH:mm:ss').format('YYYY-MM-DD HH:mm:ss') : null,
-        to: this.date_to ? this.$moment(this.date_to, 'DD.MM.YYYY HH:mm:ss').format('YYYY-MM-DD HH:mm:ss') : null
+        from: this.date_from
+          ? this.$moment(this.date_from, 'DD.MM.YYYY HH:mm:ss').format(
+              'YYYY-MM-DD HH:mm:ss'
+            )
+          : null,
+        to: this.date_to
+          ? this.$moment(this.date_to, 'DD.MM.YYYY HH:mm:ss').format(
+              'YYYY-MM-DD HH:mm:ss'
+            )
+          : null,
       }
-
     },
     reset() {
       const loader = this.$loading.show({
         // Optional parameters
         container: null,
-        canCancel: false
-      });
-      setTimeout(test => {
+        canCancel: false,
+      })
+      setTimeout((test) => {
         loader.hide()
       }, 300)
       this.site_id = null
@@ -381,12 +442,9 @@ export default {
       this.order_type = false
       this.payment_method = null
       this.reportData = []
-    }
+    },
   },
-
-
 }
-
 </script>
 <style>
 .dtp {

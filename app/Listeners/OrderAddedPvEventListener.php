@@ -154,7 +154,7 @@ class OrderAddedPvEventListener
             foreach ($chatIds as $chatId) {
                 try {
                     Telegram::setAsyncRequest(false)
-                        ->sendMessage(['chat_id' => $chatId, 'text' => "Клиент по имени \"$result->last_name\" оставил заявку на сайте $hostname (accas.ru)"]);
+                        ->sendMessage(['chat_id' => $chatId, 'text' => "Клиент по имени \"$result->last_name\" оставил заявку на сайте $hostname (a-c77.ru)"]);
                 } catch (Throwable $e) {
                     continue;
                 }

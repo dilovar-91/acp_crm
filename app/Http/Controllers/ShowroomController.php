@@ -276,7 +276,7 @@ class ShowroomController extends Controller
 
 
             $response = Http::withToken(env('PLANSHETKA_API_KEY'))
-                ->post('https://accas888.com/api/reset-operator-passwords', [
+                ->post('https://acp77.ru/api/reset-operator-passwords', [
                     'showroom_id' => $showroom_id,
                     'main_password' => $mainPass,
                     'operator_password' => $operatorPass,

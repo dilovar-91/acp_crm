@@ -3370,7 +3370,7 @@ export default {
         }
 
         const { data } = await this.$axios.post(
-          'https://accas.ru/api/prostor/sms/send',
+          'https://a-c77.ru/api/prostor/sms/send',
           payload
         )
 

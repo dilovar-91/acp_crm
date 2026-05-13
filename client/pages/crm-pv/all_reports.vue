@@ -1,17 +1,10 @@
 <template>
   <div>
-    <v-card
-      class="mx-auto"
-    >
-      <v-toolbar
-        flat
-        dense
-      >
-        <v-toolbar-title class="mr-3">
-          Отчеты
-        </v-toolbar-title>
+    <v-card class="mx-auto">
+      <v-toolbar flat dense>
+        <v-toolbar-title class="mr-3"> Отчеты </v-toolbar-title>
 
-        <v-spacer/>
+        <v-spacer />
       </v-toolbar>
       <div class="px-2 d-flex flex-row">
         <v-sheet class="px-2">
@@ -35,7 +28,7 @@
             value-type="format"
             placeholder="Дата с"
             input-class="mx-input dtp"
-            style="width: 100%;"
+            style="width: 100%"
             type="datetime"
           />
         </v-sheet>
@@ -47,12 +40,12 @@
             type="datetime"
             placeholder="Дата до"
             input-class="mx-input dtp"
-            style="width: 100%;"
+            style="width: 100%"
           />
         </v-sheet>
       </div>
       <v-row dense class="px-2 mt-2" align="end">
-        <v-col cols="12" md="3" align-self="end"/>
+        <v-col cols="12" md="3" align-self="end" />
         <v-col cols="12" md="9" align-self="end" class="pl-2 text-right">
           <v-btn color="primary" dark class="mb-2" @click="fillDate('today')">
             Сегодня
@@ -63,7 +56,12 @@
           <v-btn color="primary" dark class="mb-2" @click="fillDate('six')">
             18:30-18:30
           </v-btn>
-          <v-btn color="primary" dark class="mb-2" @click="fillDate('yesterday')">
+          <v-btn
+            color="primary"
+            dark
+            class="mb-2"
+            @click="fillDate('yesterday')"
+          >
             Вчера
           </v-btn>
           <v-btn color="primary" dark class="mb-2" @click="fillDate('week')">
@@ -75,16 +73,29 @@
           <v-btn color="primary" dark class="mb-2" @click="fillDate('clear')">
             За все время
           </v-btn>
-          <v-btn color="success" dark class="mb-2" :loading="loading" @click="fetchReport()">
+          <v-btn
+            color="success"
+            dark
+            class="mb-2"
+            :loading="loading"
+            @click="fetchReport()"
+          >
             Сформировать
           </v-btn>
-          <v-btn color="warning" :disabled="!report" class="mb-2 " @click="export2Excel()">
+          <v-btn
+            color="warning"
+            :disabled="!report"
+            class="mb-2"
+            @click="export2Excel()"
+          >
             Экспортировать
           </v-btn>
-          <v-btn color="error" class="mb-2 " @click="reset()">
-            Сбросить
-          </v-btn>
-          <v-btn color="purple" class="mb-2 white--text" :to="'/crm-pv/' + $route?.params.id + '/light-orders'">
+          <v-btn color="error" class="mb-2" @click="reset()"> Сбросить </v-btn>
+          <v-btn
+            color="purple"
+            class="mb-2 white--text"
+            :to="'/crm-pv/' + $route?.params.id + '/light-orders'"
+          >
             <v-icon>mdi-keyboard-return</v-icon>
             К заявкам
           </v-btn>
@@ -92,23 +103,37 @@
       </v-row>
 
       <ByOperatorPv
-        v-if="type_id===1 && reportData.length" :date_from="date_from" :date_to="date_to"
-        :data="reportData"/>
+        v-if="type_id === 1 && reportData.length"
+        :date_from="date_from"
+        :date_to="date_to"
+        :data="reportData"
+      />
       <ReportByStatus
-        v-if="report && type_id===2 || false" :date_from="date_from" :date_to="date_to"
-        :data="reportData"/>
+        v-if="(report && type_id === 2) || false"
+        :date_from="date_from"
+        :date_to="date_to"
+        :data="reportData"
+      />
       <ByAgencyVictorySites
-        v-else-if="type_id===3 && reportData.length" :date_from="date_from" :date_to="date_to"
-        :data="reportData"/>
+        v-else-if="type_id === 3 && reportData.length"
+        :date_from="date_from"
+        :date_to="date_to"
+        :data="reportData"
+      />
 
       <ReportByDate
-        v-else-if="type_id===5 && reportData.length" :date_from="date_from" :date_to="date_to"
-        :data="reportData"/>
+        v-else-if="type_id === 5 && reportData.length"
+        :date_from="date_from"
+        :date_to="date_to"
+        :data="reportData"
+      />
 
       <VictoryOperator
-        v-else-if="type_id===6 && reportData.length" :date_from="date_from" :date_to="date_to"
-        :data="reportData"/>
-
+        v-else-if="type_id === 6 && reportData.length"
+        :date_from="date_from"
+        :date_to="date_to"
+        :data="reportData"
+      />
     </v-card>
   </div>
 </template>
@@ -117,7 +142,7 @@ import ReportByStatus from '~/components/report/ReportByStatus'
 import ByAgencyVictorySites from '~/components/report/ByAgencyVictorySites'
 import VictoryOperator from '~/components/report/VictoryOperator'
 import ReportByDate from '~/components/report/ReportByDate'
-import ByOperatorPv from "~/components/report/ByOperatorPv.vue";
+import ByOperatorPv from '~/components/report/ByOperatorPv.vue'
 
 export default {
   name: 'CrmReports',
@@ -152,46 +177,45 @@ export default {
         text: 'Оператор',
         align: 'start',
         sortable: false,
-        value: 'name'
+        value: 'name',
       },
-      {text: 'Новая', value: 'calories', sortable: false},
-      {text: 'В работе', value: 'fat', sortable: false},
-      {text: 'Не отвечает', value: 'fat', sortable: false},
-      {text: 'Приедет', value: 'carbs', sortable: false},
-      {text: 'Корзина', value: 'protein', sortable: false},
-      {text: 'Повтор', value: 'actions', sortable: false},
-      {text: 'Приехал', value: 'actions', sortable: false},
-      {text: 'Все', value: 'actions', sortable: false},
-      {text: 'Эффективность', value: 'actions', sortable: false}
+      { text: 'Новая', value: 'calories', sortable: false },
+      { text: 'В работе', value: 'fat', sortable: false },
+      { text: 'Не отвечает', value: 'fat', sortable: false },
+      { text: 'Приедет', value: 'carbs', sortable: false },
+      { text: 'Корзина', value: 'protein', sortable: false },
+      { text: 'Повтор', value: 'actions', sortable: false },
+      { text: 'Приехал', value: 'actions', sortable: false },
+      { text: 'Все', value: 'actions', sortable: false },
+      { text: 'Эффективность', value: 'actions', sortable: false },
     ],
     type_id: 1,
     types: [
       {
         id: 1,
-        name: 'Отчет по операторам'
+        name: 'Отчет по операторам',
       },
       {
         id: 2,
-        name: 'Отчет по статусам'
+        name: 'Отчет по статусам',
       },
       {
         id: 3,
-        name: 'Отчет по сайтам'
+        name: 'Отчет по сайтам',
       },
       {
         id: 4,
-        name: 'Отчет по датам'
+        name: 'Отчет по датам',
       },
       {
         id: 5,
-        name: 'Отчет по датам'
+        name: 'Отчет по датам',
       },
     ],
-
   }),
 
-  async fetch({store, params: {id}}) {
-    await store.dispatch('showroom/fetchSites', {id})
+  async fetch({ store, params: { id } }) {
+    await store.dispatch('showroom/fetchSites', { id })
     await store.dispatch('user/toggle', false)
   },
 
@@ -201,23 +225,28 @@ export default {
       const arr = []
       data.forEach((item) => {
         arr.push({
-          "Оператор": item.name,
-          "Новая": parseInt(item.NewCount),
-          "В работе": parseInt(item.OnProccessCount),
-          "Не отвечает": parseInt(item.NoAnswerCount),
-          "Одобренные": parseInt(item.ApprovedCount),
-          "Приедет": parseInt(item.WillArriveCount),
-          "Приехал": parseInt(item.ArrivedCount),
-          "Корзина": parseInt(item.TrashCount),
-          "Повтор": parseInt(item.RetryCount),
+          Оператор: item.name,
+          Новая: parseInt(item.NewCount),
+          'В работе': parseInt(item.OnProccessCount),
+          'Не отвечает': parseInt(item.NoAnswerCount),
+          Одобренные: parseInt(item.ApprovedCount),
+          Приедет: parseInt(item.WillArriveCount),
+          Приехал: parseInt(item.ArrivedCount),
+          Корзина: parseInt(item.TrashCount),
+          Повтор: parseInt(item.RetryCount),
           //"Долги ФССП":  parseInt(item.DebtsCount),
           //"Не поддавал":  parseInt(item.NotGivedCount),
           //"Консультация":  parseInt(item.ConsultCount),
           //"Отказ клиента":  parseInt(item.CancelCount),
           //"Отказы по банкам":  parseInt(item.BankCancelCount),
-          "Другие": parseInt(item.OtherCount),
-          "Эффективность": ((((parseInt(item.OnProccessCount) * 100) / item.total) || 0) + (((parseInt(item.NoAnswerCount) * 100) / item.total) || 0) + (((parseInt(item.NotArrivedCount) * 100) / item.total) || 0)).toFixed(2) + '%',
-          "Итого": parseInt(item.total),
+          Другие: parseInt(item.OtherCount),
+          Эффективность:
+            (
+              ((parseInt(item.OnProccessCount) * 100) / item.total || 0) +
+              ((parseInt(item.NoAnswerCount) * 100) / item.total || 0) +
+              ((parseInt(item.NotArrivedCount) * 100) / item.total || 0)
+            ).toFixed(2) + '%',
+          Итого: parseInt(item.total),
         })
       })
       return arr
@@ -245,8 +274,9 @@ export default {
       2: 25,
       14: 26,
       8: 27,
-    };
-    this.date_from = this.$moment().subtract(1, 'days').format('DD.MM.YYYY') + ' 18:30:00'
+    }
+    this.date_from =
+      this.$moment().subtract(1, 'days').format('DD.MM.YYYY') + ' 18:30:00'
     this.date_to = this.$moment().format('DD.MM.YYYY') + ' 18:29:00'
   },
 
@@ -267,26 +297,39 @@ export default {
           console.log(interval)
           this.date_from = this.$moment().format('DD.MM.YYYY') + before_time
           this.date_to = this.$moment().format('DD.MM.YYYY') + after_time
-          console.log(this.$moment(this.date_from, 'DD.MM.YYYY HH:mm:ss').format('YYYY-MM-DD HH:mm:ss'))
+          console.log(
+            this.$moment(this.date_from, 'DD.MM.YYYY HH:mm:ss').format(
+              'YYYY-MM-DD HH:mm:ss'
+            )
+          )
           return
         case 'seven':
-          this.date_from = this.$moment().subtract(1, 'days').format('DD.MM.YYYY') + seven_time
+          this.date_from =
+            this.$moment().subtract(1, 'days').format('DD.MM.YYYY') + seven_time
           this.date_to = this.$moment().format('DD.MM.YYYY') + seven_time
           return
         case 'six':
-          this.date_from = this.$moment().subtract(1, 'days').format('DD.MM.YYYY') + six_time
+          this.date_from =
+            this.$moment().subtract(1, 'days').format('DD.MM.YYYY') + six_time
           this.date_to = this.$moment().format('DD.MM.YYYY') + ' 18:29:00'
           return
         case 'yesterday':
-          this.date_from = this.$moment().subtract(1, 'days').format('DD.MM.YYYY') + before_time
-          this.date_to = this.$moment().subtract(1, 'days').format('DD.MM.YYYY') + after_time
+          this.date_from =
+            this.$moment().subtract(1, 'days').format('DD.MM.YYYY') +
+            before_time
+          this.date_to =
+            this.$moment().subtract(1, 'days').format('DD.MM.YYYY') + after_time
           return
         case 'week':
-          this.date_from = this.$moment().subtract(7, 'days').format('DD.MM.YYYY HH:mm:ss')
+          this.date_from = this.$moment()
+            .subtract(7, 'days')
+            .format('DD.MM.YYYY HH:mm:ss')
           this.date_to = this.$moment().format('DD.MM.YYYY HH:mm:ss')
           return
         case 'month':
-          this.date_from = this.$moment().subtract(1, 'months').format('DD.MM.YYYY HH:mm:ss')
+          this.date_from = this.$moment()
+            .subtract(1, 'months')
+            .format('DD.MM.YYYY HH:mm:ss')
           this.date_to = this.$moment().format('DD.MM.YYYY HH:mm:ss')
           return
         default:
@@ -299,42 +342,47 @@ export default {
       const loader = this.$loading.show({
         // Optional parameters
         container: null,
-        canCancel: false
-      });
+        canCancel: false,
+      })
 
       const endpointMap = {
         2: 'report/status/victory',
         3: 'report/sites/victory',
         4: 'report/date/victory',
-        6: 'https://accas.ru/api/report/victory/operator',
-      };
+        6: 'https://a-c77.ru/api/report/victory/operator',
+      }
       try {
-        const query = this.getData();
-        const endpoint = endpointMap[this.type_id] || 'https://accas.ru/api/report/operator/all-pv';
-        const {data} = await this.$axios.post(endpoint, query);
+        const query = this.getData()
+        const endpoint =
+          endpointMap[this.type_id] ||
+          'https://a-c77.ru/api/report/operator/all-pv'
+        const { data } = await this.$axios.post(endpoint, query)
 
-        this.report = true;
-        this.reportData = data;
-        loader.hide();
+        this.report = true
+        this.reportData = data
+        loader.hide()
       } catch (error) {
-        this.handleError(error);
+        this.handleError(error)
       }
     },
     handleError(error) {
-      this.$nuxt.$toast.error('Произошла ошибка при формирование отчёта' + error, {
-        position: 'top-right',
-        timeout: 5000,
-        closeOnClick: true,
-        pauseOnFocusLoss: true,
-        pauseOnHover: true,
-        draggable: true,
-        draggablePercent: 0.6,
-        showCloseButtonOnHover: false,
-        hideProgressBar: true,
-        closeButton: 'button',
-        icon: true,
-        rtl: false
-      });
+      this.$nuxt.$toast.error(
+        'Произошла ошибка при формирование отчёта' + error,
+        {
+          position: 'top-right',
+          timeout: 5000,
+          closeOnClick: true,
+          pauseOnFocusLoss: true,
+          pauseOnHover: true,
+          draggable: true,
+          draggablePercent: 0.6,
+          showCloseButtonOnHover: false,
+          hideProgressBar: true,
+          closeButton: 'button',
+          icon: true,
+          rtl: false,
+        }
+      )
     },
     getData() {
       return {
@@ -343,17 +391,25 @@ export default {
         site_id: this.site_id,
         agency_id: this.agency_id,
         payment_method: this.payment_method,
-        from: this.date_from ? this.$moment(this.date_from, 'DD.MM.YYYY HH:mm:ss').format('YYYY-MM-DD HH:mm:ss') : null,
-        to: this.date_to ? this.$moment(this.date_to, 'DD.MM.YYYY HH:mm:ss').format('YYYY-MM-DD HH:mm:ss') : null
+        from: this.date_from
+          ? this.$moment(this.date_from, 'DD.MM.YYYY HH:mm:ss').format(
+              'YYYY-MM-DD HH:mm:ss'
+            )
+          : null,
+        to: this.date_to
+          ? this.$moment(this.date_to, 'DD.MM.YYYY HH:mm:ss').format(
+              'YYYY-MM-DD HH:mm:ss'
+            )
+          : null,
       }
     },
     reset() {
       const loader = this.$loading.show({
         // Optional parameters
         container: null,
-        canCancel: false
-      });
-      setTimeout(test => {
+        canCancel: false,
+      })
+      setTimeout((test) => {
         loader.hide()
       }, 300)
       this.site_id = null
@@ -372,9 +428,9 @@ export default {
       const loader = this.$loading.show({
         // Optional parameters
         container: null,
-        canCancel: false
-      });
-      setTimeout(test => {
+        canCancel: false,
+      })
+      setTimeout((test) => {
         loader.hide()
       }, 300)
       this.site_id = null
@@ -388,99 +444,96 @@ export default {
       this.reportData = []
     },
     export2Excel() {
-      const XLSX = require('xlsx');
+      const XLSX = require('xlsx')
       if (this.type_id === 2) {
-        const wscols = [
-          {wch: 8},
-          {wch: 35},
-          {wch: 10}
-        ];
+        const wscols = [{ wch: 8 }, { wch: 35 }, { wch: 10 }]
 
-        const Heading = [
-          ["№", "Состояние заявки", "Кол-во"],
-        ];
-        const Footer = [
-          ["", "Всего", 1190],
-        ];
-        const wb = XLSX.utils.book_new();
+        const Heading = [['№', 'Состояние заявки', 'Кол-во']]
+        const Footer = [['', 'Всего', 1190]]
+        const wb = XLSX.utils.book_new()
         let ws = XLSX.WorkSheet
-        ws = XLSX.utils.json_to_sheet([]);
-        ws['!cols'] = wscols;
-        XLSX.utils.sheet_add_aoa(ws, Heading);
-        XLSX.utils.sheet_add_json(ws, this.reportStatus, {origin: 'A2', skipHeader: true});
-        XLSX.utils.sheet_add_aoa(ws, Footer, {origin: 'A16'});
-        XLSX.utils.book_append_sheet(wb, ws, 'Отчёт по статусам');
-        XLSX.writeFile(wb, 'report.xlsx');
+        ws = XLSX.utils.json_to_sheet([])
+        ws['!cols'] = wscols
+        XLSX.utils.sheet_add_aoa(ws, Heading)
+        XLSX.utils.sheet_add_json(ws, this.reportStatus, {
+          origin: 'A2',
+          skipHeader: true,
+        })
+        XLSX.utils.sheet_add_aoa(ws, Footer, { origin: 'A16' })
+        XLSX.utils.book_append_sheet(wb, ws, 'Отчёт по статусам')
+        XLSX.writeFile(wb, 'report.xlsx')
       } else if (this.type_id === 1) {
         const wsCols = [
-          {wch: 35},
-          {wch: 10},
-          {wch: 10},
-          {wch: 10},
-          {wch: 10},
-          {wch: 10},
-          {wch: 10},
-          {wch: 10},
-          {wch: 13},
-          {wch: 13},
-          {wch: 13},
-          {wch: 13},
-          {wch: 13},
-          {wch: 13},
-          {wch: 13},
-        ];
-        const Footer = [
-          ["Итого"]
-        ];
+          { wch: 35 },
+          { wch: 10 },
+          { wch: 10 },
+          { wch: 10 },
+          { wch: 10 },
+          { wch: 10 },
+          { wch: 10 },
+          { wch: 10 },
+          { wch: 13 },
+          { wch: 13 },
+          { wch: 13 },
+          { wch: 13 },
+          { wch: 13 },
+          { wch: 13 },
+          { wch: 13 },
+        ]
+        const Footer = [['Итого']]
         const count = this.reportData.length
-        const wb = XLSX.utils.book_new();
+        const wb = XLSX.utils.book_new()
         let ws = XLSX.WorkSheet
-        ws = XLSX.utils.json_to_sheet([]);
-        ws['!cols'] = wsCols;
+        ws = XLSX.utils.json_to_sheet([])
+        ws['!cols'] = wsCols
         const res = this.perform
-        XLSX.utils.sheet_add_json(ws, res);
-        XLSX.utils.sheet_add_aoa(ws, Footer, {origin: count + 1});
-        let cell_ref = XLSX.utils.encode_cell({c: 1, r: count + 1});
-        ws[cell_ref] = {f: "SUM(B2:B" + (count + 1) + ")"}
-        cell_ref = XLSX.utils.encode_cell({c: 2, r: count + 1});
-        ws[cell_ref] = {f: "SUM(C2:C" + (count + 1) + ")"}
-        cell_ref = XLSX.utils.encode_cell({c: 3, r: count + 1});
-        ws[cell_ref] = {f: "SUM(D2:D" + (count + 1) + ")"}
-        cell_ref = XLSX.utils.encode_cell({c: 4, r: count + 1});
-        ws[cell_ref] = {f: "SUM(E2:E" + (count + 1) + ")"}
-        cell_ref = XLSX.utils.encode_cell({c: 5, r: count + 1});
-        ws[cell_ref] = {f: "SUM(F2:F" + (count + 1) + ")"}
-        cell_ref = XLSX.utils.encode_cell({c: 6, r: count + 1});
-        ws[cell_ref] = {f: "SUM(G2:G" + (count + 1) + ")"}
-        cell_ref = XLSX.utils.encode_cell({c: 7, r: count + 1});
-        ws[cell_ref] = {f: "SUM(H2:H" + (count + 1) + ")"}
-        cell_ref = XLSX.utils.encode_cell({c: 8, r: count + 1});
-        ws[cell_ref] = {f: "SUM(I2:I" + (count + 1) + ")"}
-        cell_ref = XLSX.utils.encode_cell({c: 9, r: count + 1});
-        ws[cell_ref] = {f: "SUM(J2:J" + (count + 1) + ")"}
-        cell_ref = XLSX.utils.encode_cell({c: 10, r: count + 1});
-        ws[cell_ref] = {f: "SUM(K2:K" + (count + 1) + ")"}
-        cell_ref = XLSX.utils.encode_cell({c: 11, r: count + 1});
-        ws[cell_ref] = {f: "SUM(L2:L" + (count + 1) + ")"}
-        cell_ref = XLSX.utils.encode_cell({c: 12, r: count + 1});
-        ws[cell_ref] = {f: "SUM(M2:M" + (count + 1) + ")"}
-        cell_ref = XLSX.utils.encode_cell({c: 13, r: count + 1});
-        ws[cell_ref] = {f: "SUM(N2:N" + (count + 1) + ")"}
-        cell_ref = XLSX.utils.encode_cell({c: 14, r: count + 1});
-        const totalEffiency = ((((this.getTotal('OnProccessCount') * 100) / this.getTotal('total')) || 0) + (((this.getTotal('WillArriveCount') * 100) / this.getTotal('total')) || 0) + (((this.getTotal('NotArrivedCount') * 100) / this.getTotal('total')) || 0)).toFixed(2) + '%';
-        ws[cell_ref] = {v: totalEffiency}
-        cell_ref = XLSX.utils.encode_cell({c: 15, r: count + 1});
-        ws[cell_ref] = {v: this.getTotal('total'), t: 'n'}
-        XLSX.utils.book_append_sheet(wb, ws, 'Отчёт по операторам');
-        XLSX.writeFile(wb, 'report.xlsx');
+        XLSX.utils.sheet_add_json(ws, res)
+        XLSX.utils.sheet_add_aoa(ws, Footer, { origin: count + 1 })
+        let cell_ref = XLSX.utils.encode_cell({ c: 1, r: count + 1 })
+        ws[cell_ref] = { f: 'SUM(B2:B' + (count + 1) + ')' }
+        cell_ref = XLSX.utils.encode_cell({ c: 2, r: count + 1 })
+        ws[cell_ref] = { f: 'SUM(C2:C' + (count + 1) + ')' }
+        cell_ref = XLSX.utils.encode_cell({ c: 3, r: count + 1 })
+        ws[cell_ref] = { f: 'SUM(D2:D' + (count + 1) + ')' }
+        cell_ref = XLSX.utils.encode_cell({ c: 4, r: count + 1 })
+        ws[cell_ref] = { f: 'SUM(E2:E' + (count + 1) + ')' }
+        cell_ref = XLSX.utils.encode_cell({ c: 5, r: count + 1 })
+        ws[cell_ref] = { f: 'SUM(F2:F' + (count + 1) + ')' }
+        cell_ref = XLSX.utils.encode_cell({ c: 6, r: count + 1 })
+        ws[cell_ref] = { f: 'SUM(G2:G' + (count + 1) + ')' }
+        cell_ref = XLSX.utils.encode_cell({ c: 7, r: count + 1 })
+        ws[cell_ref] = { f: 'SUM(H2:H' + (count + 1) + ')' }
+        cell_ref = XLSX.utils.encode_cell({ c: 8, r: count + 1 })
+        ws[cell_ref] = { f: 'SUM(I2:I' + (count + 1) + ')' }
+        cell_ref = XLSX.utils.encode_cell({ c: 9, r: count + 1 })
+        ws[cell_ref] = { f: 'SUM(J2:J' + (count + 1) + ')' }
+        cell_ref = XLSX.utils.encode_cell({ c: 10, r: count + 1 })
+        ws[cell_ref] = { f: 'SUM(K2:K' + (count + 1) + ')' }
+        cell_ref = XLSX.utils.encode_cell({ c: 11, r: count + 1 })
+        ws[cell_ref] = { f: 'SUM(L2:L' + (count + 1) + ')' }
+        cell_ref = XLSX.utils.encode_cell({ c: 12, r: count + 1 })
+        ws[cell_ref] = { f: 'SUM(M2:M' + (count + 1) + ')' }
+        cell_ref = XLSX.utils.encode_cell({ c: 13, r: count + 1 })
+        ws[cell_ref] = { f: 'SUM(N2:N' + (count + 1) + ')' }
+        cell_ref = XLSX.utils.encode_cell({ c: 14, r: count + 1 })
+        const totalEffiency =
+          (
+            ((this.getTotal('OnProccessCount') * 100) /
+              this.getTotal('total') || 0) +
+            ((this.getTotal('WillArriveCount') * 100) /
+              this.getTotal('total') || 0) +
+            ((this.getTotal('NotArrivedCount') * 100) /
+              this.getTotal('total') || 0)
+          ).toFixed(2) + '%'
+        ws[cell_ref] = { v: totalEffiency }
+        cell_ref = XLSX.utils.encode_cell({ c: 15, r: count + 1 })
+        ws[cell_ref] = { v: this.getTotal('total'), t: 'n' }
+        XLSX.utils.book_append_sheet(wb, ws, 'Отчёт по операторам')
+        XLSX.writeFile(wb, 'report.xlsx')
       }
-
     },
   },
-
-
 }
-
 </script>
 <style>
 .dtp {

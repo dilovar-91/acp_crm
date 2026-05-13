@@ -22,7 +22,7 @@ class ApiTokenAutospot
                     ->setAsyncRequest(false)
                     ->sendMessage([
                         'chat_id' => $chatId,
-                        'text' => "Неправильный Bearer токен Autospot: {$token}, телефон: {$request->phone}, точка входа: {$request->entry_point} (accas.ru)"
+                        'text' => "Неправильный Bearer токен Autospot: {$token}, телефон: {$request->phone}, точка входа: {$request->entry_point} (a-c77.ru)"
                     ]);
 
             } catch (Throwable $e) {
