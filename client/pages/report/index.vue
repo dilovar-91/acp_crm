@@ -5,7 +5,12 @@
       <v-row class="mt-2">
         <template>
           <template v-for="(item, i) in items">
-            <v-col :key="i" cols="12" md="3" v-role-or-permission="'admin|see_tab_'+item.link">
+            <v-col
+              :key="i"
+              cols="12"
+              md="3"
+              v-role-or-permission="'admin|see_tab_' + item.link"
+            >
               <v-hover v-slot="{ hover }">
                 <v-card
                   :elevation="hover ? 12 : 2"
@@ -20,12 +25,7 @@
                     </v-card-title>
                     <v-card-subtitle>{{ item.text }}</v-card-subtitle>
                     <v-card-actions>
-                      <v-btn
-                        :to="item.link"
-                        text
-                      >
-                        Перейти
-                      </v-btn>
+                      <v-btn :to="item.link" text> Перейти </v-btn>
                     </v-card-actions>
                   </div>
                 </v-card>
@@ -33,8 +33,6 @@
             </v-col>
           </template>
         </template>
-
-
       </v-row>
     </v-container>
   </div>
@@ -43,8 +41,10 @@
 import BreadCrumb from '~/components/BreadCrumb'
 export default {
   name: 'CrmIndex',
-  layout({$auth}) {
-    return ($auth.user.role_id === 4 || $auth.user.role_id === 7) ? 'agency' : 'default'
+  layout({ $auth }) {
+    return $auth.user.role_id === 4 || $auth.user.role_id === 7
+      ? 'agency'
+      : 'default'
   },
   components: { BreadCrumb },
   middleware: 'permission',
@@ -55,65 +55,58 @@ export default {
         text: 'Общие отчёты',
         icon: 'mdi-cash-usd-outline',
         count: 800,
-        link: '/reports/all'
-      },
-      {
-        title: 'Общие отчёты JustWe',
-        text: 'Общие отчёты',
-        icon: 'mdi-cash-usd-outline',
-        count: 800,
-        link: '/reports/justwe'
-      },
+        link: '/reports/all',
+      } /* 
       {
         title: 'Общие отчёты InHouse',
         text: 'Общие отчёты',
         icon: 'mdi-cash-usd-outline',
         count: 800,
-        link: '/reports/inhouse'
+        link: '/reports/inhouse',
       },
       {
         title: 'Общие отчёты Classified',
         text: 'Общие отчёты',
         icon: 'mdi-cash-usd-outline',
         count: 800,
-        link: '/reports/classified'
-      },
+        link: '/reports/classified',
+      }, */,
       {
         title: 'Актуальность проектов',
         text: 'Проекты',
         icon: 'mdi-cash-usd-outline',
         count: 800,
-        link: '/reports/projects'
+        link: '/reports/projects',
       },
-    ]
+    ],
   }),
   computed: {
-    role () {
+    role() {
       return this.$store.state.auth.role
     },
-    user () {
+    user() {
       return this.$store.state.auth.user
     },
-    links () {
+    links() {
       return [
         {
-          text: "Главная",
+          text: 'Главная',
           disabled: false,
-          href: '/'
+          href: '/',
         },
         {
           text: 'Отчёты',
           disabled: false,
-          href:  '/reports/' + this.$route.params?.id
-        }
+          href: '/reports/' + this.$route.params?.id,
+        },
       ]
-    }
+    },
   },
   methods: {
-    redirect (url) {
+    redirect(url) {
       window.open(url, '_blank')
     },
-  }
+  },
 }
 </script>
 <style scoped>

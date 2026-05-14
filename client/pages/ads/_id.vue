@@ -5,7 +5,7 @@
       <v-row class="mt-2">
         <template>
           <template v-for="(item, i) in items">
-            <v-col :key="i" cols="12" md="3" >
+            <v-col :key="i" cols="12" md="3">
               <v-hover v-slot="{ hover }">
                 <v-card
                   :elevation="hover ? 12 : 2"
@@ -20,12 +20,7 @@
                     </v-card-title>
                     <v-card-subtitle>{{ item.text }}</v-card-subtitle>
                     <v-card-actions>
-                      <v-btn
-                        :to="item.link"
-                        text
-                      >
-                        Перейти
-                      </v-btn>
+                      <v-btn :to="item.link" text> Перейти </v-btn>
                     </v-card-actions>
                   </div>
                 </v-card>
@@ -41,13 +36,14 @@
 import BreadCrumb from '~/components/BreadCrumb'
 export default {
   components: { BreadCrumb },
-  layout({$auth}) {
-    return ($auth.user.role_id === 4 || $auth.user.role_id === 7) ? 'agency' : 'default'
+  layout({ $auth }) {
+    return $auth.user.role_id === 4 || $auth.user.role_id === 7
+      ? 'agency'
+      : 'default'
   },
   middleware: 'auth',
-  data: () => ({
-  }),
-  async fetch ({ store, params: { id } }) {
+  data: () => ({}),
+  async fetch({ store, params: { id } }) {
     await store.dispatch('showroom/fetchShowroom', { id })
   },
   computed: {
@@ -58,155 +54,148 @@ export default {
           text: 'Таблица приезд клиентов ',
           icon: 'mdi-cash-usd-outline',
           count: 800,
-          link: this.showroom_id + '/dashboard'
-        },
-        {
-          title: 'Оплата проезда',
-          text: 'Оплата проезда клиентов ',
-          icon: 'mdi-cash-usd-outline',
-          count: 800,
-          link: this.showroom_id + '/fares'
+          link: this.showroom_id + '/dashboard',
         },
         {
           title: 'Отчёты',
           text: 'Отчёты ',
           icon: 'mdi-cash-usd-outline',
           count: 800,
-          link: this.showroom_id + '/reports'
+          link: this.showroom_id + '/reports',
         },
         {
           title: 'Отчёты JustWe',
           text: 'Отчёты ',
           icon: 'mdi-cash-usd-outline',
           count: 800,
-          link: this.showroom_id + '/report/1'
+          link: this.showroom_id + '/report/1',
         },
         {
           title: 'Отчёты 100UP',
           text: 'Отчёты ',
           icon: 'mdi-cash-usd-outline',
           count: 800,
-          link: this.showroom_id + '/report/2'
+          link: this.showroom_id + '/report/2',
         },
         {
           title: 'Отчёты Victory',
           text: 'Отчёты ',
           icon: 'mdi-cash-usd-outline',
           count: 800,
-          link: this.showroom_id + '/report/3'
+          link: this.showroom_id + '/report/3',
         },
         {
           title: 'Отчёты Классифайд',
           text: 'Отчёты ',
           icon: 'mdi-cash-usd-outline',
           count: 800,
-          link: this.showroom_id + '/report/4'
+          link: this.showroom_id + '/report/4',
         },
         {
           title: 'Отчёты SEO',
           text: 'Отчёты ',
           icon: 'mdi-cash-usd-outline',
           count: 800,
-          link: this.showroom_id + '/report/5'
+          link: this.showroom_id + '/report/5',
         },
         {
           title: 'Отчёты Agency1',
           text: 'Отчёты ',
           icon: 'mdi-cash-usd-outline',
           count: 800,
-          link: this.showroom_id + '/report/6'
+          link: this.showroom_id + '/report/6',
         },
         {
           title: 'Отчёты Agency New',
           text: 'Отчёты ',
           icon: 'mdi-cash-usd-outline',
           count: 800,
-          link: this.showroom_id + '/report/7'
+          link: this.showroom_id + '/report/7',
         },
         {
           title: 'График работы',
           text: 'График работы операторов ',
           icon: 'mdi-cash-usd-outline',
           count: 800,
-          link: this.showroom_id + '/schedules'
+          link: this.showroom_id + '/schedules',
         },
         {
           title: 'Заявки (JustWe)',
           text: 'Упрощенная',
           icon: 'mdi-cash-usd-outline',
           count: 800,
-          link: this.showroom_id + '/orders-mini/1'
+          link: this.showroom_id + '/orders-mini/1',
         },
         {
           title: 'Заявки (100Up)',
           text: 'Упрощенная',
           icon: 'mdi-cash-usd-outline',
           count: 800,
-          link: this.showroom_id + '/orders-mini/2'
+          link: this.showroom_id + '/orders-mini/2',
         },
         {
           title: 'Заявки (Victory)',
           text: 'Упрощенная',
           icon: 'mdi-cash-usd-outline',
           count: 800,
-          link: this.showroom_id + '/orders-mini/3'
+          link: this.showroom_id + '/orders-mini/3',
         },
         {
           title: 'Заявки (Agency1)',
           text: 'Упрощенная',
           icon: 'mdi-cash-usd-outline',
           count: 800,
-          link: this.showroom_id + '/orders-mini/6'
+          link: this.showroom_id + '/orders-mini/6',
         },
         {
           title: 'Заявки (Agency NEW)',
           text: 'Упрощенная',
           icon: 'mdi-cash-usd-outline',
           count: 800,
-          link: this.showroom_id + '/orders-mini/7'
+          link: this.showroom_id + '/orders-mini/7',
         },
       ]
     },
-    showroom () {
+    showroom() {
       return this.$store.state.showroom.showroom
     },
-    showroom_id () {
+    showroom_id() {
       return Number(this.$route.params.id) || null
     },
-    role () {
+    role() {
       return this.$store.state.auth.role
     },
-    pages () {
+    pages() {
       return this.$store.state.permission.nest_pages
     },
-    user () {
+    user() {
       return this.$store.state.auth.user
     },
-    links () {
+    links() {
       return [
         {
-          text: "Главная",
+          text: 'Главная',
           disabled: false,
-          href: '/'
+          href: '/',
         },
         {
           text: 'Dashboard рекламы',
           disabled: false,
-          href:  '/ads/'
+          href: '/ads/',
         },
         {
           text: this.showroom.name || null,
           disabled: true,
-          href: '/'
-        }
+          href: '/',
+        },
       ]
-    }
+    },
   },
   methods: {
-    redirect (url) {
+    redirect(url) {
       window.open(url, '_blank')
     },
-  }
+  },
 }
 </script>
 <style scoped>

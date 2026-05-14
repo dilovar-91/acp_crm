@@ -128,11 +128,7 @@ export default {
           action: 'mdi-account-box',
           active: true,
           items: [
-            { title: 'Комфорт', link: '/managers/2' },
-            { title: 'АвтоПремиум', link: '/managers/4' },
-            { title: 'Авангард Юг', link: '/managers/5' },
-            { title: 'Форсаж', link: '/managers/7' },
-            { title: 'АвтоПремьер', link: '/managers/8' },
+            { title: 'М1', link: '/managers/1' },
           ],
           title: 'Менеджеры',
         },

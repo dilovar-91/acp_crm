@@ -43,9 +43,9 @@ class CreditApprove extends Notification
     public function toTelegram($notifiable)
     {
         $showroom = "";
-        if($this->item['showroom_id'] ===2){
-            $showroom = '(Комфорт)';
-        }else if($this->item['showroom_id'] ===3){
+        if($this->item['showroom_id'] ===1){
+            $showroom = '(М1)';
+        }else if($this->item['showroom_id'] ===2){
             $showroom = '(Склад Щелковская)';
         }else if($this->item['showroom_id'] ===4){
             $showroom = '(АвтоПремиум)';

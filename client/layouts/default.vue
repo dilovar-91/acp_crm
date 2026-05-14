@@ -19,18 +19,31 @@
         <template #prepend>
           <div class="pa-2">
             <div class="title font-weight-bold text-uppercase primary--text">
-              <nuxt-link class="text-decoration-none ml-3" to="/">{{ product.name }}</nuxt-link>
+              <nuxt-link class="text-decoration-none ml-3" to="/">{{
+                product.name
+              }}</nuxt-link>
             </div>
             <div v-if="false" class="overline grey--text">
-              <nuxt-link class="text-decoration-none" to="/">{{ product.version }}</nuxt-link>
+              <nuxt-link class="text-decoration-none" to="/">{{
+                product.version
+              }}</nuxt-link>
             </div>
           </div>
         </template>
 
         <!-- Navigation menu -->
-        <main-menu :menu="navigation.menu"/>
-        <div class="pl-2 mb-0 overline" v-role-or-permission="'admin|see_admin_panel'">Администрирование</div>
-        <v-list dense class="mt-0" v-role-or-permission="'admin|see_admin_panel'">
+        <main-menu :menu="navigation.menu" />
+        <div
+          class="pl-2 mb-0 overline"
+          v-role-or-permission="'admin|see_admin_panel'"
+        >
+          Администрирование
+        </div>
+        <v-list
+          dense
+          class="mt-0"
+          v-role-or-permission="'admin|see_admin_panel'"
+        >
           <v-list-group
             v-for="item in items"
             :key="item.title"
@@ -38,7 +51,7 @@
             :prepend-icon="item.action"
             no-action
           >
-            <template #activator >
+            <template #activator>
               <v-list-item-content>
                 <v-list-item-title v-text="item.title"></v-list-item-title>
               </v-list-item-content>
@@ -77,13 +90,7 @@
 
           <!-- REMOVE ME - Shop Demo purposes -->
           <div class="pa-2 pt-1 text-center">
-            <v-btn
-              class="buy-button"
-              dark
-              block
-              color="#E4A"
-              to="/dashboard"
-            >
+            <v-btn class="buy-button" dark block color="#E4A" to="/dashboard">
               Дашбоард
             </v-btn>
           </div>
@@ -91,16 +98,14 @@
       </v-navigation-drawer>
 
       <!-- Toolbar -->
-      <v-app-bar
-        app
-        :color="'surface bg-primary'"
-
-      >
+      <v-app-bar app :color="'surface bg-primary'">
         <v-card
-class="flex-grow-1 d-flex" :class="[isToolbarDetached ? 'pa-1 mt-3 mx-1' : 'pa-0 ma-0']"
-                :flat="!isToolbarDetached" style="background-color: #F5F5F5;">
+          class="flex-grow-1 d-flex"
+          :class="[isToolbarDetached ? 'pa-1 mt-3 mx-1' : 'pa-0 ma-0']"
+          :flat="!isToolbarDetached"
+          style="background-color: #f5f5f5"
+        >
           <div class="d-flex flex-grow-1 align-center">
-
             <!-- search input mobile -->
             <v-text-field
               v-if="showSearch"
@@ -116,11 +121,17 @@ class="flex-grow-1 d-flex" :class="[isToolbarDetached ? 'pa-1 mt-3 mx-1' : 'pa-0
             ></v-text-field>
 
             <div v-else class="d-flex flex-grow-1 align-center">
-              <v-app-bar-nav-icon @click.stop="drawerState = !drawerState"></v-app-bar-nav-icon>
+              <v-app-bar-nav-icon
+                @click.stop="drawerState = !drawerState"
+              ></v-app-bar-nav-icon>
 
-
-              <div v-if="drawerState===false" class="title font-weight-bold text-uppercase primary--text">
-                <nuxt-link class="text-decoration-none ml-3" to="/">{{ product.name }}</nuxt-link>
+              <div
+                v-if="drawerState === false"
+                class="title font-weight-bold text-uppercase primary--text"
+              >
+                <nuxt-link class="text-decoration-none ml-3" to="/">{{
+                  product.name
+                }}</nuxt-link>
               </div>
 
               <v-spacer class="d-none d-lg-block"></v-spacer>
@@ -128,21 +139,23 @@ class="flex-grow-1 d-flex" :class="[isToolbarDetached ? 'pa-1 mt-3 mx-1' : 'pa-0
                 <v-icon light class="mr-2 hidden-sm-and-down">
                   mdi-clock-outline
                 </v-icon>
-                <span class="hidden-sm-and-down font-weight-bold ml-auto">{{ timestamp }}</span>
+                <span class="hidden-sm-and-down font-weight-bold ml-auto">{{
+                  timestamp
+                }}</span>
               </div>
 
               <v-spacer class="d-block d-sm-none"></v-spacer>
               <v-btn class="d-block d-sm-none" icon @click="showSearch = true">
                 <v-icon dark>mdi-magnify</v-icon>
               </v-btn>
-              <toolbar-user/>
+              <toolbar-user />
             </div>
           </div>
         </v-card>
       </v-app-bar>
 
       <v-main>
-        <nuxt/>
+        <nuxt />
         <v-footer app inset>
           <v-spacer></v-spacer>
           <div v-role-or-permission="'admin|see_dashboard'" class="overline">
@@ -156,14 +169,13 @@ class="flex-grow-1 d-flex" :class="[isToolbarDetached ? 'pa-1 mt-3 mx-1' : 'pa-0
 </template>
 
 <script>
-import {mapState} from 'vuex'
+import { mapState } from 'vuex'
 
 // navigation menu configurations
 import config from '../configs'
 
 import MainMenu from '../components/navigation/MainMenu'
 import ToolbarUser from '../components/toolbar/ToolbarUser'
-
 
 export default {
   name: 'DefaultLayout',
@@ -182,59 +194,51 @@ export default {
           action: 'mdi-web',
           active: true,
           items: [
-            {title: 'Сайты', link: '/admin/sites'},
-            {title: 'Черный список', link: '/admin/blacklist'},
-            {title: 'Марки', link: '/admin/marks'},
-            {title: 'Модели', link: '/admin/models'},
+            { title: 'Сайты', link: '/admin/sites' },
+            { title: 'Черный список', link: '/admin/blacklist' },
+            { title: 'Марки', link: '/admin/marks' },
+            { title: 'Модели', link: '/admin/models' },
           ],
           title: 'Шоурум',
         },
         {
           action: 'mdi-account-multiple',
           items: [
-            {title: 'Список пользователей', link: '/users'},
-            {title: 'История входов и выходов', link: '/admin/auth-logs'},
+            { title: 'Список пользователей', link: '/users' },
+            { title: 'История входов и выходов', link: '/admin/auth-logs' },
           ],
           title: 'Пользователы',
         },
         {
           action: 'mdi-account-circle',
           active: true,
-          items: [
-            {title: 'Р1', link: '/admin/operators/4'},
-            {title: 'Р2', link: '/admin/operators/2'},
-            {title: 'Р3', link: '/admin/operators/10'},
-            {title: 'К1', link: '/admin/operators/5'},
-            {title: 'В', link: '/admin/operators/7'},
-            {title: 'С1', link: '/admin/operators/15'},
-            {title: 'С2', link: '/admin/operators/17'},
-
-          ],
+          items: [{ title: 'М1', link: '/admin/operators/1' }],
           title: 'Операторы',
         },
         {
           action: 'mdi-account-box',
           active: true,
-          items: [
-            {title: 'Комфорт', link: '/managers/2'},
-            {title: 'АвтоПремиум', link: '/managers/4'},
-            {title: 'Авангард Юг', link: '/managers/5'},
-            {title: 'Форсаж', link: '/managers/7'},
-          ],
+          items: [{ title: 'М1', link: '/managers/1' }],
           title: 'Менеджеры',
         },
       ],
     }
   },
   computed: {
-    ...mapState('app', ['product', 'isContentBoxed', 'menuTheme', 'toolbarTheme', 'isToolbarDetached']),
+    ...mapState('app', [
+      'product',
+      'isContentBoxed',
+      'menuTheme',
+      'toolbarTheme',
+      'isToolbarDetached',
+    ]),
     drawerState: {
       get() {
         return this.$store.state.user.drawerState
       },
       set(v) {
         return this.$store.commit('user/toggleDrawerState', v)
-      }
+      },
     },
   },
   mounted() {
@@ -257,6 +261,10 @@ export default {
 }
 
 .custom-icon-color {
-  color: rgb(76, 175, 80); /* Use the desired color from your Vuetify theme or a custom color */
+  color: rgb(
+    76,
+    175,
+    80
+  ); /* Use the desired color from your Vuetify theme or a custom color */
 }
 </style>
