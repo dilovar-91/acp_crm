@@ -1,13 +1,19 @@
 import colors from 'vuetify/es5/util/colors'
 
-require('dotenv').config()
 // eslint-disable-next-line nuxt/no-cjs-in-config
 const { join } = require('path')
+
+// .env в корне Laravel (не зависит от cwd при `npm run build`)
+require('dotenv').config({ path: join(__dirname, '../.env') })
 const { copySync, removeSync } = require('fs-extra')
 
 export default {
   ssr: false,
   srcDir: __dirname,
+  // Чтобы `process.env.API_URL` в .vue и клиентском коде подставлялся при spa build
+  env: {
+    API_URL: process.env.API_URL || '',
+  },
   server: {
     port: process.env.APP_PORT || 5000, // default: 3000
     // host: '0.0.0.0', // default: localhost
