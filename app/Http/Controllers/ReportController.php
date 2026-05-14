@@ -227,7 +227,6 @@ class ReportController extends Controller
                 FROM sites s
                 INNER JOIN orders o
                     ON o.site_id = s.id
-                    AND o.showroom_id NOT IN (1,11)
                 $query
                 $payment_method
                 $query_showroom
@@ -786,7 +785,7 @@ class ReportController extends Controller
             INNER JOIN orders o on o.showroom_id = sh.id
             INNER JOIN sites s on o.site_id = s.id
             INNER JOIN order_drops d on o.drop_id = d.id
-            where sh.id not in (1, 6,  9) $query $query_agency $query_showroom
+            where sh.id not in (6,  9) $query $query_agency $query_showroom
             GROUP BY s.id, sh.id Order by sh.id asc, s.title asc");
         return response()->json($result);
     }

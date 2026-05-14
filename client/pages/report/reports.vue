@@ -269,7 +269,7 @@ export default {
   computed: {
     showrooms() {
       return this.$store.state.showroom.showrooms.filter(
-        (l) => ![1, 6, 9].includes(l.id)
+        (l) => ![6, 9].includes(l.id)
       )
     },
 

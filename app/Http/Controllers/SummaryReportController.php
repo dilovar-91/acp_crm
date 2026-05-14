@@ -55,7 +55,7 @@ class SummaryReportController extends Controller
             INNER JOIN orders o on o.showroom_id = sh.id
             INNER JOIN sites s on o.site_id = s.id
             INNER JOIN agencies a on a.id = s.agency_id
-            where sh.id not in (1, 6, 11, 9) and o.operator_id NOT IN (358) $query $query_agency $query_showroom
+            where sh.id not in (6, 11, 9) and o.operator_id NOT IN (358) $query $query_agency $query_showroom
             GROUP BY a.id, sh.id
             Order by sh.id asc, a.name asc");
         return response()->json($result);
@@ -81,7 +81,7 @@ class SummaryReportController extends Controller
             INNER JOIN orders o on o.showroom_id = sh.id
             INNER JOIN sites s on o.site_id = s.id
             INNER JOIN agencies a on a.id = s.agency_id
-            where sh.id not in (1, 6, 9)  and o.operator_id NOT IN (358) $query_agency $query_showroom
+            where sh.id not in (6, 9)  and o.operator_id NOT IN (358) $query_agency $query_showroom
             GROUP BY a.id, sh.id order by sh.id asc, a.name asc");
         return response()->json($result);
     }
@@ -134,7 +134,7 @@ class SummaryReportController extends Controller
             FROM users u
             INNER JOIN orders o ON  o.`operator_id` = u.`id` and o.operator_id NOT IN (358)" . $query . $payment_method . $query_showroom . $query_agency . "
             INNER JOIN showrooms sh ON  o.`showroom_id` = sh.`id`
-            where o.showroom_id not in (1, 9)
+            where o.showroom_id not in (9)
             GROUP BY u.id, sh.name");
         return response()->json($result);
     }
@@ -224,7 +224,7 @@ class SummaryReportController extends Controller
             INNER JOIN orders o on o.showroom_id = sh.id and o.operator_id NOT IN (358)
             INNER JOIN sites s on o.site_id = s.id
             INNER JOIN order_drops d on o.drop_id = d.id
-            where sh.id not in (1, 6,  9) $query $query_agency $query_showroom
+            where sh.id not in (6,  9) $query $query_agency $query_showroom
             GROUP BY s.id, sh.id Order by sh.id asc, s.title asc");
         return response()->json($result);
     }
@@ -370,7 +370,7 @@ class SummaryReportController extends Controller
             FROM users u
             INNER JOIN orders o ON  o.`operator_id` = u.`id` and o.operator_id NOT IN (358)" . $query . $payment_method . $query_showroom . $query_agency . "
             INNER JOIN showrooms sh ON  o.`showroom_id` = sh.`id`
-            where o.showroom_id not in (1, 9)
+            where o.showroom_id not in (9)
             GROUP BY u.id, sh.name");
         return response()->json($result);
     }
@@ -423,7 +423,7 @@ class SummaryReportController extends Controller
             INNER JOIN orders o on o.showroom_id = sh.id
             INNER JOIN sites s on o.site_id = s.id
             INNER JOIN agencies a on a.id = s.agency_id
-            where sh.id not in (1, 6, 11, 9, 18,19,20,21,22,23,24,25) $query $query_agency $query_showroom
+            where sh.id not in (6, 11, 9) $query $query_agency $query_showroom
             GROUP BY sh.id, s.id
             Order by sh.id asc, a.name asc");
         return response()->json($result);
