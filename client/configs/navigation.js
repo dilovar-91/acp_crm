@@ -5,12 +5,7 @@ export default {
       key: '',
       items: [
         //{icon: 'mdi-view-dashboard-outline', key: 'Дашборд', text: 'Дашборд', link: '/dashboard'},
-        {
-          icon: 'mdi-store-check',
-          key: 'Салоны',
-          text: 'Салоны',
-          link: '/showrooms',
-        },
+
         {
           icon: 'mdi-google-analytics',
           key: 'CRM',
