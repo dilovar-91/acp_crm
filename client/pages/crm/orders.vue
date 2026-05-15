@@ -3224,6 +3224,7 @@ export default {
       }
     },
     getModels(markId = null) {
+      console.log('getModels', markId)
       this.editedItem.model_id = null
       if (markId !== 0) {
         this.$store.dispatch('property/fetchModels', { markId })

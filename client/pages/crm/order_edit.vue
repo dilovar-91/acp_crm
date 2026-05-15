@@ -834,6 +834,7 @@
                       label="Марка"
                       hide-details="auto"
                       clearable
+                      @change="getModels(form.mark_id)"
                       no-data-text="Список пуст"
                       @click:clear="$nextTick(() => (form.mark_id = null))"
                     />
@@ -2573,6 +2574,7 @@ export default {
         (l) => l.brand_id === this.form?.mark_id
       )
     },
+
     showrooms() {
       return this.$store.state.showroom.showrooms
     },
@@ -2703,6 +2705,13 @@ export default {
           }
         },
       ]
+    },
+
+    getModels(markId = null) {
+      this.form.model_id = null
+      if (markId !== 0) {
+        this.$store.dispatch('property/fetchModels', { markId })
+      }
     },
 
     carYearRequired(value) {

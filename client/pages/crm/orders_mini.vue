@@ -1,13 +1,26 @@
 <template>
   <div>
-    <BreadCrumb :items="links"/>
+    <BreadCrumb :items="links" />
     <v-container fluid class="pt-0">
       <v-row no-gutters align="start" class="d-flex">
         <v-col cols="12">
           <v-card class="mx-auto pt-0">
-            <v-btn v-model="isFilter" text color="primary" x-small @click="isFilter = !isFilter">Фильтр</v-btn>
-            <v-app-bar v-if="isFilter" elevate-on-scroll dense flat class="py-1 px-2">
-              <v-row align="center" class="px-4" >
+            <v-btn
+              v-model="isFilter"
+              text
+              color="primary"
+              x-small
+              @click="isFilter = !isFilter"
+              >Фильтр</v-btn
+            >
+            <v-app-bar
+              v-if="isFilter"
+              elevate-on-scroll
+              dense
+              flat
+              class="py-1 px-2"
+            >
+              <v-row align="center" class="px-4">
                 <!-- Даты -->
                 <v-col cols="12" sm="2" md="1">
                   <date-picker
@@ -16,7 +29,7 @@
                     format="DD.MM.Y HH:mm"
                     type="datetime"
                     placeholder="С"
-                    style="width:100%"
+                    style="width: 100%"
                     @clear="clearFilter()"
                   />
                 </v-col>
@@ -28,7 +41,7 @@
                     format="DD.MM.Y HH:mm"
                     type="datetime"
                     placeholder="По"
-                    style="width:100%"
+                    style="width: 100%"
                     @clear="clearFilter()"
                   />
                 </v-col>
@@ -100,7 +113,6 @@
                     :items="statuses"
                     item-text="name"
                     item-value="id"
-
                     label="Статус"
                     hide-details
                     dense
@@ -111,8 +123,13 @@
                 </v-col>
 
                 <v-col
-                      v-if="filter_status === 6" cols="12" sm="12" xl="1"
-                       md="1" class="py-0 mb-2 mt-1">
+                  v-if="filter_status === 6"
+                  cols="12"
+                  sm="12"
+                  xl="1"
+                  md="1"
+                  class="py-0 mb-2 mt-1"
+                >
                   <v-select
                     v-model="filter_arrival"
                     :items="arrival_statuses"
@@ -127,9 +144,18 @@
                 </v-col>
 
                 <!-- Кнопки -->
-                <v-col cols="12" sm="2" md="2" class="flex justify-end space-x-2">
-                  <v-btn small color="success" dark @click="doSearch()">Применить</v-btn>
-                  <v-btn small color="error" dark @click="clearFilter()">Сброс</v-btn>
+                <v-col
+                  cols="12"
+                  sm="2"
+                  md="2"
+                  class="flex justify-end space-x-2"
+                >
+                  <v-btn small color="success" dark @click="doSearch()"
+                    >Применить</v-btn
+                  >
+                  <v-btn small color="error" dark @click="clearFilter()"
+                    >Сброс</v-btn
+                  >
                   <v-btn
                     v-if="role_id === 7 || role_id === 1"
                     icon
@@ -155,7 +181,7 @@
                           format="DD.MM.Y HH:mm"
                           type="datetime"
                           placeholder="Дата с"
-                          style="width: 100%; margin-top: 4px;"
+                          style="width: 100%; margin-top: 4px"
                           @clear="clearFilter()"
                         />
                       </v-col>
@@ -166,48 +192,68 @@
                           format="DD.MM.Y HH:mm"
                           type="datetime"
                           placeholder="Дата по"
-                          style="width: 100%; margin-top: 4px;"
+                          style="width: 100%; margin-top: 4px"
                           @clear="clearFilter()"
                         />
                       </v-col>
-                      <v-col cols="12" sm="6" xl="2" md="2" class="hidden-sm-and-down mt-1">
+                      <v-col
+                        cols="12"
+                        sm="6"
+                        xl="2"
+                        md="2"
+                        class="hidden-sm-and-down mt-1"
+                      >
                         <v-select
                           v-model="advanced_filter_type"
                           :items="[
-                          { id: 1, name: 'Дата создание' },
-                          { id: 2, name: 'Дата изменение' },
-                          { id: 3, name: 'Приедет' },
-                          { id: 4, name: 'Приехал' },
-                          { id: 5, name: 'Перезвонить' },
-                          { id: 6, name: 'Последный прозвон' },
-                        ]"
+                            { id: 1, name: 'Дата создание' },
+                            { id: 2, name: 'Дата изменение' },
+                            { id: 3, name: 'Приедет' },
+                            { id: 4, name: 'Приехал' },
+                            { id: 5, name: 'Перезвонить' },
+                            { id: 6, name: 'Последный прозвон' },
+                          ]"
                           hide-details
                           item-text="name"
                           item-value="id"
                           label="Тип фильтра"
                           menu-props="auto"
-                          style="width: 100%;"
+                          style="width: 100%"
                           outlined
                           clearable
                           required
                           dense
-                          @click:clear="
-                          $nextTick(() => (clearFilter()))
-                        "
+                          @click:clear="$nextTick(() => clearFilter())"
                         >
                         </v-select>
                       </v-col>
 
-                      <v-col cols="12" sm="6" xl="2" md="2" class="hidden-sm-and-down mt-1">
+                      <v-col
+                        cols="12"
+                        sm="6"
+                        xl="2"
+                        md="2"
+                        class="hidden-sm-and-down mt-1"
+                      >
                         <v-text-field
-v-model="advanced_search" clearable label="Поиск"
-                                      hide-details outlined
-                                      dense @keyup.enter="doAdvancedSearch()"
+                          v-model="advanced_search"
+                          clearable
+                          label="Поиск"
+                          hide-details
+                          outlined
+                          dense
+                          @keyup.enter="doAdvancedSearch()"
                         >
                         </v-text-field>
                       </v-col>
 
-                      <v-col cols="12" sm="6" xl="2" md="2" class="hidden-sm-and-down mt-1">
+                      <v-col
+                        cols="12"
+                        sm="6"
+                        xl="2"
+                        md="2"
+                        class="hidden-sm-and-down mt-1"
+                      >
                         <v-select
                           v-model="advanced_site"
                           :items="sites"
@@ -216,15 +262,13 @@ v-model="advanced_search" clearable label="Поиск"
                           item-value="id"
                           label="Сайт"
                           menu-props="auto"
-                          style="width: 100%;"
+                          style="width: 100%"
                           outlined
                           clearable
                           required
                           multiple
                           dense
-                          @click:clear="
-                          $nextTick(() => (clearFilter()))
-                        "
+                          @click:clear="$nextTick(() => clearFilter())"
                         >
                           <template #selection="{ item, index }">
                             <template v-if="index === 0">
@@ -234,14 +278,19 @@ v-model="advanced_search" clearable label="Поиск"
                               v-if="index === 1"
                               class="grey--text text-caption"
                             >
-                           &nbsp;(+{{ advanced_site.length - 1 }})
-                          </span>
+                              &nbsp;(+{{ advanced_site.length - 1 }})
+                            </span>
                           </template>
                         </v-select>
                       </v-col>
 
-
-                      <v-col cols="12" sm="6" xl="2" md="2" class="hidden-sm-and-down mt-1">
+                      <v-col
+                        cols="12"
+                        sm="6"
+                        xl="2"
+                        md="2"
+                        class="hidden-sm-and-down mt-1"
+                      >
                         <v-select
                           v-model="advanced_status"
                           :items="statuses"
@@ -250,15 +299,13 @@ v-model="advanced_search" clearable label="Поиск"
                           item-value="id"
                           label="Статус"
                           menu-props="auto"
-                          style="width: 120%;"
+                          style="width: 120%"
                           outlined
                           clearable
                           required
                           multiple
                           dense
-                          @click:clear="
-                          $nextTick(() => (clearFilter()))
-                        "
+                          @click:clear="$nextTick(() => clearFilter())"
                         >
                           <template #selection="{ item, index }">
                             <template v-if="index === 0">
@@ -268,42 +315,57 @@ v-model="advanced_search" clearable label="Поиск"
                               v-if="index === 1"
                               class="grey--text text-caption"
                             >
-                           &nbsp;(+{{ advanced_status?.length - 1 }})
-                          </span>
+                              &nbsp;(+{{ advanced_status?.length - 1 }})
+                            </span>
                           </template>
                         </v-select>
                       </v-col>
-
-
                     </v-row>
                   </v-col>
                 </v-row>
-                <v-spacer/>
-
+                <v-spacer />
               </v-app-bar>
               <v-app-bar class="indigo lighten-5" elevate-on-scroll dense>
                 <v-row class="ml-3 1">
                   <v-col cols="12" sm="6" md="10">
                     <v-row>
-                      <v-col v-if="role_id !== 2" cols="12" sm="6" xl="2" md="2" class="hidden-sm-and-down mt-1">
+                      <v-col
+                        v-if="role_id !== 2"
+                        cols="12"
+                        sm="6"
+                        xl="2"
+                        md="2"
+                        class="hidden-sm-and-down mt-1"
+                      >
                         <v-select
                           v-model="advanced_operator"
                           :items="operators"
                           hide-details
-                          :item-text="item => item.last_name ? item.first_name + ' ' + item.last_name : item.first_name"
+                          :item-text="
+                            (item) =>
+                              item.last_name
+                                ? item.first_name + ' ' + item.last_name
+                                : item.first_name
+                          "
                           item-value="id"
                           label="Оператор"
                           menu-props="auto"
-                          style="width: 120%;"
+                          style="width: 120%"
                           outlined
                           clearable
                           required
                           dense
-                          @click:clear="$nextTick(() => (clearFilter()))"
+                          @click:clear="$nextTick(() => clearFilter())"
                         >
                         </v-select>
                       </v-col>
-                      <v-col cols="12" sm="6" xl="2" md="2" class="hidden-sm-and-down mt-1">
+                      <v-col
+                        cols="12"
+                        sm="6"
+                        xl="2"
+                        md="2"
+                        class="hidden-sm-and-down mt-1"
+                      >
                         <v-select
                           v-model="advanced_type"
                           :items="types"
@@ -312,15 +374,13 @@ v-model="advanced_search" clearable label="Поиск"
                           item-value="id"
                           label="Тип заявки"
                           menu-props="auto"
-                          style="width: 100%;"
+                          style="width: 100%"
                           outlined
                           clearable
                           required
                           multiple
                           dense
-                          @click:clear="
-                          $nextTick(() => (clearFilter()))
-                        "
+                          @click:clear="$nextTick(() => clearFilter())"
                         >
                           <template #selection="{ item, index }">
                             <template v-if="index === 0">
@@ -330,24 +390,29 @@ v-model="advanced_search" clearable label="Поиск"
                               v-if="index === 1"
                               class="grey--text text-caption"
                             >
-                           &nbsp;(+{{ advanced_type.length - 1 }})
-                          </span>
+                              &nbsp;(+{{ advanced_type.length - 1 }})
+                            </span>
                           </template>
                         </v-select>
                       </v-col>
-                      <v-col cols="12" sm="6" md="2" class="hidden-sm-and-down mt-1">
+                      <v-col
+                        cols="12"
+                        sm="6"
+                        md="2"
+                        class="hidden-sm-and-down mt-1"
+                      >
                         <v-select
                           v-model="advanced_payment"
                           :items="[
-                            {id: 7, name: 'Не определено'},
-                            {id: 1, name: 'Наличными'},
-                            {id: 2, name: 'В кредит'},
-                            {id: 3, name: 'Кредит(Скидка)'},
-                            {id: 4, name: 'Лизинг'},
-                            {id: 5, name: 'Не дозвон'},
-                            {id: 6, name: 'Повтор'},
-                            {id: 8, name: 'ЛНР/ДНР'},
-                        ]"
+                            { id: 7, name: 'Не определено' },
+                            { id: 1, name: 'Наличными' },
+                            { id: 2, name: 'В кредит' },
+                            { id: 3, name: 'Кредит(Скидка)' },
+                            { id: 4, name: 'Лизинг' },
+                            { id: 5, name: 'Не дозвон' },
+                            { id: 6, name: 'Повтор' },
+                            { id: 8, name: 'ЛНР/ДНР' },
+                          ]"
                           item-text="name"
                           no-data-text="Нету данных"
                           item-value="id"
@@ -357,11 +422,19 @@ v-model="advanced_search" clearable label="Поиск"
                           hide-details
                           dense
                           clearable
-                          @click:clear="$nextTick(() => advanced_payment_method=null)"
+                          @click:clear="
+                            $nextTick(() => (advanced_payment_method = null))
+                          "
                         />
                       </v-col>
 
-                      <v-col cols="12" sm="6" xl="2" md="2" class="hidden-sm-and-down mt-1">
+                      <v-col
+                        cols="12"
+                        sm="6"
+                        xl="2"
+                        md="2"
+                        class="hidden-sm-and-down mt-1"
+                      >
                         <v-select
                           v-model="advanced_mark"
                           :items="marks"
@@ -370,15 +443,13 @@ v-model="advanced_search" clearable label="Поиск"
                           item-value="id"
                           label="Марка"
                           menu-props="auto"
-                          style="width: 100%;"
+                          style="width: 100%"
                           outlined
                           clearable
                           required
                           multiple
                           dense
-                          @click:clear="
-                          $nextTick(() => (clearFilter()))
-                        "
+                          @click:clear="$nextTick(() => clearFilter())"
                         >
                           <template #selection="{ item, index }">
                             <template v-if="index === 0">
@@ -388,12 +459,19 @@ v-model="advanced_search" clearable label="Поиск"
                               v-if="index === 1"
                               class="grey--text text-caption"
                             >
-                           &nbsp;(+{{ advanced_mark?.length - 1 }})
-                          </span>
+                              &nbsp;(+{{ advanced_mark?.length - 1 }})
+                            </span>
                           </template>
                         </v-select>
                       </v-col>
-                      <v-col v-if="false" cols="12" sm="6" xl="2" md="2" class="hidden-sm-and-down mt-1">
+                      <v-col
+                        v-if="false"
+                        cols="12"
+                        sm="6"
+                        xl="2"
+                        md="2"
+                        class="hidden-sm-and-down mt-1"
+                      >
                         <v-select
                           v-model="advanced_mark"
                           :items="models"
@@ -402,21 +480,24 @@ v-model="advanced_search" clearable label="Поиск"
                           item-value="id"
                           label="Модель"
                           menu-props="auto"
-                          style="width: 100%;"
+                          style="width: 100%"
                           outlined
                           clearable
                           required
                           multiple
                           dense
-                          @click:clear="
-                          $nextTick(() => (clearFilter()))
-                        "
+                          @click:clear="$nextTick(() => clearFilter())"
                         >
-
-
                         </v-select>
                       </v-col>
-                      <v-col v-if="false" cols="12" sm="6" xl="2" md="2" class="hidden-sm-and-down mt-1">
+                      <v-col
+                        v-if="false"
+                        cols="12"
+                        sm="6"
+                        xl="2"
+                        md="2"
+                        class="hidden-sm-and-down mt-1"
+                      >
                         <v-select
                           v-model="advanced_type"
                           :items="types"
@@ -425,15 +506,13 @@ v-model="advanced_search" clearable label="Поиск"
                           item-value="id"
                           label="Регион"
                           menu-props="auto"
-                          style="width: 100%;"
+                          style="width: 100%"
                           outlined
                           clearable
                           required
                           multiple
                           dense
-                          @click:clear="
-                          $nextTick(() => (clearFilter()))
-                        "
+                          @click:clear="$nextTick(() => clearFilter())"
                         >
                           <template #selection="{ item, index }">
                             <template v-if="index === 0">
@@ -443,18 +522,35 @@ v-model="advanced_search" clearable label="Поиск"
                               v-if="index === 1"
                               class="grey--text text-caption"
                             >
-                           &nbsp;(+{{ advanced_type.length - 1 }})
-                          </span>
+                              &nbsp;(+{{ advanced_type.length - 1 }})
+                            </span>
                           </template>
                         </v-select>
                       </v-col>
 
-                      <v-col cols="12" sm="6" xl="2" md="2" class="hidden-sm-and-down mt-1">
-                        <v-btn color="success" dark class="mb-2 mt-1" @click="doAdvancedSearch()">
+                      <v-col
+                        cols="12"
+                        sm="6"
+                        xl="2"
+                        md="2"
+                        class="hidden-sm-and-down mt-1"
+                      >
+                        <v-btn
+                          color="success"
+                          dark
+                          class="mb-2 mt-1"
+                          @click="doAdvancedSearch()"
+                        >
                           Применить
                         </v-btn>
                       </v-col>
-                      <v-col cols="12" sm="6" xl="2" md="2" class="hidden-sm-and-down mt-1">
+                      <v-col
+                        cols="12"
+                        sm="6"
+                        xl="2"
+                        md="2"
+                        class="hidden-sm-and-down mt-1"
+                      >
                         <v-btn
                           class="mb-2 mt-1"
                           dark
@@ -464,77 +560,72 @@ v-model="advanced_search" clearable label="Поиск"
                           Сбросить
                         </v-btn>
                       </v-col>
-
-
                     </v-row>
                   </v-col>
-
                 </v-row>
-                <v-spacer/>
-
+                <v-spacer />
               </v-app-bar>
-
             </template>
             <v-card-text class="pa-0 py-0">
               <template v-if="!isSearch">
                 <v-btn
-                  :color="(filter_status==1 ? 'green darken-1' : 'darken-1')"
+                  :color="filter_status == 1 ? 'green darken-1' : 'darken-1'"
                   text
                   @click="changeStatus(1)"
                 >
                   Новая
                 </v-btn>
                 <v-btn
-                  :color="(filter_status==2 ? 'green darken-1' : 'darken-1')"
+                  :color="filter_status == 2 ? 'green darken-1' : 'darken-1'"
                   text
                   @click="changeStatus(2)"
                 >
                   В работе
                 </v-btn>
                 <v-btn
-                  :color="(filter_status==3 ? 'green darken-1' : 'darken-1')"
+                  :color="filter_status == 3 ? 'green darken-1' : 'darken-1'"
                   text
                   @click="changeStatus(3)"
                 >
                   Не отвечает
                 </v-btn>
                 <v-btn
-                  :color="(filter_status==4 ? 'green darken-1' : 'darken-1')"
+                  :color="filter_status == 4 ? 'green darken-1' : 'darken-1'"
                   text
                   @click="changeStatus(4)"
                 >
                   Одобрить
                 </v-btn>
                 <v-btn
-                  :color="(filter_status==5 ? 'green darken-1' : 'darken-1')"
+                  :color="filter_status == 5 ? 'green darken-1' : 'darken-1'"
                   text
                   @click="changeStatus(5)"
                 >
                   Приедет
                 </v-btn>
                 <v-btn
-                  :color="(filter_status==6 ? 'green darken-1' : 'darken-1')"
+                  :color="filter_status == 6 ? 'green darken-1' : 'darken-1'"
                   text
                   @click="changeStatus(6)"
                 >
                   Приехал
                 </v-btn>
                 <v-btn
-                  :color="(filter_status==7 ? 'green darken-1' : 'darken-1')"
+                  :color="filter_status == 7 ? 'green darken-1' : 'darken-1'"
                   text
                   @click="changeStatus(7)"
                 >
                   Корзина
                 </v-btn>
                 <v-btn
-                  :color="(filter_status==8 ? 'green darken-1' : 'darken-1')"
+                  :color="filter_status == 8 ? 'green darken-1' : 'darken-1'"
                   text
                   @click="changeStatus(8)"
                 >
                   Повторы
                 </v-btn>
                 <v-btn
-                  :color="(filter_status==null ? 'green darken-1' : 'darken-1')"
+                  :color="filter_status == null ? 'green darken-1' : 'darken-1'"
                   text
                   @click="changeStatus()"
                 >
@@ -553,102 +644,133 @@ v-model="advanced_search" clearable label="Поиск"
                 dense
                 class="elevation-1 myTable"
               >
-                <template
-                  #body="{ items }"
-                >
+                <template #body="{ items }">
                   <tbody>
-                  <tr
-                    v-for="item in items"
-                    :key="item.id"
-                    :class="row_classes(item)"
-                  >
-                    <td>
-                      <nuxt-link
-:to="'/crm/' + item.showroom_id + '/order/'+item.id + '/detail'"
-                                 :class="row_classes(item)">
+                    <tr
+                      v-for="item in items"
+                      :key="item.id"
+                      :class="row_classes(item)"
+                    >
+                      <td>
+                        <nuxt-link
+                          :to="
+                            '/crm/' +
+                            item.showroom_id +
+                            '/order/' +
+                            item.id +
+                            '/detail'
+                          "
+                          :class="row_classes(item)"
+                        >
+                          <template v-if="item.type_id === 12">
+                            WhatsApp
+                          </template>
+                          <template v-else-if="item.site">
+                            {{ item.site?.title }}
+                          </template>
+                          <template v-else-if="item.line_number">
+                            {{ item.line_number }}
+                          </template>
+                          <template
+                            v-else-if="
+                              item.site_id === null && item.source_id > 0
+                            "
+                          >
+                            {{ item.source?.name }}
+                          </template>
+                          <template v-else> Не определено </template>
+                        </nuxt-link>
+                      </td>
 
-                        <template v-if="item.type_id === 12">
-                          WhatsApp
-                        </template>
-                        <template v-else-if="item.site">
-                          {{ item.site?.title }}
-                        </template>
-                        <template v-else-if="item.line_number">
-                          {{ item.line_number }}
-                        </template>
-                        <template v-else-if="item.site_id === null &&  item.source_id > 0">
-                          {{ item.source?.name }}
-                        </template>
-                        <template v-else>
-                          Не определено
-                        </template>
-                      </nuxt-link>
-                    </td>
+                      <td>{{ item.type?.name }}</td>
+                      <td>
+                        {{ item.status?.name }}
 
-                    <td>{{ item.type?.name }}</td>
-                    <td>
-                      {{ item.status?.name }}
+                        <p
+                          v-if="item.status_id === 7 && item.trash"
+                          style="color: orangered"
+                        >
+                          ({{ item.trash?.name }})
+                        </p>
 
-                      <p v-if="item.status_id === 7 && item.trash" style="color: orangered;">
-                        ({{ item.trash?.name }})
-                      </p>
+                        <p
+                          v-if="item.status_id === 6 && item.arrival_status"
+                          style="color: #26c6da"
+                        >
+                          ({{ item.arrival_status?.name }})
+                        </p>
+                      </td>
+                      <td style="white-space: normal; word-break: break-word">
+                        <div v-if="item.utm_source" style="color: #e74c3c">
+                          source: {{ item.utm_source }}
+                        </div>
+                        <div v-if="item.utm_medium" style="color: #2980b9">
+                          medium: {{ item.utm_medium }}
+                        </div>
+                        <div v-if="item.utm_campaign" style="color: #27ae60">
+                          campaign: {{ item.utm_campaign }}
+                        </div>
+                        <div v-if="item.utm_content" style="color: #8e44ad">
+                          content: {{ item.utm_content }}
+                        </div>
+                        <div v-if="item.utm_term" style="color: #f39c12">
+                          term: {{ item.utm_term }}
+                        </div>
+                      </td>
+                      <td>
+                        {{ item.region?.name }}
+                      </td>
+                      <td>
+                        {{
+                          $moment(item.created_at).format('DD.MM.YYYY HH:mm')
+                        }}
+                      </td>
+                      <td>
+                        {{ item.mark?.name }} {{ item.model?.name }}
+                        {{ item.complectation }}
+                      </td>
 
-
-                      <p v-if="item.status_id === 6 && item.arrival_status" style="color: #26C6DA;">
-                        ({{ item.arrival_status?.name }})
-                      </p>
-                    </td>
-                    <td style="white-space: normal; word-break: break-word;">
-                      <div v-if="item.utm_source" style="color: #e74c3c;">source: {{ item.utm_source }}</div>
-                      <div v-if="item.utm_medium" style="color: #2980b9;">medium: {{ item.utm_medium }}</div>
-                      <div v-if="item.utm_campaign" style="color: #27ae60;">campaign: {{ item.utm_campaign }}</div>
-                      <div v-if="item.utm_content" style="color: #8e44ad;">content: {{ item.utm_content }}</div>
-                      <div v-if="item.utm_term" style="color: #f39c12;">term: {{ item.utm_term }}</div>
-                    </td>
-                    <td>
-                      {{ item.region?.name }}
-                    </td>
-                    <td>
-                      {{ $moment(item.created_at).format('DD.MM.YYYY HH:mm') }}
-                    </td>
-                    <td>{{ item.mark?.name }} {{ item.model?.name }} {{ item.complectation }}</td>
-
-
-                    <td>{{ item.client_name }}</td>
-                    <td>{{ item.phone | mask('+7 ### ###-##-##') }}</td>
-                    <td>
-                      {{ item.will_arrive ? $moment(item.will_arrive).format('DD.MM.YYYY') : '' }}
-                    </td>
-                    <td>{{ item.retries }}</td>
-                    <td>
-                      {{ $moment(item.updated_at).format('DD.MM.YYYY HH:mm') }}
-                    </td>
-                    <td>
-                      <span v-if="item.callback !== null">{{ $moment(item.callback).format('DD.MM.YYYY HH:mm') }}</span>
-                    </td>
-                    <td>
-                      <v-tooltip bottom max-width="400px" color="primary">
-                        <template #activator="{ on, attrs }">
-                          <div color="primary" dark v-bind="attrs" v-on="on">
-                            {{ item.comment | truncate(100) }}
-                          </div>
-                        </template>
-                        <span>{{ item.comment }}</span>
-                      </v-tooltip>
-                    </td>
-                    <td>
-                      <v-tooltip bottom max-width="400px" color="primary">
-                        <template #activator="{ on, attrs }">
-                          <div color="primary" dark v-bind="attrs" v-on="on">
-                            {{ item.general_comment | truncate(50) }}
-                          </div>
-                        </template>
-                        <span>{{ item.general_comment }}</span>
-                      </v-tooltip>
-                    </td>
-
-
-                  </tr>
+                      <td>{{ item.client_name }}</td>
+                      <td>{{ item.phone | mask('+7 ### ###-##-##') }}</td>
+                      <td>
+                        {{
+                          item.will_arrive
+                            ? $moment(item.will_arrive).format('DD.MM.YYYY')
+                            : ''
+                        }}
+                      </td>
+                      <td>{{ item.retries }}</td>
+                      <td>
+                        {{
+                          $moment(item.updated_at).format('DD.MM.YYYY HH:mm')
+                        }}
+                      </td>
+                      <td>
+                        <span v-if="item.callback !== null">{{
+                          $moment(item.callback).format('DD.MM.YYYY HH:mm')
+                        }}</span>
+                      </td>
+                      <td>
+                        <v-tooltip bottom max-width="400px" color="primary">
+                          <template #activator="{ on, attrs }">
+                            <div color="primary" dark v-bind="attrs" v-on="on">
+                              {{ item.comment | truncate(100) }}
+                            </div>
+                          </template>
+                          <span>{{ item.comment }}</span>
+                        </v-tooltip>
+                      </td>
+                      <td>
+                        <v-tooltip bottom max-width="400px" color="primary">
+                          <template #activator="{ on, attrs }">
+                            <div color="primary" dark v-bind="attrs" v-on="on">
+                              {{ item.general_comment | truncate(50) }}
+                            </div>
+                          </template>
+                          <span>{{ item.general_comment }}</span>
+                        </v-tooltip>
+                      </td>
+                    </tr>
                   </tbody>
                 </template>
               </v-data-table>
@@ -671,10 +793,10 @@ v-model="advanced_search" clearable label="Поиск"
 </template>
 <script>
 import BreadCrumb from '~/components/BreadCrumb'
-import {exportToExcel} from "~/utils/exportExcel";
+import { exportToExcel } from '~/utils/exportExcel'
 export default {
   name: 'CrmOrdersMini',
-  components: {BreadCrumb},
+  components: { BreadCrumb },
   beforeRouteLeave(to, from, next) {
     this.$store.dispatch('user/toggle', true)
     clearInterval(this.intervalid)
@@ -695,7 +817,7 @@ export default {
     search: '',
     mask: {
       mask: '{7} (000) 000-00-00',
-      lazy: false
+      lazy: false,
     },
     filter_from: null,
     filter_to: null,
@@ -723,14 +845,14 @@ export default {
     menu4: false,
     isLoading: false,
     valid: false,
-    nameRules: [v => !!v || 'Введитие ФИО клиента'],
-    dateRules: [v => !!v || 'Выберите дату'],
+    nameRules: [(v) => !!v || 'Введитие ФИО клиента'],
+    dateRules: [(v) => !!v || 'Выберите дату'],
     headers: [
       {
         text: 'Сайт',
         align: 'center',
         width: '120px',
-        value: 'id'
+        value: 'id',
       },
 
       {
@@ -738,96 +860,96 @@ export default {
         align: 'center',
         sortable: false,
         width: '60px',
-        value: 'type.name'
+        value: 'type.name',
       },
       {
         text: 'Состояние заявки',
         align: 'center',
         sortable: false,
         width: '90px',
-        value: 'order.status'
+        value: 'order.status',
       },
       {
         text: 'UTM метки',
         align: 'center',
         width: '160px',
-        value: 'utm'
+        value: 'utm',
       },
       {
         text: 'Регион',
         align: 'center',
         sortable: false,
         width: '80px',
-        value: 'region.name'
+        value: 'region.name',
       },
       {
         text: 'Дата создания',
         align: 'center',
         sortable: false,
         width: '90px',
-        value: 'created_at'
+        value: 'created_at',
       },
       {
         text: 'Марка и модель',
         align: 'center',
         sortable: false,
         width: '90px',
-        value: 'mark.name'
+        value: 'mark.name',
       },
       {
         text: 'Клиент',
         align: 'center',
         sortable: false,
         width: '140px',
-        value: 'client_name'
+        value: 'client_name',
       },
       {
         text: 'Сотовый',
         align: 'center',
         sortable: false,
         width: '140px',
-        value: 'phone'
+        value: 'phone',
       },
       {
         text: 'Приедет',
         align: 'center',
         sortable: false,
         width: '70px',
-        value: 'will_arrive'
+        value: 'will_arrive',
       },
       {
         text: 'Повторы',
         align: 'center',
         sortable: false,
         width: '8px',
-        value: 'retries'
+        value: 'retries',
       },
       {
         text: 'Дата изменения',
         align: 'center',
         width: '30px',
-        value: 'comment'
+        value: 'comment',
       },
       {
         text: 'Перезвонить',
         align: 'center',
         width: '30px',
-        value: 'callback'
+        value: 'callback',
       },
       {
         text: 'Комментарий',
         align: 'center',
         width: '250px',
         sortable: false,
-        value: 'comment'
+        value: 'comment',
       },
       {
         text: 'Общие комментарии',
         align: 'center',
         sortable: false,
         width: '250px',
-        value: 'general_comment'
-      }
+        value: 'general_comment',
+      },
     ],
     editedIndex: -1,
     apiForm: {
@@ -868,17 +990,17 @@ export default {
       entry_point: '',
       last_call: '',
       callback: '',
-      live_region: "",
-      ads_source: "",
-      will_arrive: "",
-      arrived: "",
-      arrived_date: "",
-      date_of_sale: "",
-      call_heard: "",
-      type_id: "",
-      country: "",
-      car_year: "",
-      credit_period: "",
+      live_region: '',
+      ads_source: '',
+      will_arrive: '',
+      arrived: '',
+      arrived_date: '',
+      date_of_sale: '',
+      call_heard: '',
+      type_id: '',
+      country: '',
+      car_year: '',
+      credit_period: '',
     },
     defaultItem: {
       id: '',
@@ -899,21 +1021,21 @@ export default {
       entry_point: '',
       last_call: '',
       callback: '',
-      live_region: "",
-      ads_source: "",
-      will_arrive: "",
-      arrived: "",
-      arrived_date: "",
-      date_of_sale: "",
-      call_heard: "",
-      type_id: "",
-      country: "",
-      car_year: "",
-      credit_period: "",
+      live_region: '',
+      ads_source: '',
+      will_arrive: '',
+      arrived: '',
+      arrived_date: '',
+      date_of_sale: '',
+      call_heard: '',
+      type_id: '',
+      country: '',
+      car_year: '',
+      credit_period: '',
     },
   }),
 
-  async fetch({store, params: {id}, $auth}) {
+  async fetch({ store, params: { id }, $auth }) {
     await store.dispatch('user/toggle', false)
     // await store.dispatch('order/fetchOrders', {id})
 
@@ -921,15 +1043,17 @@ export default {
     await store.dispatch('order/fetchStatuses')
     await store.dispatch('property/fetchMarks')
     await store.dispatch('showroom/fetchRegions')
-    await store.dispatch('showroom/fetchShowroom', {id})
+    await store.dispatch('showroom/fetchShowroom', { id })
     await store.dispatch('showroom/fetchShowrooms')
-    await store.dispatch('showroom/fetchSites', {id})
-    await store.dispatch('showroom/fetchManagers', {id})
+    await store.dispatch('showroom/fetchSites', { id })
+    await store.dispatch('showroom/fetchManagers', { id })
     await store.dispatch('order/fetchArrivalStatuses')
-    await store.dispatch('showroom/fetchOperators', {showroom_id: (id || $auth.user?.showroom_id)})
-    await store.dispatch('order/fetchAllOrders', {id})
-    await store.dispatch('order/fetch_arrivals', {id})
-    await store.dispatch('order/fetch_missed_calls', {id})
+    await store.dispatch('showroom/fetchOperators', {
+      showroom_id: id || $auth.user?.showroom_id,
+    })
+    await store.dispatch('order/fetchAllOrders', { id })
+    await store.dispatch('order/fetch_arrivals', { id })
+    await store.dispatch('order/fetch_missed_calls', { id })
   },
 
   computed: {
@@ -940,7 +1064,7 @@ export default {
       return Number(this.$route.params.agency) || null
     },
     role_id() {
-      return this.$auth.user?.role_id;
+      return this.$auth.user?.role_id
     },
     showroom() {
       return this.$store.state.showroom.showroom
@@ -991,23 +1115,23 @@ export default {
         {
           text: 'Главная',
           disabled: false,
-          href: '/'
+          href: '/',
         },
         {
           text: 'CRM',
           disabled: false,
-          href: '/crm/' + this.showroom_id
+          href: '/crm/' + this.showroom_id,
         },
         {
           text: 'Заявки',
           disabled: false,
-          href: '/crm/' + this.showroom_id + '/orders'
+          href: '/crm/' + this.showroom_id + '/orders',
         },
         {
           text: this.showroom.name || null,
           disabled: true,
-          href: '/'
-        }
+          href: '/',
+        },
       ]
     },
 
@@ -1027,7 +1151,7 @@ export default {
       } else {
         return this.orders.total
       }
-    }
+    },
   },
 
   watch: {
@@ -1040,31 +1164,46 @@ export default {
   },
   mounted() {
     this.handleLoading()
-    this.$echo.channel('orders_' + this.showroom_id).listen('OrderCreated', (e) => {
-      if (this.filter_status === null && this.filter_from === null && this.filter_to === null && this.page === 1 && this.dialog !== true) {
-        setTimeout(async () => {
-          console.log('reload on create')
-          await this.refresh_page();
-        }, 900);
-      } else {
-        console.log('not reload')
-      }
-    })
-    this.$echo.channel('orders_' + this.showroom_id).listen('OrderProcessed', (e) => {
-      if (this.filter_status === null && this.filter_from === null && this.filter_to === null && this.page === 1 && this.dialog !== true) {
-        setTimeout(async () => {
-          console.log('reload on change')
-          await this.refresh_page();
-        }, 900);
-      } else {
-        console.log('not reload')
-      }
-    })
+    this.$echo
+      .channel('orders_' + this.showroom_id)
+      .listen('OrderCreated', (e) => {
+        if (
+          this.filter_status === null &&
+          this.filter_from === null &&
+          this.filter_to === null &&
+          this.page === 1 &&
+          this.dialog !== true
+        ) {
+          setTimeout(async () => {
+            console.log('reload on create')
+            await this.refresh_page()
+          }, 900)
+        } else {
+          console.log('not reload')
+        }
+      })
+    this.$echo
+      .channel('orders_' + this.showroom_id)
+      .listen('OrderProcessed', (e) => {
+        if (
+          this.filter_status === null &&
+          this.filter_from === null &&
+          this.filter_to === null &&
+          this.page === 1 &&
+          this.dialog !== true
+        ) {
+          setTimeout(async () => {
+            console.log('reload on change')
+            await this.refresh_page()
+          }, 900)
+        } else {
+          console.log('not reload')
+        }
+      })
   },
   destroyed() {
-    this.$echo.leave('orders_' + this.showroom_id);
+    this.$echo.leave('orders_' + this.showroom_id)
   },
-
 
   created() {
     if (this.$route.query.from) {
@@ -1084,30 +1223,29 @@ export default {
       this.advanced_search = this.$route.query.search
     }
 
-
     if (this.$route.query.status) {
-      const str = this.$route.query.status;
-      if (str.includes(",")) {
-        const arr = str.split(",");
-        this.filter_status = arr.map((x) => parseInt(x.trim()));
-        this.advanced_status = arr.map((x) => parseInt(x.trim()));
+      const str = this.$route.query.status
+      if (str.includes(',')) {
+        const arr = str.split(',')
+        this.filter_status = arr.map((x) => parseInt(x.trim()))
+        this.advanced_status = arr.map((x) => parseInt(x.trim()))
       } else {
         this.filter_status = this.$route.query.status
         this.advanced_status = this.$route.query.status
       }
     }
     if (this.$route.query.site_id) {
-      const str = this.$route.query.site_id;
-      const arr = str.split(",");
-      this.filter_site = arr.map((x) => parseInt(x.trim()));
-      this.advanced_site = arr.map((x) => parseInt(x.trim()));
+      const str = this.$route.query.site_id
+      const arr = str.split(',')
+      this.filter_site = arr.map((x) => parseInt(x.trim()))
+      this.advanced_site = arr.map((x) => parseInt(x.trim()))
     }
     if (this.$route.query.type_id) {
-      const str = this.$route.query.type_id;
-      if (str.includes(",")) {
-        const arr = str.split(",");
-        this.filter_type = arr.map((x) => parseInt(x.trim()));
-        this.advanced_type = arr.map((x) => parseInt(x.trim()));
+      const str = this.$route.query.type_id
+      if (str.includes(',')) {
+        const arr = str.split(',')
+        this.filter_type = arr.map((x) => parseInt(x.trim()))
+        this.advanced_type = arr.map((x) => parseInt(x.trim()))
       } else {
         this.filter_type = this.$route.query.type_id
         this.advanced_type = this.$route.query.type_id
@@ -1117,9 +1255,9 @@ export default {
       this.filter_utm = this.$route.query.utm
     }
     if (this.$route.query.page) {
-      this.page = parseInt(this.$route.query.page) || null;
+      this.page = parseInt(this.$route.query.page) || null
     }
-    this.refresh_page();
+    this.refresh_page()
   },
 
   methods: {
@@ -1127,14 +1265,14 @@ export default {
       await this.$store.dispatch('order/fetchOrders2', {
         id: this.$route.params.id,
         query: this.$route.query,
-        agency: this.agency
-      });
+        agency: this.agency,
+      })
     },
 
     async changedPage() {
-      const {query} = this.$route;
+      const { query } = this.$route
       try {
-        await this.$router.push({query: {...query, page: this.page}});
+        await this.$router.push({ query: { ...query, page: this.page } })
       } catch (error) {
         if (error.name !== 'NavigationDuplicated') {
           //
@@ -1143,41 +1281,46 @@ export default {
       await this.$store.dispatch('order/fetchOrders2', {
         id: this.$route.params.id,
         query: this.$route.query,
-        agency: this.agency
-      });
+        agency: this.agency,
+      })
     },
     async doSearch() {
-      const {query} = this.$route;
+      const { query } = this.$route
       try {
         console.log(this.filter_arrival)
         await this.$router.push({
           query: {
             // ...query,
-            ...(this.search && {search: this.search}),
-            ...(this.filter_operator && {operator_id: this.filter_operator}),
-            ...(this.filter_type?.length && {type_id: this.filter_type.join(",")}),
-            ...(this.filter_site?.length && {site_id: this.filter_site.join(",")}),
-            ...(this.filter_status && {status: this.filter_status}),
-            ...(this.filter_arrival && {arrived_type : this.filter_arrival}),
-            ...(this.filter_utm && {utm: this.filter_utm}),
-            ...(this.filter_status?.length && {status: this.filter_status.join(",")}),
-            ...(this.filter_from && {from: this.filter_from + ":00"}),
-            ...(this.filter_to && {to: this.filter_to + ":59"}),
-            page: 1
-          }
-        });
+            ...(this.search && { search: this.search }),
+            ...(this.filter_operator && { operator_id: this.filter_operator }),
+            ...(this.filter_type?.length && {
+              type_id: this.filter_type.join(','),
+            }),
+            ...(this.filter_site?.length && {
+              site_id: this.filter_site.join(','),
+            }),
+            ...(this.filter_status && { status: this.filter_status }),
+            ...(this.filter_arrival && { arrived_type: this.filter_arrival }),
+            ...(this.filter_utm && { utm: this.filter_utm }),
+            ...(this.filter_status?.length && {
+              status: this.filter_status.join(','),
+            }),
+            ...(this.filter_from && { from: this.filter_from + ':00' }),
+            ...(this.filter_to && { to: this.filter_to + ':59' }),
+            page: 1,
+          },
+        })
       } catch (error) {
         if (error.name !== 'NavigationDuplicated') {
-
           //
         }
       } finally {
         await this.$store.dispatch('order/fetchOrders2', {
           id: this.$route.params.id,
           query: this.$route.query,
-          agency: this.agency
-        });
-        this.page = 1;
+          agency: this.agency,
+        })
+        this.page = 1
       }
     },
     async doAdvancedSearch() {
@@ -1188,45 +1331,59 @@ export default {
         }
         await this.$router.push({
           query: {
-            ...(this.advanced_search && {search: this.advanced_search}),
-            ...(this.advanced_operator && {operator_id: this.advanced_operator}),
-            ...(this.advanced_filter_type && {date_type: this.advanced_filter_type}),
-            ...(this.advanced_type?.length && {type_id: this.advanced_type.join(",")}),
-            ...(this.advanced_site?.length && {site_id: this.advanced_site.join(",")}),
-            ...(this.advanced_status && {status: this.advanced_status}),
-            ...(this.advanced_status?.length && {status: this.advanced_status.join(",")}),
-            ...(this.advanced_from && {from: this.advanced_from}),
-            ...(this.advanced_to && {to: this.advanced_to}),
-            ...(this.advanced_payment && {payment_method: this.advanced_payment}),
-            ...(this.advanced_mark && {mark_id: this.advanced_mark}),
-            ...(this.advanced_model && {model_id: this.advanced_model}),
-            ...(this.advanced_region && {region_id: this.advanced_region}),
-            ...(this.advanced_phone && {phone: this.advanced_phone}),
-            ...(this.advanced_arrived && {arrived: this.advanced_arrived}),
-            ...(this.advanced_drop && {drop_id: this.advanced_drop}),
-            ...(this.not_confirmed && {not_confirmed: this.not_confirmed}),
-            page: 1
-          }
-        });
+            ...(this.advanced_search && { search: this.advanced_search }),
+            ...(this.advanced_operator && {
+              operator_id: this.advanced_operator,
+            }),
+            ...(this.advanced_filter_type && {
+              date_type: this.advanced_filter_type,
+            }),
+            ...(this.advanced_type?.length && {
+              type_id: this.advanced_type.join(','),
+            }),
+            ...(this.advanced_site?.length && {
+              site_id: this.advanced_site.join(','),
+            }),
+            ...(this.advanced_status && { status: this.advanced_status }),
+            ...(this.advanced_status?.length && {
+              status: this.advanced_status.join(','),
+            }),
+            ...(this.advanced_from && { from: this.advanced_from }),
+            ...(this.advanced_to && { to: this.advanced_to }),
+            ...(this.advanced_payment && {
+              payment_method: this.advanced_payment,
+            }),
+            ...(this.advanced_mark && { mark_id: this.advanced_mark }),
+            ...(this.advanced_model && { model_id: this.advanced_model }),
+            ...(this.advanced_region && { region_id: this.advanced_region }),
+            ...(this.advanced_phone && { phone: this.advanced_phone }),
+            ...(this.advanced_arrived && { arrived: this.advanced_arrived }),
+            ...(this.advanced_drop && { drop_id: this.advanced_drop }),
+            ...(this.not_confirmed && { not_confirmed: this.not_confirmed }),
+            page: 1,
+          },
+        })
       } catch (error) {
         if (error.name !== 'NavigationDuplicated') {
-
         }
       } finally {
         await this.$store.dispatch('order/fetchOrders2', {
           id: this.$route.params.id,
           query: this.$route.query,
-          agency: this.agency
-        });
-        this.page = 1;
+          agency: this.agency,
+        })
+        this.page = 1
       }
     },
     setLinks(text) {
       if (text === null) return
-      const Rexp = /(\b(https?|ftp|file):\/\/([-A-Z0-9+&@#%?=~_|!:,.;]*)([-A-Z0-9+&@#%?\/=~_|!:,.;]*)[-A-Z0-9+&@#\/%=~_|])/ig;
-      return text.replace(Rexp, "<a href='$1' target='_blank' rel='noreferrer'>$1</a>");
+      const Rexp =
+        /(\b(https?|ftp|file):\/\/([-A-Z0-9+&@#%?=~_|!:,.;]*)([-A-Z0-9+&@#%?\/=~_|!:,.;]*)[-A-Z0-9+&@#\/%=~_|])/gi
+      return text.replace(
+        Rexp,
+        "<a href='$1' target='_blank' rel='noreferrer'>$1</a>"
+      )
     },
-
 
     handleLoading() {
       const loader = this.$loading.show({
@@ -1234,7 +1391,7 @@ export default {
         container: null,
         canCancel: false,
         onCancel: null,
-        color: '#42a5f6'
+        color: '#42a5f6',
       })
       this.isLoading = !this.isLoading
       setTimeout(() => {
@@ -1245,7 +1402,6 @@ export default {
       if (item.arrived === 1 && item.status_id === 5) {
         return 'yellow'
       } else {
-
       }
     },
     async clearFilter() {
@@ -1257,20 +1413,19 @@ export default {
       this.filter_operator = null
       this.search = null
       this.page = 1
-      const {query} = this.$route;
+      const { query } = this.$route
       try {
         await this.$router.push({
-          query: {}
-        });
+          query: {},
+        })
       } catch (error) {
         if (error.name !== 'NavigationDuplicated') {
-
         }
       } finally {
         await this.$store.dispatch('order/fetchOrders2', {
           id: this.$route.params.id,
           query: {},
-          agency: this.agency
+          agency: this.agency,
         })
       }
     },
@@ -1285,11 +1440,10 @@ export default {
       this.page = 1
       try {
         await this.$router.push({
-          query: {}
-        });
+          query: {},
+        })
       } catch (error) {
         if (error.name !== 'NavigationDuplicated') {
-
         }
       }
     },
@@ -1307,11 +1461,10 @@ export default {
       this.page = 1
       try {
         await this.$router.push({
-          query: {page: 1}
-        });
+          query: { page: 1 },
+        })
       } catch (error) {
         if (error.name !== 'NavigationDuplicated') {
-
         }
       }
     },
@@ -1322,48 +1475,53 @@ export default {
     },
 
     async call() {
-      this.apiForm.phone = this.editedItem?.phone;
-      this.apiForm.ext_number = this.$auth.user?.work_place;
-      this.apiForm.showroom_id = this.$route.params?.id;
+      this.apiForm.phone = this.editedItem?.phone
+      this.apiForm.ext_number = this.$auth.user?.work_place
+      this.apiForm.showroom_id = this.$route.params?.id
       await this.$axios
-        .post("/call", this.apiForm, {
+        .post('/call', this.apiForm, {
           headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-            "X-Requested-With": "XMLHttpRequest",
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
           },
         })
         .then((response) => {
           if (response.status === 200) {
-            this.$toast.success("Ожидайте идёт звонок...");
+            this.$toast.success('Ожидайте идёт звонок...')
           }
-          console.log(response.data);
+          console.log(response.data)
         })
         .catch((error) => {
-          this.$toast.error("Произошла ошибка проверьте правильность телефона!!!" + error,);
-        });
+          this.$toast.error(
+            'Произошла ошибка проверьте правильность телефона!!!' + error
+          )
+        })
     },
     async changeStatus(id = null) {
       // await this.reset()
-      const {query} = this.$route;
+      const { query } = this.$route
       this.filter_status = id
       this.page = 1
       try {
-        await this.$router.push({query: {...query, page: 1, status: id}});
+        await this.$router.push({ query: { ...query, page: 1, status: id } })
       } catch (error) {
         if (error.name !== 'NavigationDuplicated') {
-
         }
       }
       // console.log(this.$route.query)
-      await this.refresh_page();
-
+      await this.refresh_page()
     },
     validatePayment(value) {
-      if (value !== null || this.editedItem?.status_id === 3 || this.editedItem?.status_id === 1 || this.editedItem?.status_id === 8) {
-        return true;
+      if (
+        value !== null ||
+        this.editedItem?.status_id === 3 ||
+        this.editedItem?.status_id === 1 ||
+        this.editedItem?.status_id === 8
+      ) {
+        return true
       } else {
-        return 'Выберите способ оплаты';
+        return 'Выберите способ оплаты'
       }
     },
 
@@ -1377,8 +1535,8 @@ export default {
         agency_id: this.agency,
         showroom_id: this.showroom_id,
       })
-    }
-  }
+    },
+  },
 }
 </script>
 <style scoped>

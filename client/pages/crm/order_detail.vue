@@ -1,19 +1,30 @@
 <template>
   <v-container fluid>
-
     <v-row justify="center">
       <v-col cols="12" xl="10" md="12" lg="11" class="pt-0">
-        <BreadCrumb :items="links"/>
+        <BreadCrumb :items="links" />
         <v-toolbar flat dense class="mt-0 mb-0">
           <v-icon color="blue" class="mr-2"> mdi-pen</v-icon>
-          <v-toolbar-title>Изменение заявки (<span class="font-weight-bold">{{ showroom?.name }}</span>)
+          <v-toolbar-title
+            >Изменение заявки (<span class="font-weight-bold">{{
+              showroom?.name
+            }}</span
+            >)
           </v-toolbar-title>
-          <v-spacer/>
-          <v-btn color="blue" class="mr-2 white--text" :to="'/crm/'+ form?.showroom_id+'/orders-mini/' + form.site?.agency_id">
+          <v-spacer />
+          <v-btn
+            color="blue"
+            class="mr-2 white--text"
+            :to="
+              '/crm/' +
+              form?.showroom_id +
+              '/orders-mini/' +
+              form.site?.agency_id
+            "
+          >
             <v-icon>mdi-keyboard-return</v-icon>
             Вернутся в главную
           </v-btn>
-
         </v-toolbar>
       </v-col>
       <v-col cols="12" xl="10" md="12" lg="12" class="pt-0">
@@ -25,7 +36,6 @@
             tile
           >
             <v-row dense>
-
               <v-subheader class="mt-2 font-weight-bold">Тип</v-subheader>
 
               <v-select
@@ -43,18 +53,10 @@
                 hide-details
               />
 
-              <v-spacer/>
-              <v-btn
-                target="_blank"
-                :href="makeLink()"
-                class="ma-2 mt-4"
-              >
+              <v-spacer />
+              <v-btn target="_blank" :href="makeLink()" class="ma-2 mt-4">
                 ФССП
-                <v-icon
-                  dark
-                  right
-                  color="red"
-                >
+                <v-icon dark right color="red">
                   mdi-shield-check-outline
                 </v-icon>
               </v-btn>
@@ -65,12 +67,7 @@
                 class="ma-2 mt-4"
               >
                 Яндекс карта
-                <v-icon
-                  right
-                  color="success"
-                >
-                  mdi-map-marker
-                </v-icon>
+                <v-icon right color="success"> mdi-map-marker </v-icon>
               </v-btn>
 
               <v-btn
@@ -79,10 +76,7 @@
                 class="ma-2 mt-4"
               >
                 REDSMS
-                <v-icon
-                  right
-                  color="warning"
-                >
+                <v-icon right color="warning">
                   mdi-message-text-outline
                 </v-icon>
               </v-btn>
@@ -92,12 +86,7 @@
                 class="ma-2 mt-4"
               >
                 Whatsapp
-                <v-icon
-                  color="success"
-                  right
-                >
-                  mdi-whatsapp
-                </v-icon>
+                <v-icon color="success" right> mdi-whatsapp </v-icon>
               </v-btn>
               <v-btn
                 target="_blank"
@@ -137,15 +126,14 @@
               <v-card
                 outlined
                 style="
-                border-bottom: 2px solid #007bff;
-                border-right: 2px solid #007bff;
-              "
+                  border-bottom: 2px solid #007bff;
+                  border-right: 2px solid #007bff;
+                "
                 tile
                 class="pa-2 py-3"
                 align-self="scratch"
               >
                 <v-row dense>
-
                   <v-col cols="12" sm="12" xl="6" md="6" class="py-1">
                     <v-text-field
                       v-model="form.client_name"
@@ -162,22 +150,18 @@
                       v-mask="'+7 ### ###-##-##'"
                       color="purple darken-2"
                       label="Сотовый"
-                      :rules="[v => !!v || 'Введите сотового']"
+                      :rules="[(v) => !!v || 'Введите сотового']"
                       required
                       dense
                       outlined
                       hide-details
                     >
-                      <template
-
-                        slot="append"
-                      >
+                      <template slot="append">
                         <v-icon color="primary" @click="call()"
-                        >mdi-phone
-                        </v-icon
-                        >
+                          >mdi-phone
+                        </v-icon>
                         <v-icon color="primary" @click="dialog = true"
-                        >mdi-email-outline
+                          >mdi-email-outline
                         </v-icon>
                       </template>
                     </v-text-field>
@@ -191,17 +175,16 @@
                       outlined
                       dense
                       hide-details
-                      @maska="form.work_phone = $event.target.dataset.maskRawValue"
+                      @maska="
+                        form.work_phone = $event.target.dataset.maskRawValue
+                      "
                     >
-                      <template
-                        slot="append"
-                      >
+                      <template slot="append">
                         <v-icon color="primary" @click="call()"
-                        >mdi-phone
-                        </v-icon
-                        >
+                          >mdi-phone
+                        </v-icon>
                         <v-icon color="primary" @click="dialog = true"
-                        >mdi-email-outline
+                          >mdi-email-outline
                         </v-icon>
                       </template>
                     </v-text-field>
@@ -212,15 +195,13 @@
               <v-card
                 outlined
                 style="
-                border-bottom: 2px solid #007bff;
-                border-right: 2px solid #007bff;
-              "
+                  border-bottom: 2px solid #007bff;
+                  border-right: 2px solid #007bff;
+                "
                 tile
                 class="pa-2 py-1"
               >
-
                 <v-row dense>
-
                   <v-col cols="12" sm="12" xl="3" md="3" class="pa-3">
                     ДР
                     <DPicker
@@ -261,16 +242,14 @@
                       outlined
                     />
                   </v-col>
-
-
                 </v-row>
               </v-card>
               <v-card
                 outlined
                 style="
-                border-bottom: 2px solid #007bff;
-                border-right: 2px solid #007bff;
-              "
+                  border-bottom: 2px solid #007bff;
+                  border-right: 2px solid #007bff;
+                "
                 tile
                 class="pa-2 py-1"
               >
@@ -320,60 +299,98 @@
               <v-card
                 outlined
                 style="
-                border-bottom: 2px solid #007bff;
-                border-right: 2px solid #007bff;
-              "
+                  border-bottom: 2px solid #007bff;
+                  border-right: 2px solid #007bff;
+                "
                 tile
                 class="pa-2 py-1"
               >
                 <v-row dense>
                   <v-col cols="12" sm="12" xl="12" md="12">
-
                     <v-col cols="12" sm="12" xl="12" md="12" class="py-1">
                       <p class="text-center mb-0 font-weight-bold">Trade-In</p>
                     </v-col>
                     <v-row dense>
-                      <v-col cols="12" sm="12" xl="1" md="1" class="py-1
-              d-flex flex-row  px-auto">
-                        <a href="https://www.avito.ru/evaluation/cars" class="mr-2"
-                           target="_blank" rel="noreferrer">
-                          <v-img style="border: #4caf50 1px solid; border-radius: 6px; cursor: pointer;"
-                                 src="/images/logo-opoveshcheniiaavito.png" max-width="45px"/>
+                      <v-col
+                        cols="12"
+                        sm="12"
+                        xl="1"
+                        md="1"
+                        class="py-1 d-flex flex-row px-auto"
+                      >
+                        <a
+                          href="https://www.avito.ru/evaluation/cars"
+                          class="mr-2"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          <v-img
+                            style="
+                              border: #4caf50 1px solid;
+                              border-radius: 6px;
+                              cursor: pointer;
+                            "
+                            src="/images/logo-opoveshcheniiaavito.png"
+                            max-width="45px"
+                          />
                         </a>
 
-                        <a href="https://auto.ru/cars/evaluation/"
-                           target="_blank" rel="noreferrer">
-                          <v-img style="border: red 1px solid; border-radius: 6px; cursor: pointer;"
-                                 src="/images/autru.png" max-width="45px"/>
+                        <a
+                          href="https://auto.ru/cars/evaluation/"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          <v-img
+                            style="
+                              border: red 1px solid;
+                              border-radius: 6px;
+                              cursor: pointer;
+                            "
+                            src="/images/autru.png"
+                            max-width="45px"
+                          />
                         </a>
-
-
                       </v-col>
-                      <v-col cols="12" sm="12" xl="2" md="2" class="py-0 mt-2 pl-4">
-                        <v-text-field color="primary" dense
-                                      outlined
-                                      label="Гос. номер"
-                                      hide-details="auto" v-model="form.car_number"
-                                      append-icon="mdi-magnify"
-                                      @click:append="openBanki()"
+                      <v-col
+                        cols="12"
+                        sm="12"
+                        xl="2"
+                        md="2"
+                        class="py-0 mt-2 pl-4"
+                      >
+                        <v-text-field
+                          color="primary"
+                          dense
+                          outlined
+                          label="Гос. номер"
+                          hide-details="auto"
+                          v-model="form.car_number"
+                          append-icon="mdi-magnify"
+                          @click:append="openBanki()"
                         />
                       </v-col>
-                      <v-col cols="12" sm="12" xl="2" md="2" class="py-0 mt-2 pl-4">
+                      <v-col
+                        cols="12"
+                        sm="12"
+                        xl="2"
+                        md="2"
+                        class="py-0 mt-2 pl-4"
+                      >
                         <v-select
                           v-model="form.tradein_mark_id"
                           :items="marks"
                           item-text="name"
                           item-value="id"
                           dense
-                          @change="
-                            getTradeInModels(form.tradein_mark_id);
-                          "
+                          @change="getTradeInModels(form.tradein_mark_id)"
                           outlined
                           label="Марка"
                           hide-details="auto"
                           clearable
                           no-data-text="Список пуст"
-                          @click:clear="$nextTick(() => (form.tradein_mark_id = null))"
+                          @click:clear="
+                            $nextTick(() => (form.tradein_mark_id = null))
+                          "
                         />
                       </v-col>
                       <v-col cols="12" sm="12" xl="2" md="2" class="py-0 mt-2">
@@ -388,7 +405,9 @@
                           no-data-text="Выберите модель"
                           clearable
                           hide-details="auto"
-                          @click:clear="$nextTick(() => (form.tradein_model_id = null))"
+                          @click:clear="
+                            $nextTick(() => (form.tradein_model_id = null))
+                          "
                         />
                       </v-col>
                       <v-col cols="12" sm="12" xl="2" md="2" class="py-0 mt-2">
@@ -416,27 +435,27 @@
               <v-card
                 outlined
                 style="
-                border-bottom: 2px solid #007bff;
-                border-right: 2px solid #007bff;
-              "
+                  border-bottom: 2px solid #007bff;
+                  border-right: 2px solid #007bff;
+                "
                 tile
                 class="pa-2 py-1"
               >
                 <v-row dense>
-
-
                   <v-col cols="12" sm="12" xl="12" md="12" class="py-1">
-                    <p class="text-center mb-0 font-weight-bold">Кредитный калькулятор</p>
+                    <p class="text-center mb-0 font-weight-bold">
+                      Кредитный калькулятор
+                    </p>
                   </v-col>
                   <v-col cols="12" sm="12" xl="3" md="3" class="py-1">
                     <v-select
                       v-model="form.payment_method"
                       :items="[
                         { id: 0, name: 'Не определено' },
-                          { id: 1, name: 'Наличными' },
-                          { id: 2, name: 'В кредит' },
-                          { id: 3, name: 'Кредит(Скидка)' },
-                        ]"
+                        { id: 1, name: 'Наличными' },
+                        { id: 2, name: 'В кредит' },
+                        { id: 3, name: 'Кредит(Скидка)' },
+                      ]"
                       :rules="[validatePayment]"
                       item-text="name"
                       no-data-text="Нету данных"
@@ -447,7 +466,9 @@
                       outlined
                       dense
                       clearable
-                      @click:clear="$nextTick(() => form.payment_method=null)"
+                      @click:clear="
+                        $nextTick(() => (form.payment_method = null))
+                      "
                     />
                   </v-col>
                   <v-col cols="12" sm="12" xl="2" md="2" class="py-1">
@@ -620,27 +641,33 @@
             <v-col cols="12" xl="3" sm="12" md="3" class="bottom-border">
               <v-card class="pa-2 py-0" outlined tile lign-self="scratch">
                 <v-row class="mt-2" dense>
-                <span class="ml-4 ads mb-1"
-                >Точка входа:
-                  <a
-                    v-if="form.entry_point"
-                    :href="form.entry_point"
-                    target="_blank"
-                    rel="noreferrer"
-                  >{{
-                      form.entry_point
-                        .toString()
-                        .replace(/^(.*\/\/[^\/?#]*).*$/, "$1")
-                    }}</a
-                  ></span
-                ><br/>
+                  <span class="ml-4 ads mb-1"
+                    >Точка входа:
+                    <a
+                      v-if="form.entry_point"
+                      :href="form.entry_point"
+                      target="_blank"
+                      rel="noreferrer"
+                      >{{
+                        form.entry_point
+                          .toString()
+                          .replace(/^(.*\/\/[^\/?#]*).*$/, '$1')
+                      }}</a
+                    ></span
+                  ><br />
 
-                  <span v-if="form.utm_source || form.utm_medium" class="ml-4 ads"
-                  >Источник: {{ form.utm_source }} ({{ form.utm_medium }})</span
-                  ><br/>
+                  <span
+                    v-if="form.utm_source || form.utm_medium"
+                    class="ml-4 ads"
+                    >Источник: {{ form.utm_source }} ({{
+                      form.utm_medium
+                    }})</span
+                  ><br />
 
                   <span class="ml-4 ads">Кл. фраза: {{ form.utm_term }}</span>
-                  <span class="ml-4 ads">Кампания : {{ form.utm_campaign }}</span>
+                  <span class="ml-4 ads"
+                    >Кампания : {{ form.utm_campaign }}</span
+                  >
 
                   <v-col cols="12" sm="12" xl="12" md="12" class="py-0">
                     <v-row dense>
@@ -683,8 +710,8 @@
                           outlined
                           label="Марка"
                           @change="
-                            getModels(form.mark_id);
-                            deleted = false;
+                            getModels(form.mark_id)
+                            deleted = false
                           "
                           hide-details="auto"
                           clearable
@@ -773,7 +800,9 @@
                   <v-col cols="12" sm="12" xl="12" md="12" class="py-0">
                     <v-row dense>
                       <v-col cols="12" sm="12" xl="5" md="5">
-                        <v-subheader class="font-weight-bold">Ссылка</v-subheader>
+                        <v-subheader class="font-weight-bold"
+                          >Ссылка</v-subheader
+                        >
                       </v-col>
                       <v-col cols="12" sm="12" xl="7" md="7">
                         <v-text-field
@@ -787,7 +816,9 @@
                     </v-row>
                     <v-row dense>
                       <v-col cols="12" sm="12" xl="5" md="5">
-                        <v-subheader class="font-weight-bold">Ссылка 2</v-subheader>
+                        <v-subheader class="font-weight-bold"
+                          >Ссылка 2</v-subheader
+                        >
                       </v-col>
                       <v-col cols="12" sm="12" xl="7" md="7">
                         <v-text-field
@@ -800,7 +831,14 @@
                       </v-col>
                     </v-row>
                   </v-col>
-                  <v-col cols="12" sm="12" xl="12" md="12" class="py-0" v-if="false">
+                  <v-col
+                    cols="12"
+                    sm="12"
+                    xl="12"
+                    md="12"
+                    class="py-0"
+                    v-if="false"
+                  >
                     <v-row dense>
                       <v-col cols="12" sm="12" xl="5" md="5">
                         <v-subheader class="font-weight-bold">
@@ -822,7 +860,6 @@
                       </v-col>
                     </v-row>
                   </v-col>
-
                 </v-row>
               </v-card>
             </v-col>
@@ -839,14 +876,13 @@
                       type="datetime"
                       format="DD.MM.YYYY HH:mm"
                       :time-picker-options="{
-                                                        start: '08:00',
-                                                        step: '00:15',
-                                                        end: '20:00',
-                                                        format: 'HH:mm',
-                                                      }"
+                        start: '08:00',
+                        step: '00:15',
+                        end: '20:00',
+                        format: 'HH:mm',
+                      }"
                       @setNow="setNow('last_call', true)"
                     />
-
                   </v-col>
                   <v-col cols="12" sm="12" xl="2" md="2" class="py-0 mr-10">
                     Перезвонить
@@ -856,16 +892,15 @@
                       type="datetime"
                       format="DD.MM.YYYY HH:mm"
                       :time-picker-options="{
-                                                        start: '08:00',
-                                                        step: '00:15',
-                                                        end: '20:00',
-                                                        format: 'HH:mm',
-                                                      }"
+                        start: '08:00',
+                        step: '00:15',
+                        end: '20:00',
+                        format: 'HH:mm',
+                      }"
                       @setNow="setNow('callback', true)"
                     />
                   </v-col>
                   <v-col cols="12" sm="12" xl="2" md="2" class="py-0 mr-10">
-
                     Приедет
 
                     <date-picker
@@ -887,7 +922,6 @@
                   </v-col>
 
                   <v-col cols="12" sm="12" xl="2" md="2" class="py-0 mr-10">
-
                     Приехал
                     <date-picker
                       v-model="form.arrived_date"
@@ -918,7 +952,6 @@
                     </div>
                   </v-col>
                   <v-col cols="12" sm="12" xl="2" md="2" class="py-0 mb-2">
-
                     <v-select
                       v-model="form.status_id"
                       :items="statuses"
@@ -927,15 +960,21 @@
                       label="Состояние заявки"
                       dense
                       required
-                      :rules="[v => !!v || 'Выберите статус']"
+                      :rules="[(v) => !!v || 'Выберите статус']"
                       clearable
                       outlined
                       hide-details="auto"
                       @change="changedStatus()"
                     />
                   </v-col>
-                  <v-col v-if="form.status_id === 7" cols="12" sm="12" xl="2" md="2" class="py-0 mb-2">
-
+                  <v-col
+                    v-if="form.status_id === 7"
+                    cols="12"
+                    sm="12"
+                    xl="2"
+                    md="2"
+                    class="py-0 mb-2"
+                  >
                     <v-select
                       v-model="form.trash_id"
                       :items="trashes"
@@ -948,8 +987,14 @@
                       hide-details="auto"
                     />
                   </v-col>
-                  <v-col v-if="form.status_id === 6 && role_id !== 2" cols="12" sm="12" xl="2" md="2" class="py-0 mb-2">
-
+                  <v-col
+                    v-if="form.status_id === 6 && role_id !== 2"
+                    cols="12"
+                    sm="12"
+                    xl="2"
+                    md="2"
+                    class="py-0 mb-2"
+                  >
                     <v-select
                       v-model="form.arrival_id"
                       :items="arrival_statuses"
@@ -967,12 +1012,17 @@
                       v-model="form.operator_id"
                       :items="operators"
                       item-value="id"
-                      :item-text="item => item.last_name ? item.first_name + ' ' + item.last_name : item.first_name"
+                      :item-text="
+                        (item) =>
+                          item.last_name
+                            ? item.first_name + ' ' + item.last_name
+                            : item.first_name
+                      "
                       dense
                       outlined
                       hide-details
                       label="Оператор"
-                      :disabled="(role_id !== 1 && role_id !== 3)"
+                      :disabled="role_id !== 1 && role_id !== 3"
                     >
                     </v-select>
                   </v-col>
@@ -986,8 +1036,10 @@
                       hide-details="auto"
                       label="Комментарий"
                       :readonly="
-                          user_id !== order?.operator_id && role_id !== 1 &&  role_id !== 3
-                        "
+                        user_id !== order?.operator_id &&
+                        role_id !== 1 &&
+                        role_id !== 3
+                      "
                     />
                   </v-col>
 
@@ -1007,23 +1059,24 @@
             </v-col>
 
             <v-col cols="12" xl="3" sm="12" md="3">
-
               <v-btn
                 color="blue"
                 class="white--text my-2"
                 :loading="busy"
                 block
-                :to="'/crm/'+ form?.showroom_id+'/orders-mini/' + form.site?.agency_id"
+                :to="
+                  '/crm/' +
+                  form?.showroom_id +
+                  '/orders-mini/' +
+                  form.site?.agency_id
+                "
               >
                 Вернутьстя
               </v-btn>
-
-
             </v-col>
           </v-row>
         </v-form>
       </v-col>
-
 
       <v-dialog v-model="dialog" max-width="400px">
         <v-card>
@@ -1068,7 +1121,7 @@
           </v-card-text>
 
           <v-card-actions>
-            <v-spacer/>
+            <v-spacer />
             <v-btn color="primary" @click="sendSMS()"> Отправить</v-btn>
           </v-card-actions>
         </v-card>
@@ -1077,7 +1130,9 @@
       <v-dialog v-model="isCopyDialog" max-width="400px">
         <v-card>
           <v-card-title>
-            <span class="headline">Передача заявки {{ $route.params.showroom }}</span>
+            <span class="headline"
+              >Передача заявки {{ $route.params.showroom }}</span
+            >
           </v-card-title>
           <v-card-text>
             <v-container>
@@ -1091,11 +1146,13 @@
                   <v-col cols="12" class="py-0 text-right">
                     <v-select
                       v-model="copyShowroom"
-                      :items="showrooms.filter(l=>l.id != $route.params.showroom)"
+                      :items="
+                        showrooms.filter((l) => l.id != $route.params.showroom)
+                      "
                       item-value="id"
                       item-text="name"
                       placeholder="Салон"
-                      :rules="[v => !!v || 'Выберите салона']"
+                      :rules="[(v) => !!v || 'Выберите салона']"
                     />
                   </v-col>
                 </v-row>
@@ -1104,14 +1161,14 @@
           </v-card-text>
 
           <v-card-actions>
-            <v-spacer/>
+            <v-spacer />
             <v-btn color="primary" @click="copyOrder()">Передать</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
     </v-row>
     <div
-      style="color: #3b99e0; font-weight: bold; pointer: cursor;"
+      style="color: #3b99e0; font-weight: bold; pointer: cursor"
       @click="loadHistory()"
     >
       Показать историю операций
@@ -1126,205 +1183,268 @@
       class="elevation-1"
       hide-default-footer
     >
-      <template
-        #body="{ items }"
-      >
+      <template #body="{ items }">
         <tbody>
-        <tr
-          v-for="item in items"
-          :key="item.id"
-        >
-          <td>
-            {{ $moment(item.created_at).format('DD.MM.YYYY HH:mm:ss') }}
-          </td>
-          <td>
-            {{ item.user?.first_name }} {{ item.user?.last_name }}
-          </td>
-          <td>
+          <tr v-for="item in items" :key="item.id">
+            <td>
+              {{ $moment(item.created_at).format('DD.MM.YYYY HH:mm:ss') }}
+            </td>
+            <td>{{ item.user?.first_name }} {{ item.user?.last_name }}</td>
+            <td>
+              <div v-if="item.description === '1'">Создана</div>
+              <div v-else-if="item.description === '2'">Просмотр</div>
+              <div v-else-if="item.description === '3'">Изменена</div>
+              <div v-else-if="item.description === '4'">Удалена</div>
+              <div v-else-if="item.description === '5'">Входящий звонок</div>
+              <div v-else-if="item.description === '6'">Исходящий звонок</div>
+              <div v-else-if="item.description === '7'">Пропущенный звонок</div>
+              <div v-else-if="item.description === '8'">Запись звонка</div>
+            </td>
+            <td>
+              <table
+                class="activities"
+                width="100%"
+                v-if="
+                  item.properties?.attributes &&
+                  Array.isArray(item.properties?.attributes) == false
+                "
+              >
+                <thead>
+                  <tr>
+                    <th>Поле</th>
+                    <th>Было</th>
+                    <th>Стало</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <template
+                    v-for="(row, i) in item.properties &&
+                    item.properties.attributes"
+                  >
+                    <tr>
+                      <td class="text-center">{{ activity[i] || i }}</td>
+                      <td>
+                        <template v-if="item.properties.old?.hasOwnProperty(i)">
+                          <template v-if="i == 'status_id'">
+                            {{
+                              statuses.find(
+                                (l) => l.id == item.properties.old?.i
+                              )?.name
+                            }}
+                          </template>
+                          <template v-else-if="i == 'showroom_id'">
+                            {{
+                              showrooms.find(
+                                (l) => l.id == item.properties.old?.i
+                              )?.name
+                            }}
+                          </template>
+                          <template v-else-if="i == 'site_id'">
+                            {{
+                              sites.find((l) => l.id == item.properties.old?.i)
+                                ?.title
+                            }}
+                          </template>
+                          <template v-else-if="i == 'type_id'">
+                            {{
+                              types.find((l) => l.id == item.properties.old?.i)
+                                ?.name
+                            }}
+                          </template>
+                          <template v-else-if="i == 'operator_id'">
+                            {{
+                              operators.find(
+                                (l) => l.id == item.properties.old?.i
+                              )?.first_name
+                            }}
+                          </template>
+                          <template v-else-if="i == 'payment_method'">
+                            {{
+                              payment_methods.find(
+                                (l) => l.id == item.properties.old?.i
+                              )?.name
+                            }}
+                          </template>
+                          <template v-else-if="i == 'region_id'">
+                            {{
+                              regions.find(
+                                (l) => l.id == item.properties.old?.i
+                              )?.name
+                            }}
+                          </template>
+                          <template v-else-if="i == 'mark_id'">
+                            {{
+                              marks.find((l) => l.id == item.properties.old?.i)
+                                ?.name
+                            }}
+                          </template>
+                          <template v-else-if="i == 'model_id'">
+                            {{
+                              models.find((l) => l.id == item.properties.old?.i)
+                                ?.name
+                            }}
+                          </template>
+                          <template v-else-if="i === 'approved'">
+                            <span v-if="item.properties?.old[i] == 1">Да</span>
+                            <span v-if="item.properties?.old[i] == 0">Нет</span>
+                          </template>
 
-
-
-            <div v-if="item.description === '1'">Создана</div>
-            <div v-else-if="item.description === '2'">Просмотр</div>
-            <div v-else-if="item.description === '3'">Изменена</div>
-            <div v-else-if="item.description === '4'">Удалена</div>
-            <div v-else-if="item.description === '5'">Входящий  звонок</div>
-            <div v-else-if="item.description === '6'">Исходящий звонок</div>
-            <div v-else-if="item.description === '7'">Пропущенный звонок</div>
-            <div v-else-if="item.description === '8'">Запись звонка</div>
-          </td>
-          <td>
-            <table class="activities" width="100%"
-                   v-if="item.properties?.attributes && Array.isArray(item.properties?.attributes) ==false">
-              <thead>
-              <tr>
-                <th>Поле</th>
-                <th>Было</th>
-                <th>Стало</th>
-              </tr>
-              </thead>
-              <tbody>
-
-
-              <template v-for="(row, i) in (item.properties && item.properties.attributes)">
-                <tr>
-                  <td class="text-center" >{{ activity[i] || i }}</td>
-                  <td>
-                    <template v-if="item.properties.old?.hasOwnProperty(i)">
-                      <template v-if="i == 'status_id'">
-                        {{ statuses.find(l => l.id == item.properties.old?.i)?.name }}
-                      </template>
-                      <template v-else-if="i == 'showroom_id'">
-                        {{ showrooms.find(l => l.id == item.properties.old?.i)?.name }}
-                      </template>
-                      <template v-else-if="i == 'site_id'">
-                        {{ sites.find(l => l.id == item.properties.old?.i)?.title }}
-                      </template>
-                      <template v-else-if="i == 'type_id'">
-                        {{ types.find(l => l.id == item.properties.old?.i)?.name }}
-                      </template>
-                      <template v-else-if="i == 'operator_id'">
-                        {{ operators.find(l => l.id == item.properties.old?.i)?.first_name }}
-                      </template>
-                      <template v-else-if="i == 'payment_method'">
-                        {{ payment_methods.find(l => l.id == item.properties.old?.i)?.name }}
-                      </template>
-                      <template v-else-if="i == 'region_id'">
-                        {{ regions.find(l => l.id == item.properties.old?.i)?.name }}
-                      </template>
-                      <template v-else-if="i == 'mark_id'">
-                        {{ marks.find(l => l.id == item.properties.old?.i)?.name }}
-                      </template>
-                      <template v-else-if="i == 'model_id'">
-                        {{ models.find(l => l.id == item.properties.old?.i)?.name }}
-                      </template>
-                      <template v-else-if="i === 'approved'">
-                        <span v-if="item.properties?.old[i] == 1">Да</span>
-                        <span v-if="item.properties?.old[i]  == 0">Нет</span>
-                      </template>
-
-                      <template v-else-if="i == 'canceled'">
-                        <span v-if="item.properties.old[i] == 1">Да</span>
-                        <span v-if="item.properties.old[i] == 0">Нет</span>
-                      </template>
-                      <template v-else-if="i === 'commercial_offer'">
-                        <span v-if="item.properties.old[i] == 1">Да</span>
-                        <span v-if="item.properties.old[i] == 0">Нет</span>
-                      </template>
-                      <template v-else-if="i === 'arrived'">
-                        <span v-if="item.properties.old[i] == 1">Да</span>
-                        <span v-if="item.properties.old[i] == 0">Нет</span>
-                      </template>
-                      <template v-else-if="i === 'callback' && item.properties.old[i] !== null">
-                        {{$moment(item.properties.old[i]).format('DD.MM.YYYY HH:mm:ss')}}
-                      </template>
-                      <template v-else-if="i === 'last_call' && item.properties.old[i] !== null">
-                        {{$moment(item.properties.old[i]).format('DD.MM.YYYY HH:mm:ss')}}
-                      </template>
-                      <template v-else-if="i === 'will_arrive' && item.properties.old[i] !== null">
-                        {{$moment(item.properties.old[i]).format('DD.MM.YYYY')}}
-                      </template>
-                      <template v-else-if="i === 'arrived_date' && item.properties.old[i] !== null">
-                        {{$moment(item.properties.old[i]).format('DD.MM.YYYY')}}
-                      </template>
-                      <template v-else>
-                        {{ item.properties.old[i] }}
-                      </template>
-                    </template>
-
-                  </td>
-                  <td>
-                    <template v-if="i == 'status_id'">
-                      {{ statuses.find(l => l.id === row)?.name }}
-                    </template>
-                    <template v-else-if="i == 'showroom_id'">
-                      {{ showrooms.find(l => l.id === row)?.name }}
-                    </template>
-                    <template v-else-if="i == 'site_id'">
-                      {{ sites.find(l => l.id === row)?.title }}
-                    </template>
-                    <template v-else-if="i == 'type_id'">
-                      {{ types.find(l => l.id === row)?.name }}
-                    </template>
-                    <template v-else-if="i == 'operator_id'">
-                      {{ operators.find(l => l.id === row)?.first_name }}
-                    </template>
-                    <template v-else-if="i == 'payment_method'">
-                      {{ payment_methods.find(l => l.id === row)?.name }}
-                    </template>
-                    <template v-else-if="i == 'region_id'">
-                      {{ regions.find(l => l.id === row)?.name }}
-                    </template>
-                    <template v-else-if="i == 'mark_id'">
-                      {{ marks.find(l => l.id === row)?.name }}
-                    </template>
-                    <template v-else-if="i == 'model_id'">
-                      {{ models.find(l => l.id === row)?.name ||  row}}
-                    </template>
-                    <template v-else-if="i === 'approved'">
-                      <span v-if="row === 1">Да</span>
-                      <span v-if="row === 0">Нет</span>
-                    </template>
-                    <template v-else-if="i ===  'canceled'">
-                      <span v-if="row === 1">Да</span>
-                      <span v-if="row === 0">Нет</span>
-                    </template>
-                    <template v-else-if="i === 'commercial_offer'">
-                      <span v-if="row === 1">Да</span>
-                      <span v-if="row === 0">Нет</span>
-                    </template>
-                    <template v-else-if="i === 'arrived'">
-                      <span v-if="row === 1">Да</span>
-                      <span v-if="row === 0">Нет</span>
-                    </template>
-                    <template v-else-if="i === 'callback' && row !== null">
-                      {{$moment(row).format('DD.MM.YYYY HH:mm:ss')}}
-                    </template>
-                    <template v-else-if="i === 'last_call' && row !== null">
-                      {{$moment(row).format('DD.MM.YYYY HH:mm:ss')}}
-                    </template>
-                    <template v-else-if="i === 'will_arrive' && row !== null">
-                      {{$moment(row).format('DD.MM.YYYY')}}
-                    </template>
-                    <template v-else-if="i === 'arrived_date' && row !== null">
-                      {{$moment(row).format('DD.MM.YYYY')}}
-                    </template>
-                    <template v-else>
-                      {{ row }}
-                    </template>
-                  </td>
-                </tr>
-              </template>
-
-              </tbody>
-            </table>
-          </td>
-
-
-        </tr>
+                          <template v-else-if="i == 'canceled'">
+                            <span v-if="item.properties.old[i] == 1">Да</span>
+                            <span v-if="item.properties.old[i] == 0">Нет</span>
+                          </template>
+                          <template v-else-if="i === 'commercial_offer'">
+                            <span v-if="item.properties.old[i] == 1">Да</span>
+                            <span v-if="item.properties.old[i] == 0">Нет</span>
+                          </template>
+                          <template v-else-if="i === 'arrived'">
+                            <span v-if="item.properties.old[i] == 1">Да</span>
+                            <span v-if="item.properties.old[i] == 0">Нет</span>
+                          </template>
+                          <template
+                            v-else-if="
+                              i === 'callback' &&
+                              item.properties.old[i] !== null
+                            "
+                          >
+                            {{
+                              $moment(item.properties.old[i]).format(
+                                'DD.MM.YYYY HH:mm:ss'
+                              )
+                            }}
+                          </template>
+                          <template
+                            v-else-if="
+                              i === 'last_call' &&
+                              item.properties.old[i] !== null
+                            "
+                          >
+                            {{
+                              $moment(item.properties.old[i]).format(
+                                'DD.MM.YYYY HH:mm:ss'
+                              )
+                            }}
+                          </template>
+                          <template
+                            v-else-if="
+                              i === 'will_arrive' &&
+                              item.properties.old[i] !== null
+                            "
+                          >
+                            {{
+                              $moment(item.properties.old[i]).format(
+                                'DD.MM.YYYY'
+                              )
+                            }}
+                          </template>
+                          <template
+                            v-else-if="
+                              i === 'arrived_date' &&
+                              item.properties.old[i] !== null
+                            "
+                          >
+                            {{
+                              $moment(item.properties.old[i]).format(
+                                'DD.MM.YYYY'
+                              )
+                            }}
+                          </template>
+                          <template v-else>
+                            {{ item.properties.old[i] }}
+                          </template>
+                        </template>
+                      </td>
+                      <td>
+                        <template v-if="i == 'status_id'">
+                          {{ statuses.find((l) => l.id === row)?.name }}
+                        </template>
+                        <template v-else-if="i == 'showroom_id'">
+                          {{ showrooms.find((l) => l.id === row)?.name }}
+                        </template>
+                        <template v-else-if="i == 'site_id'">
+                          {{ sites.find((l) => l.id === row)?.title }}
+                        </template>
+                        <template v-else-if="i == 'type_id'">
+                          {{ types.find((l) => l.id === row)?.name }}
+                        </template>
+                        <template v-else-if="i == 'operator_id'">
+                          {{ operators.find((l) => l.id === row)?.first_name }}
+                        </template>
+                        <template v-else-if="i == 'payment_method'">
+                          {{ payment_methods.find((l) => l.id === row)?.name }}
+                        </template>
+                        <template v-else-if="i == 'region_id'">
+                          {{ regions.find((l) => l.id === row)?.name }}
+                        </template>
+                        <template v-else-if="i == 'mark_id'">
+                          {{ marks.find((l) => l.id === row)?.name }}
+                        </template>
+                        <template v-else-if="i == 'model_id'">
+                          {{ models.find((l) => l.id === row)?.name || row }}
+                        </template>
+                        <template v-else-if="i === 'approved'">
+                          <span v-if="row === 1">Да</span>
+                          <span v-if="row === 0">Нет</span>
+                        </template>
+                        <template v-else-if="i === 'canceled'">
+                          <span v-if="row === 1">Да</span>
+                          <span v-if="row === 0">Нет</span>
+                        </template>
+                        <template v-else-if="i === 'commercial_offer'">
+                          <span v-if="row === 1">Да</span>
+                          <span v-if="row === 0">Нет</span>
+                        </template>
+                        <template v-else-if="i === 'arrived'">
+                          <span v-if="row === 1">Да</span>
+                          <span v-if="row === 0">Нет</span>
+                        </template>
+                        <template v-else-if="i === 'callback' && row !== null">
+                          {{ $moment(row).format('DD.MM.YYYY HH:mm:ss') }}
+                        </template>
+                        <template v-else-if="i === 'last_call' && row !== null">
+                          {{ $moment(row).format('DD.MM.YYYY HH:mm:ss') }}
+                        </template>
+                        <template
+                          v-else-if="i === 'will_arrive' && row !== null"
+                        >
+                          {{ $moment(row).format('DD.MM.YYYY') }}
+                        </template>
+                        <template
+                          v-else-if="i === 'arrived_date' && row !== null"
+                        >
+                          {{ $moment(row).format('DD.MM.YYYY') }}
+                        </template>
+                        <template v-else>
+                          {{ row }}
+                        </template>
+                      </td>
+                    </tr>
+                  </template>
+                </tbody>
+              </table>
+            </td>
+          </tr>
         </tbody>
       </template>
-
     </v-data-table>
   </v-container>
-
 </template>
 
 <script>
 import DTPicker from '~/components/DTPicker'
 import BreadCrumb from '~/components/BreadCrumb'
 import DPicker from '~/components/DPicker'
-import {activity} from "~/configs/activity.json";
+import { activity } from '~/configs/activity.json'
 
 export default {
-  name: "EditOrder",
+  name: 'EditOrder',
   components: {
     DTPicker,
     DPicker,
     BreadCrumb,
   },
   layout: 'edit',
-  middleware: "auth",
+  middleware: 'auth',
   data() {
     return {
       activity,
@@ -1343,135 +1463,135 @@ export default {
       open_dtp: false,
       open_dtp_callback: false,
       showTimePanel: false,
-      types1: ["Звонок", "Кредит", "Экспресс-кредит", "Seo"],
+      types1: ['Звонок', 'Кредит', 'Экспресс-кредит', 'Seo'],
       sms: {
-        text: "",
-        phone: "",
-        phone_extension: "",
+        text: '',
+        phone: '',
+        phone_extension: '',
         template: 0,
       },
       periods: [
         {
           id: 1,
           value: 0.5,
-          name: '6 месяцев'
+          name: '6 месяцев',
         },
         {
           id: 2,
           value: 1,
-          name: '1 год'
+          name: '1 год',
         },
         {
           id: 3,
           value: 2,
-          name: '2 года'
+          name: '2 года',
         },
         {
           id: 4,
           value: 3,
-          name: '3 года'
+          name: '3 года',
         },
         {
           id: 5,
           value: 4,
-          name: '4 года'
+          name: '4 года',
         },
         {
           id: 6,
           value: 5,
-          name: '5 лет'
+          name: '5 лет',
         },
         {
           id: 7,
           value: 6,
-          name: '6 лет'
+          name: '6 лет',
         },
         {
           id: 8,
           value: 7,
-          name: '7 лет'
+          name: '7 лет',
         },
         {
           id: 9,
           value: 8,
-          name: '8 лет'
+          name: '8 лет',
         },
         {
           id: 10,
           value: 9,
-          name: '9 лет'
+          name: '9 лет',
         },
         {
           id: 11,
           value: 10,
-          name: '10 лет'
+          name: '10 лет',
         },
         {
           id: 12,
           value: 12,
-          name: '12 лет'
+          name: '12 лет',
         },
         {
           id: 14,
-          name: '14 лет'
+          name: '14 лет',
         },
         {
           id: 15,
-          name: '15 лет'
+          name: '15 лет',
         },
       ],
       form: {
-        client_name: "",
-        email: "",
-        phone: "",
-        work_phone: "",
-        operator_id: "",
-        citizenship_id: "",
-        birthday: "",
-        age: "",
-        supouse_name: "",
-        supouse_birthday: "",
-        region_id: "",
-        region_ip_id: "",
-        live_region: "",
-        car_number: "",
-        work_place: "",
-        work_position: "",
-        official_income: "",
-        work_experience: "",
-        ads_source: "",
-        mark_id: "",
-        model_id: "",
-        car_year: "",
-        price: "",
-        complectation: "",
-        initial_fee: "",
+        client_name: '',
+        email: '',
+        phone: '',
+        work_phone: '',
+        operator_id: '',
+        citizenship_id: '',
+        birthday: '',
+        age: '',
+        supouse_name: '',
+        supouse_birthday: '',
+        region_id: '',
+        region_ip_id: '',
+        live_region: '',
+        car_number: '',
+        work_place: '',
+        work_position: '',
+        official_income: '',
+        work_experience: '',
+        ads_source: '',
+        mark_id: '',
+        model_id: '',
+        car_year: '',
+        price: '',
+        complectation: '',
+        initial_fee: '',
         credit_period: null,
-        showroom_id: "",
-        payment_cash: "",
-        payment_credit: "",
-        gifts: "",
-        happy_hour: "",
-        credit_deffer: "",
-        job_loss_insurance: "",
-        last_call: "",
-        last_call_picker: "",
-        callback: "",
-        callback_picker: "",
-        will_arrive: "",
-        arrived: "",
-        arrived_date: "",
-        status_id: "",
-        date_of_sale: "",
-        call_heard: "",
-        entry_point: "",
-        utm_source: "",
-        utm_medium: "",
-        utm_term: "",
-        utm_campaign: "",
-        type_id: "",
-        comment: "",
-        general_comment: "",
+        showroom_id: '',
+        payment_cash: '',
+        payment_credit: '',
+        gifts: '',
+        happy_hour: '',
+        credit_deffer: '',
+        job_loss_insurance: '',
+        last_call: '',
+        last_call_picker: '',
+        callback: '',
+        callback_picker: '',
+        will_arrive: '',
+        arrived: '',
+        arrived_date: '',
+        status_id: '',
+        date_of_sale: '',
+        call_heard: '',
+        entry_point: '',
+        utm_source: '',
+        utm_medium: '',
+        utm_term: '',
+        utm_campaign: '',
+        type_id: '',
+        comment: '',
+        general_comment: '',
       },
       history_headers: [
         {
@@ -1480,18 +1600,33 @@ export default {
           sortable: false,
           value: 'created_at',
         },
-        {text: 'Пользователь', value: 'user.first_name'},
-        {text: 'Операция', value: 'fat'},
-        {text: 'Изменено', value: 'fat'},
+        { text: 'Пользователь', value: 'user.first_name' },
+        { text: 'Операция', value: 'fat' },
+        { text: 'Изменено', value: 'fat' },
       ],
       rules: {
-        first_name: [
-          (val) => (val || "").length > 0 || "Введите имя клиента",
-        ],
-        phone: [(val) => (val || "").length === 18 || "Введите телефон"],
+        first_name: [(val) => (val || '').length > 0 || 'Введите имя клиента'],
+        phone: [(val) => (val || '').length === 18 || 'Введите телефон'],
       },
-      dateTimeMask: [/\d/, /\d/, ".", /\d/, /\d/, ".", /\d/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, ":", /\d/, /\d/],
-      dateMask: [/\d/, /\d/, ".", /\d/, /\d/, ".", /\d/, /\d/, /\d/, /\d/],
+      dateTimeMask: [
+        /\d/,
+        /\d/,
+        '.',
+        /\d/,
+        /\d/,
+        '.',
+        /\d/,
+        /\d/,
+        /\d/,
+        /\d/,
+        ' ',
+        /\d/,
+        /\d/,
+        ':',
+        /\d/,
+        /\d/,
+      ],
+      dateMask: [/\d/, /\d/, '.', /\d/, /\d/, '.', /\d/, /\d/, /\d/, /\d/],
       apiForm: {
         ext_number: null,
         phone: null,
@@ -1499,15 +1634,14 @@ export default {
         sip: null,
       },
       textRules: [
-        (v) => !!v || "Введите текст сообщений",
+        (v) => !!v || 'Введите текст сообщений',
         (v) =>
           (v && v.length <= 70) ||
-          "Текст сообщений не должно превышать 70 символов!!!",
+          'Текст сообщений не должно превышать 70 символов!!!',
       ],
-    };
+    }
   },
-  async fetch({store, $axios, $moment, $auth, params: {showroom, id}}) {
-
+  async fetch({ store, $axios, $moment, $auth, params: { showroom, id } }) {
     //this.form = response.data
     /*console.log('res', response)
     if (response === null) {
@@ -1525,51 +1659,69 @@ export default {
     await store.dispatch('property/fetchMarks')
     await store.dispatch('showroom/fetchRegions')
     await store.dispatch('showroom/fetchShowrooms', {})
-    await store.dispatch('showroom/fetchSites', {id: (showroom || this.form?.showroom_id)})
+    await store.dispatch('showroom/fetchSites', {
+      id: showroom || this.form?.showroom_id,
+    })
     await store.dispatch('credit/fetchBanks')
-    await store.dispatch('showroom/fetchManagers', {showroom_id: (showroom || this.form?.showroom_id)})
-    await store.dispatch('showroom/fetchOperators', {showroom_id: (showroom || this.form?.showroom_id)})
-
-
+    await store.dispatch('showroom/fetchManagers', {
+      showroom_id: showroom || this.form?.showroom_id,
+    })
+    await store.dispatch('showroom/fetchOperators', {
+      showroom_id: showroom || this.form?.showroom_id,
+    })
   },
   created() {
-    this.$axios.get('/order/' + this.$route.params?.showroom + '/detail/' + this.$route.params?.id)
-      .then(
-        response => {
-          this.order = response.data
+    this.$axios
+      .get(
+        '/order/' +
+          this.$route.params?.showroom +
+          '/detail/' +
+          this.$route.params?.id
+      )
+      .then((response) => {
+        this.order = response.data
 
-          this.form = Object.assign({}, this.order);
-          if (this.form.birthday !== null) {
-            this.form.birthday = this.$moment(this.form.birthday).format('DD.MM.YYYY')
-          }
-          if (this.form.last_call !== null) {
-            this.form.last_call = this.$moment(this.form.last_call).format('DD.MM.YYYY HH:mm')
-          }
-          if (this.form.callback !== null) {
-            this.form.callback = this.$moment(this.form.callback).format('DD.MM.YYYY HH:mm')
-          }
-          if (this.order?.mark_id !== null) {
-            this.$store.dispatch('property/fetchModels', {markId: this.order?.mark_id})
-          }
-          if (this.order?.tradein_mark_id !== null) {
-            this.$store.dispatch('property/fetchTradeInModels', {markId: this.order?.tradein_mark_id})
-          }
+        this.form = Object.assign({}, this.order)
+        if (this.form.birthday !== null) {
+          this.form.birthday = this.$moment(this.form.birthday).format(
+            'DD.MM.YYYY'
+          )
         }
-      );
+        if (this.form.last_call !== null) {
+          this.form.last_call = this.$moment(this.form.last_call).format(
+            'DD.MM.YYYY HH:mm'
+          )
+        }
+        if (this.form.callback !== null) {
+          this.form.callback = this.$moment(this.form.callback).format(
+            'DD.MM.YYYY HH:mm'
+          )
+        }
+        if (this.order?.mark_id !== null) {
+          this.$store.dispatch('property/fetchModels', {
+            markId: this.order?.mark_id,
+          })
+        }
+        if (this.order?.tradein_mark_id !== null) {
+          this.$store.dispatch('property/fetchTradeInModels', {
+            markId: this.order?.tradein_mark_id,
+          })
+        }
+      })
   },
 
   computed: {
     payment_credit() {
-      return this.form.payment_credit;
+      return this.form.payment_credit
     },
     payment_cash() {
-      return this.form.payment_cash;
+      return this.form.payment_cash
     },
     role_id() {
-      return this.$auth.user?.role_id;
+      return this.$auth.user?.role_id
     },
     user_id() {
-      return this.$auth.user?.id;
+      return this.$auth.user?.id
     },
     types() {
       return this.$store.state.order.types
@@ -1608,7 +1760,9 @@ export default {
       return this.$route.params.showroom
     },
     showroom() {
-      return this.$store.state.showroom.showrooms.find(l => l.id === this.order?.showroom_id)
+      return this.$store.state.showroom.showrooms.find(
+        (l) => l.id === this.order?.showroom_id
+      )
     },
     operators() {
       return this.$store.state.showroom.operators
@@ -1626,41 +1780,40 @@ export default {
         {
           text: 'Главная',
           disabled: false,
-          href: '/'
+          href: '/',
         },
         {
           text: this.showroom?.name,
           disabled: true,
-          href: '/'
+          href: '/',
         },
         {
           text: 'CRM',
           disabled: false,
-          href: '/crm/' + this.showroom_id
+          href: '/crm/' + this.showroom_id,
         },
         {
           text: 'Заявки',
           disabled: false,
-          href: '/crm/' + this.showroom_id + '/orders'
+          href: '/crm/' + this.showroom_id + '/orders',
         },
       ]
     },
   },
 
-
   watch: {
     payment_credit(value) {
       if (value) {
-        this.form.payment_cash = false;
+        this.form.payment_cash = false
       }
     },
     payment_cash(value) {
       if (value) {
-        this.form.payment_credit = false;
-        this.form.gifts = false;
-        this.form.happy_hour = false;
-        this.form.credit_deffer = false;
-        this.form.job_loss_insurance = false;
+        this.form.payment_credit = false
+        this.form.gifts = false
+        this.form.happy_hour = false
+        this.form.credit_deffer = false
+        this.form.job_loss_insurance = false
       }
     },
   },
@@ -1669,47 +1822,55 @@ export default {
     async save(after) {
       try {
         if (!this.$refs.form.validate() || !this.valid) {
-          this.$toast.error("Заполните обязательные поля!!!");
-          return;
+          this.$toast.error('Заполните обязательные поля!!!')
+          return
         }
-        this.busy = true;
+        this.busy = true
         if (this.form.last_call !== null) {
           const st = this.form.last_call + ':00'
-          this.form.last_call = this.$moment(st, 'DD.MM.YYYY HH:mm:ss').format('YYYY-MM-DD HH:mm:ss');
+          this.form.last_call = this.$moment(st, 'DD.MM.YYYY HH:mm:ss').format(
+            'YYYY-MM-DD HH:mm:ss'
+          )
         }
         if (this.form.callback !== null) {
           const cb = this.form.callback + ':00'
-          this.form.callback = this.$moment(cb, 'DD.MM.YYYY HH:mm:ss').format('YYYY-MM-DD HH:mm:ss');
+          this.form.callback = this.$moment(cb, 'DD.MM.YYYY HH:mm:ss').format(
+            'YYYY-MM-DD HH:mm:ss'
+          )
         }
-        await this.$store.dispatch('order/update', {item: this.form});
-        this.$toast.success("Заявка успешно обновлена");
-        if (after === "new") {
-          this.$refs.form.reset();
-          this.$refs.form.resetValidation();
-          await this.$router.push({name: "create-order"});
-        } else if (after === "return") {
-          this.$refs.form.reset();
-          this.$refs.form.resetValidation();
-          await this.$router.push('/crm/' + this.form?.showroom_id + '/orders');
+        await this.$store.dispatch('order/update', { item: this.form })
+        this.$toast.success('Заявка успешно обновлена')
+        if (after === 'new') {
+          this.$refs.form.reset()
+          this.$refs.form.resetValidation()
+          await this.$router.push({ name: 'create-order' })
+        } else if (after === 'return') {
+          this.$refs.form.reset()
+          this.$refs.form.resetValidation()
+          await this.$router.push('/crm/' + this.form?.showroom_id + '/orders')
         }
         if (this.form.last_call !== null) {
-          this.form.last_call = this.$moment(this.form.last_call).format('DD.MM.YYYY HH:mm');
+          this.form.last_call = this.$moment(this.form.last_call).format(
+            'DD.MM.YYYY HH:mm'
+          )
         }
         if (this.form.callback !== null) {
-          this.form.callback = this.$moment(this.form.callback).format('DD.MM.YYYY HH:mm');
+          this.form.callback = this.$moment(this.form.callback).format(
+            'DD.MM.YYYY HH:mm'
+          )
         }
       } catch (e) {
         //this.$sentry.captureException(e)
-        this.$toast.error("Произошла ошибка:" + e?.message);
+        this.$toast.error('Произошла ошибка:' + e?.message)
       } finally {
-        this.busy = false;
+        this.busy = false
       }
     },
     setNow(field, isDateTime = false) {
       console.log('fired')
       this.form[field] = isDateTime
-        ? this.$moment().format("DD.MM.YYYY HH:mm")
-        : this.$moment().format("YYYY-MM-DD");
+        ? this.$moment().format('DD.MM.YYYY HH:mm')
+        : this.$moment().format('YYYY-MM-DD')
       this.open_dtp = false
       this.open_dtp_callback = false
     },
@@ -1723,38 +1884,42 @@ export default {
       if (this.form?.birthday) {
         birthday = '&is%5Bdate%5D=' + this.form?.birthday
       }
-      return `https://fssp.gov.ru/iss/ip?is[variant]=1&is%5Bregion_id%5D%5B0%5D=-1&${fio.length ? ('is%5Blast_name%5D=' + fio[0]) : ''}${fio.length > 0 ? ('&is%5Bfirst_name%5D=' + fio[1]) : ''}${fio.length > 1 ? ('&is%5Bpatronymic%5D=' + fio[2]) : ''}${birthday ? birthday : ''}`
+      return `https://fssp.gov.ru/iss/ip?is[variant]=1&is%5Bregion_id%5D%5B0%5D=-1&${
+        fio.length ? 'is%5Blast_name%5D=' + fio[0] : ''
+      }${fio.length > 0 ? '&is%5Bfirst_name%5D=' + fio[1] : ''}${
+        fio.length > 1 ? '&is%5Bpatronymic%5D=' + fio[2] : ''
+      }${birthday ? birthday : ''}`
     },
     async call() {
       console.log(this.$auth.user?.work_place)
-      this.apiForm.phone = this.form.phone || this.order.phone;
-      this.apiForm.showroom_id = this.order?.showroom_id;
-      this.apiForm.ext_number = this.$auth.user?.work_place;
+      this.apiForm.phone = this.form.phone || this.order.phone
+      this.apiForm.showroom_id = this.order?.showroom_id
+      this.apiForm.ext_number = this.$auth.user?.work_place
       await this.$axios
-        .post("/call", this.apiForm, {
+        .post('/call', this.apiForm, {
           headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-            "X-Requested-With": "XMLHttpRequest",
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
           },
         })
         .then((response) => {
           if (response.status === 200) {
-            this.$toast.success("Ожидайте идёт звонок...");
+            this.$toast.success('Ожидайте идёт звонок...')
           }
-          console.log(response.data);
+          console.log(response.data)
         })
         .catch((error) => {
-          this.$toast.error("Произошла ошибка...");
+          this.$toast.error('Произошла ошибка...')
           /// reject(error)
-        });
+        })
     },
     async sendSMS() {
-      this.$refs.sms_form.validate();
+      this.$refs.sms_form.validate()
       if (this.smsValid === true) {
         await this.$axios
           .post(
-            "/send/sms",
+            '/send/sms',
             {
               phone: this.order.phone,
               ext_number: this.order.operator?.phone_extension ?? null,
@@ -1763,60 +1928,66 @@ export default {
             },
             {
               headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
-                "X-Requested-With": "XMLHttpRequest",
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
               },
             }
           )
           .then((response) => {
             if (response.status === 200) {
-              this.$toast.success("Смс отправлен");
+              this.$toast.success('Смс отправлен')
             }
-            this.sms.text = "";
-            this.sms.template = 0;
-            console.log(response.data);
+            this.sms.text = ''
+            this.sms.template = 0
+            console.log(response.data)
           })
           .catch((error) => {
-            this.$toast.error("Произошла ошибка!!!" + error);
-          });
+            this.$toast.error('Произошла ошибка!!!' + error)
+          })
       } else {
-        this.$toast.error("Запоните поля!");
+        this.$toast.error('Запоните поля!')
       }
     },
     calc(type, bank) {
-      let percent = this.form[('percent_' + bank)] / 12 / 100;
+      let percent = this.form['percent_' + bank] / 12 / 100
       var period = 1
-      if (typeof (this.form.credit_period) === 'object') {
-        period = this.form.credit_period?.id * 12;
+      if (typeof this.form.credit_period === 'object') {
+        period = this.form.credit_period?.id * 12
       } else {
-        period = this.form.credit_period * 12;
+        period = this.form.credit_period * 12
       }
 
-      let result = (this.form.price - this.form.initial_fee) * (percent + (percent / (((1 + percent) ** period) - 1)));
+      let result =
+        (this.form.price - this.form.initial_fee) *
+        (percent + percent / ((1 + percent) ** period - 1))
       switch (type) {
         case 'payment':
           if (result <= 0) return
           return this.currency(Math.round(result)) || null
         case 'overpay':
           if (result <= 0) return
-          return this.currency(Math.round((result * period) - (this.form.price - this.form.initial_fee))) || null
+          return (
+            this.currency(
+              Math.round(
+                result * period - (this.form.price - this.form.initial_fee)
+              )
+            ) || null
+          )
         default:
           return
       }
-
-
     },
     currency(value) {
       if (isNaN(value)) {
         return value
       }
       let val = (value / 1).toFixed(0).replace('.', ',')
-      return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+      return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
     },
     openBanki() {
       if (this.form.car_number) {
-        let car_number = this.form.car_number.split(" ").join("")
+        let car_number = this.form.car_number.split(' ').join('')
         let link = `https://www.banki.ru/insurance/order/auto/type/osago/short-flow/steps/auto?licensePlate=${car_number}&source=main_widget`
         window.open(link, '_blank')
       }
@@ -1825,7 +1996,7 @@ export default {
       if (!this.history_active) {
         await this.$store.dispatch('order/fetchHistory', {
           id: this.$route.params.id,
-          showroom_id: this.$route.params.showroom
+          showroom_id: this.$route.params.showroom,
         })
       }
       this.history_active = !this.history_active
@@ -1834,71 +2005,77 @@ export default {
     getModels(markId = null) {
       this.form.model_id = null
       if (markId !== 0) {
-        this.$store.dispatch('property/fetchModels', {markId})
+        this.$store.dispatch('property/fetchModels', { markId })
       }
     },
 
     getTradeInModels(markId = null) {
       this.form.tradin_model_id = null
       if (markId !== 0) {
-        this.$store.dispatch('property/fetchTradeInModels', {markId})
+        this.$store.dispatch('property/fetchTradeInModels', { markId })
       }
     },
     async copyOrder() {
       const item = {
         showroom_id: this.copyShowroom,
         order_id: this.$route.params.id,
-      };
+      }
       if (this.$refs.copy_form.validate() && this.copyValid) {
         try {
-          this.$store.dispatch('order/copyOrder', {item}).then((res) => {
-              this.$toast.success("Заявка успешно продублирован");
-            }
-          ).catch(error => {
-            console.log('err ', error)
-            this.$toast.error("Произошла ошибка" + error?.message);
-          })
+          this.$store
+            .dispatch('order/copyOrder', { item })
+            .then((res) => {
+              this.$toast.success('Заявка успешно продублирован')
+            })
+            .catch((error) => {
+              console.log('err ', error)
+              this.$toast.error('Произошла ошибка' + error?.message)
+            })
         } catch (e) {
-          this.$toast.success("Произошла ошибка:" + e,);
+          this.$toast.success('Произошла ошибка:' + e)
         }
       }
     },
     validatePayment(value) {
-      if (value !== null || this.form.status_id === 3 || this.form.status_id === 1 || this.form.status_id === 8) {
-        return true; // Validation passed
+      if (
+        value !== null ||
+        this.form.status_id === 3 ||
+        this.form.status_id === 1 ||
+        this.form.status_id === 8
+      ) {
+        return true // Validation passed
       } else {
-        return 'Выберите способ оплаты'; // Validation failed
+        return 'Выберите способ оплаты' // Validation failed
       }
     },
     resetValidation() {
-      this.$refs.form.resetValidation(); // Reset form validation
+      this.$refs.form.resetValidation() // Reset form validation
     },
-
 
     changedStatus() {
       if (this.form.status_id === 6) {
-        this.form.arrived_date = this.$moment().format("YYYY-MM-DD");
+        this.form.arrived_date = this.$moment().format('YYYY-MM-DD')
       }
 
       if (this.form?.status_id === 8) {
-        this.form.payment_method = 6;
+        this.form.payment_method = 6
       }
       if (this.form?.status_id === 16) {
-        this.form.payment_method = 10;
+        this.form.payment_method = 10
       }
       if (this.form?.status_id === 15) {
-        this.form.payment_method = 9;
+        this.form.payment_method = 9
       }
-      this.resetValidation();
+      this.resetValidation()
     },
   },
-};
+}
 </script>
 <style lang="scss">
-$namespace: "mx";
+$namespace: 'mx';
 $default-color: #555;
 $primary-color: #1284e7;
-@import "~vue2-datepicker/scss/index.scss";
+@import '~vue2-datepicker/scss/index.scss';
 .ads {
   font: 13px/1.2em Arial;
   font-weight: bold;

@@ -839,6 +839,7 @@
                       outlined
                       label="Марка"
                       hide-details="auto"
+                      @change="getModels(form.mark_id)"
                       clearable
                       no-data-text="Список пуст"
                       @click:clear="$nextTick(() => (form.mark_id = null))"
@@ -3394,6 +3395,13 @@ export default {
         (e && e.message) ||
         ''
       )
+    },
+
+    getModels(markId = null) {
+      this.form.model_id = null
+      if (markId !== 0) {
+        this.$store.dispatch('property/fetchModels', { markId })
+      }
     },
 
     openTemplateDialog(mode, item = null) {
