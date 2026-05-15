@@ -1348,32 +1348,39 @@
                       <v-autocomplete
                         v-model="editedItem.mark_id"
                         :items="marks"
-                        :value="marks[editedItem.mark_id]"
                         item-text="name"
-                        no-data-text="Нету данных"
                         item-value="id"
+                        no-data-text="Нету данных"
                         menu-props="auto"
                         label="Марка"
                         hide-details
                         dense
                         outlined
+                        clearable
                         @change="getModels(editedItem.mark_id)"
+                        @click:clear="
+                          $nextTick(() => (editedItem.mark_id = null))
+                        "
                       />
                     </v-col>
 
                     <v-col cols="12" sm="6" md="2">
                       <v-autocomplete
+                        :key="'model-' + editedItem.mark_id"
                         v-model="editedItem.model_id"
                         :items="models"
-                        :value="models[editedItem.model_id]"
                         item-text="name"
-                        no-data-text="Нету данных"
                         item-value="id"
+                        no-data-text="Нету данных"
                         menu-props="auto"
                         label="Модель"
                         hide-details
                         outlined
                         dense
+                        :disabled="!editedItem.mark_id"
+                        @click:clear="
+                          $nextTick(() => (editedItem.model_id = null))
+                        "
                       />
                     </v-col>
                     <v-col cols="12" sm="6" md="2">

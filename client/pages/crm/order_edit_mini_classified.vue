@@ -2636,7 +2636,7 @@ export default {
     },
     filtered_models() {
       return this.$store.state.property.all_models.filter(
-        (l) => l.brand_id === this.form?.mark_id
+        (l) => Number(l.brand_id) === Number(this.form?.mark_id)
       )
     },
     showrooms() {
