@@ -8,7 +8,9 @@
             :key="i"
             cols="12"
             md="2"
-            v-role-or-permission="'admin|see_tab_' + item.link"
+            v-role-or-permission="
+              item.adminOnly ? 'admin' : 'admin|see_tab_' + item.link
+            "
           >
             <v-hover v-slot="{ hover }">
               <v-card
@@ -88,6 +90,14 @@ export default {
         icon: 'mdi-cash-usd-outline',
         count: 800,
         link: '/crm/16',
+      },
+      {
+        title: 'Импорт заявок',
+        text: 'Импорт заявок из Excel',
+        icon: 'mdi-file-excel',
+        count: 800,
+        link: '/crm/import-orders',
+        adminOnly: true,
       },
     ],
   }),

@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Events\ClientProcessed;
 use App\Events\CreditCreated;
+use App\Events\OrderExcelCreated;
 use App\Events\MangoIncome;
 use App\Events\OrderCreated;
 use App\Events\OrderPvCreated;
@@ -11,6 +12,7 @@ use App\Events\OrderProcessed;
 use App\Listeners\MangoIncomeEventListener;
 use App\Listeners\OrderAddedPvEventListener;
 use App\Listeners\OrderEventListener;
+use App\Listeners\OrderAddedExcelEventListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -38,6 +40,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         OrderCreated::class => [
             OrderAddedEventListener::class,
+        ],
+        OrderExcelCreated::class => [
+            OrderAddedExcelEventListener::class,
         ],
         OrderPvCreated::class => [
             OrderAddedPvEventListener::class,

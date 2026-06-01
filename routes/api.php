@@ -50,6 +50,7 @@ use App\Http\Controllers\TransitController;
 use App\Http\Controllers\CreditNotifyController;
 use App\Http\Controllers\ImportVdlController;
 use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
+use App\Http\Controllers\Crm\CrmImportOrdersController;
 
 
 /*
@@ -367,6 +368,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
 
     Route::post('orders/blacklist', [OrderController::class, 'blacklist'])->name('blacklist');
+    
+    Route::post('orders/import-excel', [CrmImportOrdersController::class, 'import'])->name('crm.import-orders');
     Route::post('orders/blacklist-request', [OrderController::class, 'blacklistRequest'])->name('blacklist-request');
     Route::get('orders/{id}', [OrderController::class, 'orders'])->name('orders_id');
     Route::get('order/delete/{id}', [OrderController::class, 'delete'])->name('delete');

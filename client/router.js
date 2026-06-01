@@ -121,6 +121,11 @@ const routes = [
   { path: '/profile', name: 'profile', component: page('auth/profile.vue') },
 
   { path: '/crm', name: 'crm', component: page('crm/index.vue') },
+  {
+    path: '/crm/import-orders',
+    name: 'crm-import-orders',
+    component: page('crm/import-orders.vue'),
+  },
 
   { path: '/crm/:id', name: 'crm-id', component: page('crm/_id.vue') },
   {
