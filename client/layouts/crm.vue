@@ -1,5 +1,19 @@
 <template>
   <v-app>
+    <v-system-bar
+      v-if="$auth?.user?.is_impersonating"
+      app
+      class="impersonation-banner"
+    >
+      <span>
+        Вы вошли как {{ $auth?.user?.first_name }} {{ $auth?.user?.last_name }},
+        администратор: {{ $auth?.user?.impersonator?.first_name }}
+        {{ $auth?.user?.impersonator?.last_name }}
+      </span>
+      <v-btn x-small text class="white--text ml-2" @click="leaveImpersonation">
+        Выйти
+      </v-btn>
+    </v-system-bar>
     <div v-shortkey="['f5']" class="d-flex flex-grow-1">
       <!-- Navigation -->
       <v-navigation-drawer
@@ -1151,11 +1165,36 @@ export default {
         {}
       )
     },
+    async leaveImpersonation() {
+      try {
+        await this.$axios.post('/impersonate/leave')
+        await this.$auth.fetchUser()
+        this.$toast.success('Вы вернулись в аккаунт администратора')
+        await this.$router.push('/users')
+      } catch (error) {
+        this.$toast.error(
+          error?.response?.data?.message || 'Не удалось выйти из режима имперсонации'
+        )
+      }
+    },
   },
 }
 </script>
 
 <style scoped>
+.impersonation-banner {
+  min-height: 34px;
+  padding: 4px 12px;
+  background: #d32f2f;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 13px;
+}
+
 .buy-button {
   box-shadow: 1px 1px 18px #e4a;
 }

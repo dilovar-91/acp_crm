@@ -44,6 +44,23 @@
                     {{ $moment(item.updated_at).format("DD.MM.YYYY HH:mm") }}
                   </td>
                   <td>
+                    <v-icon
+                      color="info"
+                      class="mr-2"
+                      title="Доступы пользователя"
+                      @click="openUserAbilities(item)"
+                    >
+                      mdi-shield-account
+                    </v-icon>
+                    <v-icon
+                      v-if="$auth?.user?.role_id === 1"
+                      color="primary"
+                      class="mr-2"
+                      title="Войти от имени пользователя"
+                      @click="loginAsUser(item)"
+                    >
+                      mdi-account-switch
+                    </v-icon>
                     <v-icon color="warning" class="mr-2" @click="editItem(item)">
                       mdi-pencil
                     </v-icon>
@@ -281,6 +298,47 @@
                       </v-card-actions>
                     </v-card>
                   </v-dialog>
+
+                  <v-dialog v-model="dialogUserAbilities" max-width="760px">
+                    <v-card>
+                      <v-card-title>
+                        <span class="headline">
+                          Доступы: {{ selectedUserName }}
+                        </span>
+                      </v-card-title>
+                      <v-card-text>
+                        <v-autocomplete
+                          v-model="selectedAbilityIds"
+                          :items="abilityOptions"
+                          item-text="abilityLabel"
+                          item-value="id"
+                          label="Выберите доступы"
+                          multiple
+                          chips
+                          small-chips
+                          clearable
+                          outlined
+                          dense
+                          :loading="abilitiesLoading"
+                          no-data-text="Нет доступов"
+                        />
+                      </v-card-text>
+                      <v-card-actions>
+                        <v-spacer />
+                        <v-btn color="blue darken-1" text @click="closeUserAbilities">
+                          Отмена
+                        </v-btn>
+                        <v-btn
+                          color="blue darken-1"
+                          text
+                          :loading="abilitiesSaving"
+                          @click="saveUserAbilities"
+                        >
+                          Сохранить
+                        </v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
                 </v-toolbar>
               </template>
             </v-data-table>
@@ -378,6 +436,13 @@ export default {
     user_to: null,
     code: null,
     codePassword: false,
+    dialogUserAbilities: false,
+    selectedUserId: null,
+    selectedUserName: '',
+    abilityOptions: [],
+    selectedAbilityIds: [],
+    abilitiesLoading: false,
+    abilitiesSaving: false,
     editedItem: {
       id: '',
       first_name: '',
@@ -503,6 +568,81 @@ export default {
       this.editedIndex = this.items.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialog = true
+    },
+    async openUserAbilities(item) {
+      this.selectedUserId = item.id
+      this.selectedUserName = `${item.first_name || ''} ${item.last_name || ''}`.trim()
+      this.dialogUserAbilities = true
+      this.abilitiesLoading = true
+
+      try {
+        if (!this.abilityOptions.length) {
+          const { data } = await this.$axios.get('/abilities/list')
+          this.abilityOptions = (data || []).map((ability) => ({
+            ...ability,
+            abilityLabel: ability.title
+              ? `${ability.title} (${ability.name})`
+              : ability.name,
+          }))
+        }
+        const { data } = await this.$axios.get(
+          `/user-permissions-rows/${this.selectedUserId}`
+        )
+        this.selectedAbilityIds = (data || []).map((id) => Number(id))
+      } catch (error) {
+        this.$toast.error(
+          error?.response?.data?.message || 'Не удалось загрузить доступы пользователя'
+        )
+      } finally {
+        this.abilitiesLoading = false
+      }
+    },
+    closeUserAbilities() {
+      this.dialogUserAbilities = false
+      this.selectedUserId = null
+      this.selectedUserName = ''
+      this.selectedAbilityIds = []
+    },
+    async saveUserAbilities() {
+      if (!this.selectedUserId) return
+
+      this.abilitiesSaving = true
+      try {
+        await this.$axios.post('/user-permissions/save-bulk', {
+          user_id: this.selectedUserId,
+          ability_ids: this.selectedAbilityIds,
+        })
+        this.$toast.success('Доступы сохранены')
+        this.closeUserAbilities()
+      } catch (error) {
+        this.$toast.error(
+          error?.response?.data?.message || 'Не удалось сохранить доступы'
+        )
+      } finally {
+        this.abilitiesSaving = false
+      }
+    },
+    async loginAsUser(item) {
+      if (!item?.id || item.id === this.$auth?.user?.id) {
+        return
+      }
+      const confirmed = confirm(
+        `Войти от имени ${item.first_name || ''} ${item.last_name || ''}?`
+      )
+      if (!confirmed) {
+        return
+      }
+
+      try {
+        await this.$axios.post(`/impersonate/${item.id}`)
+        await this.$auth.fetchUser()
+        this.$toast.success('Вы вошли от имени пользователя')
+        await this.$router.push('/')
+      } catch (error) {
+        this.$toast.error(
+          error?.response?.data?.message || 'Не удалось выполнить вход от имени пользователя'
+        )
+      }
     },
 
     deleteItem(item) {

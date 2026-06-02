@@ -51,6 +51,7 @@ use App\Http\Controllers\CreditNotifyController;
 use App\Http\Controllers\ImportVdlController;
 use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
 use App\Http\Controllers\Crm\CrmImportOrdersController;
+use App\Models\User;
 
 
 /*
@@ -243,6 +244,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/users/reset-passwords', [ShowroomController::class, 'resetPasswords']);
 
     Route::get('/user', [AuthController::class, 'me']);
+    Route::post('/impersonate/{id}', [AuthController::class, 'impersonate'])->whereNumber('id')->middleware('web');
+    Route::post('/impersonate/leave', [AuthController::class, 'stopImpersonation'])->middleware('web');
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('web');
     Route::get('/users', [UserController::class, 'users']);
     Route::get('/user-roles', [UserController::class, 'roles']);
@@ -422,12 +425,15 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     //role and permission
     Route::get('permissions', [PermissionController::class, 'abilities']);
+    Route::get('abilities/list', [PermissionController::class, 'allAbilities']);
     Route::post('permission/create', [PermissionController::class, 'create']);
     Route::get('permission/allow', [PermissionController::class, 'allow']);
     Route::get('permission/disallow', [PermissionController::class, 'disallow']);
     Route::get('permission/retract', [PermissionController::class, 'retract']);
     Route::get('permission/forbid', [PermissionController::class, 'forbid']);
     Route::get('user-permissions/{id}', [PermissionController::class, 'user_permissions']);
+    Route::get('user-permissions-rows/{id}', [PermissionController::class, 'userPermissionRows']);
+    Route::post('user-permissions/save-bulk', [PermissionController::class, 'saveUserPermissions']);
     Route::get('roles', RoleController::class);
     Route::get('operator/roles',  [RoleController::class, 'operator_roles']);
 

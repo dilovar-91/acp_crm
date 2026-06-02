@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Bouncer;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 
 class PermissionController extends Controller
@@ -106,5 +107,74 @@ class PermissionController extends Controller
         $user = User::where('id', $id)->first();
         $items = $user->getAbilities()->pluck('name');
         return response()->json($items);
+    }
+
+    public function allAbilities(): JsonResponse
+    {
+        $abilities = Bouncer::ability()
+            ->select(['id', 'name', 'title'])
+            ->orderBy('name')
+            ->get();
+
+        return response()->json($abilities);
+    }
+
+    public function userPermissionRows($id): JsonResponse
+    {
+        $rows = DB::table('permissions')
+            ->where('entity_type', User::class)
+            ->where('entity_id', (int)$id)
+            ->where('forbidden', 0)
+            ->pluck('ability_id');
+
+        return response()->json($rows);
+    }
+
+    public function saveUserPermissions(Request $request): JsonResponse
+    {
+        $request->validate([
+            'user_id' => 'required|integer|exists:users,id',
+            'ability_ids' => 'array',
+            'ability_ids.*' => 'integer|exists:abilities,id',
+        ]);
+
+        $currentUser = $request->user();
+        if (!$currentUser || (int)$currentUser->role_id !== 1) {
+            return response()->json(['message' => 'Недостаточно прав'], 403);
+        }
+
+        $userId = (int)$request->input('user_id');
+        $abilityIds = collect($request->input('ability_ids', []))
+            ->map(fn ($id) => (int)$id)
+            ->unique()
+            ->values();
+
+        DB::transaction(function () use ($userId, $abilityIds) {
+            DB::table('permissions')
+                ->where('entity_type', User::class)
+                ->where('entity_id', $userId)
+                ->delete();
+
+            if ($abilityIds->isNotEmpty()) {
+                $rows = $abilityIds->map(function ($abilityId) use ($userId) {
+                    return [
+                        'ability_id' => $abilityId,
+                        'entity_id' => $userId,
+                        'entity_type' => User::class,
+                        'forbidden' => 0,
+                        'scope' => null,
+                    ];
+                })->all();
+
+                DB::table('permissions')->insert($rows);
+            }
+        });
+
+        Cache::flush();
+
+        return response()->json([
+            'message' => 'Доступы пользователя сохранены',
+            'user_id' => $userId,
+        ]);
     }
 }
