@@ -83,59 +83,6 @@ export default {
           count: 800,
           link: this.showroom_id + '/orders',
         },
-
-        {
-          title: 'График работы',
-          text: 'График работы операторов ',
-          icon: 'mdi-cash-usd-outline',
-          count: 800,
-          link: this.showroom_id + '/schedules',
-        },
-        {
-          title: 'Заявки в ЧС',
-          text: 'Оплата проезда клиентов ',
-          icon: 'mdi-cash-usd-outline',
-          count: 800,
-          link: this.showroom_id + '/blacklist-orders',
-        },
-        {
-          title: 'Отчёты',
-          text: 'Отчёты ',
-          icon: 'mdi-cash-usd-outline',
-          count: 800,
-          link: this.showroom_id + '/reports',
-        },
-
-        {
-          title: 'Заявки (InHouse)',
-          text: 'Упрощенная',
-          icon: 'mdi-cash-usd-outline',
-          count: 800,
-          link: this.showroom_id + '/orders-mini/1',
-        },
-        {
-          title: 'Заявки (Lead)',
-          text: 'Упрощенная',
-          icon: 'mdi-cash-usd-outline',
-          count: 800,
-          link: this.showroom_id + '/orders-mini/4',
-        },
-
-        {
-          title: 'Отчёты InHouse',
-          text: 'Отчёты ',
-          icon: 'mdi-cash-usd-outline',
-          count: 800,
-          link: this.showroom_id + '/report/1',
-        },
-
-        {
-          title: 'Отчёты Lead',
-          text: 'Отчёты ',
-          icon: 'mdi-cash-usd-outline',
-          count: 800,
-          link: this.showroom_id + '/report/4',
-        },
       ]
     },
     showroom() {
