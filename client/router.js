@@ -127,6 +127,11 @@ const routes = [
     component: page('crm/import-orders.vue'),
   },
 
+  {
+    path: '/crm/16',
+    name: 'crm-blacklist',
+    component: page('crm/blacklist.vue'),
+  },
   { path: '/crm/:id', name: 'crm-id', component: page('crm/_id.vue') },
   {
     path: '/crm/28/orders',
