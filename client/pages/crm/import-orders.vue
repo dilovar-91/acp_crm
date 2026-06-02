@@ -10,8 +10,6 @@
             Колонки в файле:
             <strong>phone</strong>, <strong>name</strong>,
             <strong>utm_source</strong>. Первая строка может быть заголовком.
-            После каждой строки создаётся заявка и вызывается
-            <code>OrderCreated</code>.
           </p>
 
           <v-row dense>

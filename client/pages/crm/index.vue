@@ -3,41 +3,38 @@
     <v-container fluid>
       <BreadCrumb :items="links" />
       <v-row class="mt-2">
-        <template v-for="(item, i) in items">
-          <v-col
-            :key="i"
-            cols="12"
-            md="2"
-            v-role-or-permission="
-              item.adminOnly ? 'admin' : 'admin|see_tab_' + item.link
-            "
-          >
-            <v-hover v-slot="{ hover }">
-              <v-card
-                :elevation="hover ? 12 : 2"
-                dark
-                :class="{ 'on-hover': hover }"
-                :to="item.link"
-                color="#4caf50"
-              >
-                <div height="225px" class="bg-blue">
-                  <v-card-title
-                    :class="[
-                      'headline',
-                      { small_text: i === items.length - 1 },
-                    ]"
-                  >
-                    {{ item.title }}
-                  </v-card-title>
-                  <v-card-subtitle></v-card-subtitle>
-                  <v-card-actions>
-                    <v-btn :to="item.link" text> Перейти </v-btn>
-                  </v-card-actions>
-                </div>
-              </v-card>
-            </v-hover>
-          </v-col>
-        </template>
+        <v-col
+          v-for="(item, i) in items"
+          :key="i"
+          cols="12"
+          md="2"
+          v-role-or-permission="permissionForItem(item)"
+        >
+          <v-hover v-slot="{ hover }">
+            <v-card
+              :elevation="hover ? 12 : 2"
+              dark
+              :class="{ 'on-hover': hover }"
+              :to="item.link"
+              color="#4caf50"
+            >
+              <div height="225px" class="bg-blue">
+                <v-card-title
+                  :class="[
+                    'headline',
+                    { small_text: i === items.length - 1 },
+                  ]"
+                >
+                  {{ item.title }}
+                </v-card-title>
+                <v-card-subtitle></v-card-subtitle>
+                <v-card-actions>
+                  <v-btn :to="item.link" text> Перейти </v-btn>
+                </v-card-actions>
+              </div>
+            </v-card>
+          </v-hover>
+        </v-col>
       </v-row>
     </v-container>
   </div>
@@ -127,6 +124,15 @@ export default {
     },
   },
   methods: {
+    permissionForItem(item) {
+      if (item.adminOnly) {
+        return 'admin'
+      }
+
+      // For CRM cards links like /crm/1 should map to permission see_tab_crm/1
+      const normalizedLink = String(item.link || '').replace(/^\//, '')
+      return 'admin|see_tab_' + normalizedLink
+    },
     redirect(url) {
       window.open(url, '_blank')
     },
