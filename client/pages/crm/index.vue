@@ -129,9 +129,7 @@ export default {
         return 'admin'
       }
 
-      // For CRM cards links like /crm/1 should map to permission see_tab_crm/1
-      const normalizedLink = String(item.link || '').replace(/^\//, '')
-      return 'admin|see_tab_' + normalizedLink
+      return 'admin|see_tab_' + item.link
     },
     redirect(url) {
       window.open(url, '_blank')
