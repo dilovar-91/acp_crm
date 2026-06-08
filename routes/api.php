@@ -379,7 +379,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('order/{showroom}/detail/{id}', [OrderController::class, 'detail'])->name('detail');
     Route::get('order/trashes', [OrderController::class, 'trashes'])->name('trashes');
     Route::get('order/drops', [OrderController::class, 'drops'])->name('drops');
-    Route::get('order/arrival-statuses', [OrderController::class, 'arrival_statuses'])->name('drops');
+    Route::get('order/arrival-statuses', [OrderController::class, 'arrival_statuses'])->name('arrival_statuses');
     Route::get('order-types', [OrderController::class, 'types'])->name('order_types');
     Route::get('order-statuses', [OrderController::class, 'statuses'])->name('order_statuses');
 
@@ -460,10 +460,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('crm/workplace', [CrmController::class, 'setWorkPlace'])->name('setWorkPlace');
 
 
-    Route::get('programmatic-schedules', [OperatorController::class, 'programmaticSchedules'])->name('schedules');
-    Route::post('programmatic-schedules/create', [OperatorController::class, 'createProgrammaticSchedule'])->name('create-schedule');
-    Route::post('programmatic-schedules/update', [OperatorController::class, 'updateProgrammaticSchedule'])->name('update-schedule');
-    Route::post('programmatic-schedules/delete', [OperatorController::class, 'deleteProgrammaticSchedule'])->name('delete-schedule');
+    Route::get('programmatic-schedules', [OperatorController::class, 'programmaticSchedules'])->name('programmatic-schedules');
+    Route::post('programmatic-schedules/create', [OperatorController::class, 'createProgrammaticSchedule'])->name('create-programmatic-schedule');
+    Route::post('programmatic-schedules/update', [OperatorController::class, 'updateProgrammaticSchedule'])->name('update-programmatic-schedule');
+    Route::post('programmatic-schedules/delete', [OperatorController::class, 'deleteProgrammaticSchedule'])->name('delete-programmatic-schedule');
 
 
     Route::get('test/shedule', [OrderController::class, 'shedule'])->name('shedule');
