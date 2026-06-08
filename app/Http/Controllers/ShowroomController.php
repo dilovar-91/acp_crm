@@ -275,7 +275,7 @@ class ShowroomController extends Controller
             DB::commit();
 
 
-            $response = Http::withToken(env('PLANSHETKA_API_KEY'))
+            $response = Http::withToken(config('services.planshetka_api_key'))
                 ->post('https://acp77.ru/api/reset-operator-passwords', [
                     'showroom_id' => $showroom_id,
                     'main_password' => $mainPass,

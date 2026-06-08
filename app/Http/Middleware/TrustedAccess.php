@@ -15,12 +15,13 @@ class TrustedAccess
     public function __construct()
     {
         $this->trustedClients = [];
-        if (env('TRUSTED_CLIENTS')) {
-            $list = explode('|', env('TRUSTED_CLIENTS'));
+        $trustedClients = config('services.trusted_clients');
+
+        if ($trustedClients) {
+            $list = explode('|', $trustedClients);
 
             if ($list !== false && !empty($list)) {
                 $this->trustedClients = $list;
-                //Log::emergency($this->trustedClients);
             }
         }
     }
@@ -33,7 +34,7 @@ class TrustedAccess
      */
     public function handle($request, Closure $next)
     {
-        if(env('APP_ENV')=='production') {
+        if (config('app.env') === 'production') {
             $clientHostname = gethostbyaddr($request->getClientIp());
             //Log::emergency($request->getClientIp());
 

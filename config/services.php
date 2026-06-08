@@ -60,4 +60,7 @@ return [
     'api_key_tilda' => env('API_KEY_TILDA'),
     'api_key_autospot' => env('API_KEY_AUTOSPOT'),
 
+    'trusted_clients' => env('TRUSTED_CLIENTS'),
+    'planshetka_api_key' => env('PLANSHETKA_API_KEY'),
+
 ];
