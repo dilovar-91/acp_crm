@@ -19,7 +19,7 @@ class ApiTokenTilda
      */
     public function handle(Request $request, Closure $next)
     {
-        if ($request->api_key != env('API_KEY_TILDA')) {
+        if ($request->api_key === null || config('services.api_key_tilda') === null || ! hash_equals((string) config('services.api_key_tilda'), (string) $request->api_key)) {
             try {
                 $chatId = '277174745';
                 Telegram::bot('pilight')->setAsyncRequest(false)

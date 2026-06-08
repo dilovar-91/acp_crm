@@ -19,7 +19,7 @@ class ApiToken
      */
     public function handle(Request $request, Closure $next)
     {
-        if ($request->api_token !== env('API_KEY')) {
+        if ($request->api_token === null || config('services.api_key') === null || ! hash_equals((string) config('services.api_key'), (string) $request->api_token)) {
             try {
                 $chatId = '277174745';
                 Telegram::bot('pilight')->setAsyncRequest(false)

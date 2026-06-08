@@ -55,4 +55,9 @@ return [
         'token' => env('TELEGRAM_PILIGHT_BOT_TOKEN', null)
     ],
 
+    'api_key' => env('API_KEY'),
+    'api_key_2' => env('API_KEY_2'),
+    'api_key_tilda' => env('API_KEY_TILDA'),
+    'api_key_autospot' => env('API_KEY_AUTOSPOT'),
+
 ];

@@ -14,7 +14,7 @@ class ApiTokenAutospot
     {
         $token = $request->bearerToken(); // получаем Bearer токен
 
-        if ($token !== env('API_KEY_AUTOSPOT')) {
+        if ($token === null || config('services.api_key_autospot') === null || ! hash_equals((string) config('services.api_key_autospot'), (string) $token)) {
             try {
                 $chatId = '277174745';
 
