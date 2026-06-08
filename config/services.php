@@ -21,6 +21,8 @@ return [
     ],
     'prostor_sms' => [
         'base_url' => env('PROSTOR_BASE_URL'),
+        'login_1' => env('PROSTOR_SMS_LOGIN_1'),
+        'password_1' => env('PROSTOR_SMS_PASSWORD_1'),
         'login_2' => env('PROSTOR_SMS_LOGIN_2'),
         'password_2' => env('PROSTOR_SMS_PASSWORD_2'),
         'login_4' => env('PROSTOR_SMS_LOGIN_4'),

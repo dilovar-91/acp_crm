@@ -20,16 +20,33 @@
             >
               <div height="225px" class="bg-blue">
                 <v-card-title
-                  :class="[
-                    'headline',
-                    { small_text: i === items.length - 1 },
-                  ]"
+                  :class="['headline', { small_text: i === items.length - 1 }]"
                 >
                   {{ item.title }}
                 </v-card-title>
                 <v-card-subtitle></v-card-subtitle>
                 <v-card-actions>
                   <v-btn :to="item.link" text> Перейти </v-btn>
+                </v-card-actions>
+              </div>
+            </v-card>
+          </v-hover>
+        </v-col>
+
+        <v-col cols="12" md="2" v-role="['admin']">
+          <v-hover v-slot="{ hover }">
+            <v-card
+              :elevation="hover ? 12 : 2"
+              dark
+              :class="{ 'on-hover': hover }"
+              :to="'/crm/import-orders'"
+              color="#4caf50"
+            >
+              <div height="225px" class="bg-blue">
+                <v-card-title class="headline"> Импорт заявок </v-card-title>
+                <v-card-subtitle></v-card-subtitle>
+                <v-card-actions>
+                  <v-btn :to="'/crm/import-orders'" text> Перейти </v-btn>
                 </v-card-actions>
               </div>
             </v-card>
@@ -88,14 +105,6 @@ export default {
         count: 800,
         link: '/crm/16',
       },
-      {
-        title: 'Импорт заявок',
-        text: 'Импорт заявок из Excel',
-        icon: 'mdi-file-excel',
-        count: 800,
-        link: '/crm/import-orders',
-        adminOnly: true,
-      },
     ],
   }),
   computed: {
@@ -125,10 +134,6 @@ export default {
   },
   methods: {
     permissionForItem(item) {
-      if (item.adminOnly) {
-        return 'admin'
-      }
-
       return 'admin|see_tab_' + item.link
     },
     redirect(url) {
