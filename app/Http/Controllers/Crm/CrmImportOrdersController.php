@@ -25,6 +25,7 @@ class CrmImportOrdersController extends Controller
      * Заполните site_id для каждого салона.
      */
     private const SHOWROOM_SITE_MAP = [       
+        1 => 5,
         2 => 7751,
         4 => 7750,
         5 => 7753,       
