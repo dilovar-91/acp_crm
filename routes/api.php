@@ -201,7 +201,7 @@ Route::group(['middleware' => ['api_token_2']], function () {
     //leads
     Route::post('lead/create', [LeadController::class, 'create'])->name('create-lead');
     Route::post('lead/pair/distribute', [LeadController::class, 'pairDistribute'])
-        ->name('create-lead');
+        ->name('create-lead-distribute');
     Route::post('lead/drive/create', [LeadController::class, 'leadDrive'])->name('leadDrive');
 
 });
