@@ -33,7 +33,7 @@
           </v-hover>
         </v-col>
 
-        <v-col cols="12" md="2" v-role="['admin']">
+        <v-col cols="12" md="2" v-role="'admin'">
           <v-hover v-slot="{ hover }">
             <v-card
               :elevation="hover ? 12 : 2"
