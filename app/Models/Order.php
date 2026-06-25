@@ -14,7 +14,6 @@ use Spatie\Activitylog\Contracts\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Support\Facades\DB;
 use Throwable;
-use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Models\Activity as ActivityLog;
 
 class Order extends Model
@@ -76,6 +75,9 @@ class Order extends Model
 
     protected static $ignoreChangedAttributes = ['updated_at'];
 
+    // Spatie v3: only log updates (not created/deleted — FK on activity_log.subject_id → orders.id)
+    protected static $recordEvents = ['updated'];
+
     protected static function boot()
     {
         parent::boot();
@@ -87,27 +89,23 @@ class Order extends Model
         static::created(function ($model) {
             $model->enableLogging();
         });
+
+        static::deleting(function ($model) {
+            $model->disableLogging();
+        });
     }
 
     public function activityLogs()
     {
-        return $this->hasMany(ActivityLog::class, 'subject_id')->where('subject_type', Order::class);
+        return $this->hasMany(ActivityLog::class, 'subject_id')->where('subject_type', 2);
     }
 
     public function deleteOrder()
     {
         if (isset($this)) {
+            $this->disableLogging();
             $this->delete();
         }
-    }
-
-    public function getActivitylogOptions(): LogOptions
-    {
-        $logOptions = parent::getActivitylogOptions();
-
-        $logOptions->disableLoggingForEvents(['created', 'deleted']);
-
-        return $logOptions;
     }
 
     public function tapActivity(Activity $activity, string $eventName)
