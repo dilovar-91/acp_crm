@@ -1261,6 +1261,12 @@
                           v-if="$auth.user?.work_place > 0"
                           slot="append"
                         >
+                          <v-icon
+                            class="mr-2"
+                            color="primary"
+                            @click="call(true)"
+                            >mdi-phone-plus
+                          </v-icon>
                           <v-icon color="primary" @click="call()"
                             >mdi-phone
                           </v-icon>
@@ -3505,10 +3511,13 @@ export default {
       this.editedItem.phone = value?.number
       console.log(value)
     },
-    async call() {
+    async call(isCarousel = false) {
       this.apiForm.phone = this.editedItem?.phone
       this.apiForm.ext_number = this.$auth.user?.work_place
       this.apiForm.showroom_id = this.$route.params?.id
+      if (isCarousel) {
+        this.apiForm.phone = `1${this.editedItem?.phone}`
+      }
       await this.$axios
         .post('/call', this.apiForm, {
           headers: {

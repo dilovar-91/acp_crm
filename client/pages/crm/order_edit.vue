@@ -223,6 +223,13 @@
                     >
                       <template slot="append">
                         <v-icon
+                          class="mr-2 mt-1"
+                          small
+                          color="primary"
+                          @click="call(form.phone, true)"
+                          >mdi-phone-plus
+                        </v-icon>
+                        <v-icon
                           class="mt-1"
                           color="primary"
                           small
@@ -260,6 +267,14 @@
                         >
                           <template slot="append">
                             <v-icon
+                              class="mr-2 mt-1"
+                              small
+                              color="primary"
+                              @click="call(form.work_phone, true)"
+                              >mdi-phone-plus
+                            </v-icon>
+
+                            <v-icon
                               small
                               class="mt-1"
                               color="primary"
@@ -292,6 +307,13 @@
                         >
                           <template slot="append">
                             <v-icon
+                              class="mr-2 mt-1"
+                              small
+                              color="primary"
+                              @click="call(form.phone_2, true)"
+                              >mdi-phone-plus
+                            </v-icon>
+                            <v-icon
                               class="mt-1"
                               color="primary"
                               small
@@ -321,6 +343,13 @@
                           :readonly="role_id === 5"
                         >
                           <template slot="append">
+                            <v-icon
+                              class="mr-2 mt-1"
+                              small
+                              color="primary"
+                              @click="call(form.phone_3, true)"
+                              >mdi-phone-plus
+                            </v-icon>
                             <v-icon
                               class="mt-1"
                               color="primary"
@@ -3051,11 +3080,13 @@ export default {
         fio.length > 1 ? '&is%5Bpatronymic%5D=' + fio[2] : ''
       }${birthday || ''}`
     },
-    async call(phone) {
+    async call(phone, isCarousel = false) {
       this.apiForm.phone = phone
       this.apiForm.showroom_id = this.order?.showroom_id
       this.apiForm.ext_number = this.$auth.user?.work_place
-
+      if (isCarousel) {
+        this.apiForm.phone = `1${phone}`
+      }
       await this.$axios
         .post('/call', this.apiForm, {
           headers: {
