@@ -97,7 +97,6 @@ class Order extends Model
     public function deleteOrder()
     {
         if (isset($this)) {
-            $this->activityLogs()->delete();
             $this->delete();
         }
     }
@@ -106,7 +105,7 @@ class Order extends Model
     {
         $logOptions = parent::getActivitylogOptions();
 
-        $logOptions->disableLoggingForEvents(['created']);
+        $logOptions->disableLoggingForEvents(['created', 'deleted']);
 
         return $logOptions;
     }
@@ -135,11 +134,6 @@ class Order extends Model
     public function passedOrder()
     {
         return $this->hasOne(PassedOrder::class, 'order_id');
-    }
-
-    public function getSubjectType()
-    {
-        return $this->getKey();
     }
 
     protected $casts = [

@@ -41,6 +41,10 @@ class CustomActivity extends Activity
             return 1; // Set your desired number or custom description here
         }
 
+        if ($eventName === 'deleted') {
+            return 4;
+        }
+
         return parent::getDescriptionForEvent($eventName);
     }
 }
