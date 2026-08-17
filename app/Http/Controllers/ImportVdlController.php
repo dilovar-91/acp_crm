@@ -28,43 +28,62 @@ class ImportVdlController extends Controller
 
     public function import()
     {
-
         $sites = Site::where('agency_id', 3)->whereNotNull('token')->with(['request'])->get();
-        //return $sites;
+
+        Log::info('VDL import: start', ['sites_count' => $sites->count()]);
 
         if (count($sites) > 0) {
             foreach ($sites as $site) {
-                //return $site->request->last_request_time->addSeconds(2);
                 if (isset($site->request->last_request_time)) {
                     $last_request = $site->request->last_request_time->addSeconds(1)->format('Y-m-d H:i:s');
                 } else {
                     $last_request = Carbon::now()->subMinutes(1)->format('Y-m-d H:i:s');
                 }
 
+                Log::info('VDL import: request', [
+                    'site_id' => $site->id,
+                    'url' => $site->post_url,
+                    'last_request_date' => $last_request,
+                ]);
+
                 $client = new Client();
-                //return $site;
                 $params['form_params'] = array('token' => $site->token, 'last_request_date' => $last_request);
-                //$params['verify'] = false; // Disable SSL certificate verification] = array('token' => $site->token, 'last_request_date' => $last_request);
 
                 DB::table('last_request_time')->updateOrInsert(
-                    ['site_id' => $site->id], // Add the site_id as the first argument
+                    ['site_id' => $site->id],
                     ['last_request_time' => now()]
                 );
                 $items = null;
                 try {
                     $response = $client->get($site->post_url, $params);
-                    //return $response;
                     $items = json_decode($response->getBody());
+
+                    Log::info('VDL import: response', [
+                        'site_id' => $site->id,
+                        'status' => $response->getStatusCode(),
+                        'items_count' => is_array($items) ? count($items) : 0,
+                    ]);
                 } catch (RequestException $e) {
-                    // Log any errors that occur during the request
+                    $errorBody = null;
                     $errorResponse = $e->getResponse();
                     if ($errorResponse) {
                         $errorBody = $errorResponse->getBody()->getContents();
-                        Log::error("Error Response Body: $errorBody");
                     }
 
-                    // Log the exception
-                    Log::error("Request Exception: " . $e->getMessage());
+                    Log::error('VDL import: request failed', [
+                        'site_id' => $site->id,
+                        'url' => $site->post_url,
+                        'last_request_date' => $last_request,
+                        'message' => $e->getMessage(),
+                        'response_body' => $errorBody,
+                    ]);
+                } catch (Throwable $e) {
+                    Log::error('VDL import: unexpected request error', [
+                        'site_id' => $site->id,
+                        'url' => $site->post_url,
+                        'last_request_date' => $last_request,
+                        'message' => $e->getMessage(),
+                    ]);
                 }
 
                 //return  $items;
@@ -78,9 +97,7 @@ class ImportVdlController extends Controller
                     ///Log::emergency($items);
 
                     foreach ($items as $item) {
-
-                        //try {
-                        //Log::error("vdl", [$item]);
+                        try {
                         //$mark = Brand::where('name', 'like', '%' . $item->brand . '%')->first();
                         $order = new Order;
                         $order->client_name = ((($item->last_name . ' ') ?? '') . (($item->first_name . ' ') ?? '') . (($item->middle_name . ' ') ?? '')) ?? 'Новый клиент';
@@ -120,7 +137,11 @@ class ImportVdlController extends Controller
                                 $order->model_id = $car->id ?? null;
                             }
                         } catch (Throwable $e) {
-                            Log::error("type error import vdl", [$item]);
+                            Log::error('VDL import: type error', [
+                                'site_id' => $site->id,
+                                'message' => $e->getMessage(),
+                                'item' => $item,
+                            ]);
                         }
                         $order->price = $item->car_cost ?? null;
                         $order->utm_source = empty($item->utm_source) ? null : $item->utm_source;
@@ -135,7 +156,11 @@ class ImportVdlController extends Controller
                         try {
                             $order->month_pay = empty($item->month_pay) ? null : preg_replace('/[^0-9]/', '', $item->month_pay);
                         } catch (Throwable $e) {
-                            Log::error($e);
+                            Log::error('VDL import: month_pay error', [
+                                'site_id' => $site->id,
+                                'message' => $e->getMessage(),
+                                'item' => $item,
+                            ]);
                         }
 
                         $order->car_year = empty($item->model_year) ? null : $item->model_year;
@@ -145,14 +170,18 @@ class ImportVdlController extends Controller
                         $order->source_id = 141;
                         $order->save();
                         OrderCreated::dispatch($order);
-                        /*} catch (Throwable $e) {
-                            Log::error($e);
-                            //Log::emergency($item);
-                        }*/
+                        } catch (Throwable $e) {
+                            Log::error('VDL import: order save error', [
+                                'site_id' => $site->id,
+                                'message' => $e->getMessage(),
+                                'item' => $item,
+                            ]);
+                        }
                     }
                 }
             }
-            //return "Done";
+
+            Log::info('VDL import: finished');
         }
     }
 
