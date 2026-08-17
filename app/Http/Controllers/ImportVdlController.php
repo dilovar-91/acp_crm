@@ -19,17 +19,9 @@ use Throwable;
 class ImportVdlController extends Controller
 {
 
-    private $order;
-    private $sites;
 
 
-    public function __construct()
-    {
-        $this->sites = array(2 => 6504, 4 => 7170, 10 => 6851 );
-        //$this->sites = array(10 => 6851, 14 => 6506);
-
-        $this->order = [2, 4, 10];
-    }
+    
 
 
 
@@ -37,12 +29,7 @@ class ImportVdlController extends Controller
     public function import()
     {
 
-
-
-        $sites = Site::where('id', 6503)->whereNotNull('token')->with(['request'])->get();
-
-
-
+        $sites = Site::where('agency_id', 3)->whereNotNull('token')->with(['request'])->get();
         //return $sites;
 
         if (count($sites) > 0) {
@@ -98,32 +85,21 @@ class ImportVdlController extends Controller
                         $order = new Order;
                         $order->client_name = ((($item->last_name . ' ') ?? '') . (($item->first_name . ' ') ?? '') . (($item->middle_name . ' ') ?? '')) ?? 'Новый клиент';
 
-                        $last  = DB::table('last_queue')->where('site_id', $site->id)->first();
-                        $lastShowroom = 2;
-                        if ($last) {
-                            $lastShowroom = $last->number;
-                            $nextShowroom = $this->getNextShowroom($lastShowroom);
-                        } else {
-                            // если первая заявка — начинаем с первого в порядке
-                            $nextShowroom = $this->order[0];
-                        }
+                        
 
                         // получить site_id для следующего салона
 
 
-                        DB::table('last_queue')
-                            ->where('site_id', $site->id) // Assuming 'id' is the primary key
-                            ->update(['number' => $nextShowroom, 'percent' => 100, 'updated_at' => now()]);
+                        
 
 
 
-
-                        $order->showroom_id = $lastShowroom;
+                        $order->showroom_id = $site->id;
                         //$order->showroom_id = 14;
 
 
 
-                        $order->site_id = $this->sites[$lastShowroom];
+                        $order->site_id = $site->id;
                         //$order->site_id = 6506;
 
 
@@ -180,10 +156,5 @@ class ImportVdlController extends Controller
         }
     }
 
-    public function getNextShowroom($current)
-    {
-        $index = array_search($current, $this->order);
-        $nextIndex = ($index + 1) % count($this->order); // идём по кругу
-        return $this->order[$nextIndex];
-    }
+    
 }
