@@ -111,7 +111,7 @@ class ImportVdlController extends Controller
 
 
 
-                        $order->showroom_id = $site->id;
+                        $order->showroom_id = $site->showroom_id;
                         //$order->showroom_id = 14;
 
 
