@@ -17,6 +17,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Sharoff\Mango\Api\MangoHelper;
@@ -284,10 +285,13 @@ class MangoEventController extends Controller
                 $showroom_id = $id;
             }
             $line_number = null;
+            $entryId = $response->entry_id ?? null;
+            $location = $response->location ?? '';
+            // Один звонок даёт несколько Appeared (ivr → queue → abonent), часто все с seq=1.
             $isCallStart = $phone
                 && ($response->call_state ?? null) === 'Appeared'
                 && (int) ($response->seq ?? 0) === 1
-                && in_array($response->location ?? '', ['ivr', 'queue', 'abonent'], true);
+                && in_array($location, ['ivr', 'queue', 'abonent'], true);
 
             if (($response->call_state ?? null) === 'Appeared' && !$isCallStart) {
                 $this->mangoLog('info', 'call skip create', [
@@ -295,13 +299,26 @@ class MangoEventController extends Controller
                     'raw_phone' => $rawPhone,
                     'phone' => $phone,
                     'call_state' => $response->call_state ?? null,
-                    'location' => $response->location ?? null,
+                    'location' => $location,
                     'seq' => $response->seq ?? null,
                     'line_number' => $response->to->line_number ?? null,
+                    'entry_id' => $entryId,
                 ]);
             }
 
-            if ($isCallStart) {
+            $phoneLockKey = 'mango_call_phone_' . $showroom_id . '_' . $phone;
+            $gotCallLock = $isCallStart && Cache::add($phoneLockKey, 1, 180);
+
+            if ($isCallStart && !$gotCallLock) {
+                $this->mangoLog('info', 'call duplicate skipped', [
+                    'showroom_id' => $showroom_id,
+                    'phone' => $phone,
+                    'location' => $location,
+                    'entry_id' => $entryId,
+                ]);
+            }
+
+            if ($gotCallLock) {
                 $line_number = $response->to->line_number ?? null;
                 $site_phone = $this->findSiteByLineNumber($line_number);
 
@@ -321,8 +338,16 @@ class MangoEventController extends Controller
                 $def = substr($phone, 1, 3);
                 $last = substr($phone, -7, 7);
                 $info = PhoneCode::with(['region', 'operator'])->where('abc_def', $def)->where('from', '<=', $last)->where('to', '>=', $last)->first();
-                sleep(2);
                 $order = Order::where('showroom_id', $showroom_id)->phone4($phone)->with(['operator', 'region', 'status'])->first();
+                if (empty($order)) {
+                    $order = Order::where('showroom_id', $showroom_id)
+                        ->where('source_id', 20)
+                        ->where('created_at', '>=', now()->subMinutes(3))
+                        ->where('phone', $phone)
+                        ->with(['operator', 'region', 'status'])
+                        ->latest()
+                        ->first();
+                }
                 if (empty($info)) {
                     $this->mangoLog('warning', 'empty region phone', ['phone' => $phone]);
                 }
