@@ -8,6 +8,20 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 class Kernel extends ConsoleKernel
 {
     /**
+     * Get the bootstrap classes for the application.
+     *
+     * @return array
+     */
+    protected function bootstrappers()
+    {
+        return array_map(static function ($bootstrapper) {
+            return $bootstrapper === \Illuminate\Foundation\Bootstrap\HandleExceptions::class
+                ? \App\Foundation\Bootstrap\HandleExceptions::class
+                : $bootstrapper;
+        }, parent::bootstrappers());
+    }
+
+    /**
      * Define the application's command schedule.
      *
      * @param Schedule $schedule

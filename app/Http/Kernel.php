@@ -7,6 +7,20 @@ use Illuminate\Foundation\Http\Kernel as HttpKernel;
 class Kernel extends HttpKernel
 {
     /**
+     * Get the bootstrap classes for the application.
+     *
+     * @return array
+     */
+    protected function bootstrappers()
+    {
+        return array_map(static function ($bootstrapper) {
+            return $bootstrapper === \Illuminate\Foundation\Bootstrap\HandleExceptions::class
+                ? \App\Foundation\Bootstrap\HandleExceptions::class
+                : $bootstrapper;
+        }, parent::bootstrappers());
+    }
+
+    /**
      * The application's global HTTP middleware stack.
      *
      * These middleware are run during every request to your application.

@@ -60,6 +60,12 @@ return [
             'level' => 'info',
         ],
 
+        'mango' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/mango.log'),
+            'level' => 'debug',
+        ],
+
         'single' => [
             'driver' => 'single',
             'path' => storage_path('logs/laravel.log'),

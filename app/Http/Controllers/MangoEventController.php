@@ -32,13 +32,29 @@ class MangoEventController extends Controller
         $this->dayName = Carbon::now()->format('l');
     }
 
+    protected function mangoLog(string $level, string $message, array $context = []): void
+    {
+        try {
+            Log::channel('mango')->{$level}($message, $context);
+        } catch (Throwable $e) {
+            try {
+                Log::{$level}('[mango] ' . $message, $context);
+            } catch (Throwable $ignored) {
+                // Logger itself can fail on PHP 8.4 (implicit nullable deprecation recursion)
+            }
+        }
+    }
+
 
     public function summary(Request $request, $id)
     {
-        //Log::emergency($id);
-
-        MangoHelper::setApiKey(config('mango.api_key_' . $id))->setApiSalt(config('mango.api_salt_' . $id));
-        $response = MangoHelper::getMethodData();
+        try {
+            MangoHelper::setApiKey(config('mango.api_key_' . $id))->setApiSalt(config('mango.api_salt_' . $id));
+            $response = MangoHelper::getMethodData();
+            $this->mangoLog('info', 'summary', [
+                'showroom_id' => $id,
+                'response' => $response,
+            ]);
 
 
         $groups = [300, 400, 776];
@@ -212,6 +228,13 @@ class MangoEventController extends Controller
 
             ClearNotify::dispatch($showroom_id);
         }
+        } catch (Throwable $e) {
+            $this->mangoLog('error', 'summary error', [
+                'showroom_id' => $id,
+                'message' => $e->getMessage(),
+            ]);
+            Log::error('event summary error: ' . $e);
+        }
     }
 
     public function test_phone(Request $request)
@@ -231,7 +254,10 @@ class MangoEventController extends Controller
 
             MangoHelper::setApiKey(config('mango.api_key_' . $id))->setApiSalt(config('mango.api_salt_' . $id));
             $response = MangoHelper::getMethodData();
-
+            $this->mangoLog('info', 'call', [
+                'showroom_id' => $id,
+                'response' => $response,
+            ]);
 
             $phone = $response->from->number;
             //Log::emergency((array)$response);
@@ -444,6 +470,10 @@ class MangoEventController extends Controller
             } */
 
         } catch (Throwable $e) {
+            $this->mangoLog('error', 'call error', [
+                'showroom_id' => $id,
+                'message' => $e->getMessage(),
+            ]);
             Log::error("event call error: " . $e);
         }
 
@@ -471,13 +501,24 @@ class MangoEventController extends Controller
 
     public function record_added($id)
     {
+        try {
+            MangoHelper::setApiKey(config('mango.api_key_' . $id))->setApiSalt(config('mango.api_salt_' . $id));
+            $response = MangoHelper::getMethodData();
+            $this->mangoLog('info', 'record_added', [
+                'showroom_id' => $id,
+                'response' => $response,
+            ]);
 
-        MangoHelper::setApiKey(config('mango.api_key_' . $id))->setApiSalt(config('mango.api_salt_' . $id));
-        $response = MangoHelper::getMethodData();
-
-        if (isset($response->recording_id)) {
-            Log::emergency("(job) handled mevt". $response->entry_id);
-            ProcessRecord::dispatch($response->entry_id, $response->recording_id)->delay(now()->addMinutes(8));
+            if (isset($response->recording_id)) {
+                Log::emergency("(job) handled mevt". $response->entry_id);
+                ProcessRecord::dispatch($response->entry_id, $response->recording_id)->delay(now()->addMinutes(8));
+            }
+        } catch (Throwable $e) {
+            $this->mangoLog('error', 'record_added error', [
+                'showroom_id' => $id,
+                'message' => $e->getMessage(),
+            ]);
+            Log::error('event record_added error: ' . $e);
         }
     }
 
