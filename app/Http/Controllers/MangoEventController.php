@@ -77,13 +77,14 @@ class MangoEventController extends Controller
         //$test->body = json_encode($response);
         //$test->save();
         $extension = null;
-        if ($response->call_direction === 1) {
-            $phone = $response->from->number;
+        $phone = null;
+        if (($response->call_direction ?? null) === 1) {
+            $phone = $this->normalizeMangoPhone($response->from->number ?? null);
             if (isset($response->from->extension)) {
                 $extension = $response->from->extension;
             }
         } else {
-            $phone = $response->to->number;
+            $phone = $this->normalizeMangoPhone($response->to->number ?? null);
             if (isset($response->to->extension)) {
                 $extension = $response->to->extension;
             }
@@ -117,6 +118,15 @@ class MangoEventController extends Controller
         }
 
 
+        if (!$phone) {
+            $this->mangoLog('info', 'summary skip, bad phone', [
+                'showroom_id' => $showroom_id,
+                'from' => $response->from->number ?? null,
+                'to' => $response->to->number ?? null,
+            ]);
+            return;
+        }
+
         $def = substr($phone, 1, 3);
         $last = substr($phone, -7, 7);
         $info = PhoneCode::with(['region', 'operator'])->where('abc_def', $def)->where('from', '<=', $last)->where('to', '>=', $last)->first();
@@ -124,7 +134,7 @@ class MangoEventController extends Controller
         $retries = null;
 
         //outgoing call
-        if (strlen($phone) === 11 && $response->call_direction === 2) {
+        if ($phone && $response->call_direction === 2) {
 
             if (!empty($order)) {
                 $properties = ['create_time' => $response->create_time, 'talk_time' => $response->talk_time, 'end_time' => $response->end_time, 'line_number' => $response->line_number, 'ext' => $response->from->extension ?? null, 'entry_result' => $response->entry_result];
@@ -141,7 +151,7 @@ class MangoEventController extends Controller
         }
 
         //income
-        if (strlen($phone) === 11 && $response->call_direction === 1) {
+        if ($phone && $response->call_direction === 1) {
 
             //if($id === 7) {
             //Log::warning('Test' . $response->to->extension);
@@ -164,7 +174,7 @@ class MangoEventController extends Controller
 
 
         //missed calls
-        if (strlen($phone) === 11 && $response->call_direction === 1) {
+        if ($phone && $response->call_direction === 1) {
             //Log::critical('entry_result 1 - '.$response->disconnect_reason);
             if (!empty($order) && $response->entry_result === 0 && $response->talk_time === 0) {
                 //Log::critical('talktime 1 - '.$response->talk_time);
@@ -263,43 +273,49 @@ class MangoEventController extends Controller
                 'response' => $response,
             ]);
 
-            $phone = $response->from->number;
-            //Log::emergency((array)$response);
-            //Log::emergency("showroom_id".$id);
+            $rawPhone = $response->from->number ?? null;
+            $phone = $this->normalizeMangoPhone($rawPhone);
 
             $groups = [300, 400, 776];
 
             if (isset($response->to->acd_group) && in_array($response->to->acd_group, $groups)) {
                 $showroom_id = ShowroomHelper::getShowroomPair($id);
-                //Log::emergency(['showroom' => $id, 'resp' => $response]);
             } else {
                 $showroom_id = $id;
             }
             $line_number = null;
+            $isCallStart = $phone
+                && ($response->call_state ?? null) === 'Appeared'
+                && (int) ($response->seq ?? 0) === 1
+                && in_array($response->location ?? '', ['ivr', 'queue', 'abonent'], true);
 
-            if (strlen($phone) === 11 && $response->call_state === "Appeared" && $response->location === 'ivr' && $response->seq === 1) {
-                $line_number = $response->to?->line_number;
-                $parsedLineNumber = 'not empty text';
+            if (($response->call_state ?? null) === 'Appeared' && !$isCallStart) {
+                $this->mangoLog('info', 'call skip create', [
+                    'showroom_id' => $id,
+                    'raw_phone' => $rawPhone,
+                    'phone' => $phone,
+                    'call_state' => $response->call_state ?? null,
+                    'location' => $response->location ?? null,
+                    'seq' => $response->seq ?? null,
+                    'line_number' => $response->to->line_number ?? null,
+                ]);
+            }
 
-                if ($line_number && str_contains($line_number, 'mangosip.ru')) {
-                    $parsedLineNumber = Str::after($line_number, 'sip:');
-                }
+            if ($isCallStart) {
+                $line_number = $response->to->line_number ?? null;
+                $site_phone = $this->findSiteByLineNumber($line_number);
 
-                $site_phone = Site::query()
-                    ->where('phone', $line_number)
-                    ->orWhere('sip', 'LIKE', '%' . $parsedLineNumber . '%')
-                    ->orWhere('second_phone', $line_number)
-                    ->latest()
-                    ->first();
-                if (str_contains($response->to?->line_number, 'mangosip.ru') && !empty($site_phone)) {
+                if (!empty($site_phone) && $line_number && str_contains((string) $line_number, 'mangosip.ru')) {
                     $line_number = $site_phone->phone;
                 }
 
                 if (empty($site_phone)) {
-                   Log::notice("Unknown phone(" . $showroom_id . "):" . $response->to->line_number);
-                   //return;
-               }
-                if (empty($site_phone) && $id == 8) {
+                    $this->mangoLog('notice', 'Unknown line number', [
+                        'showroom_id' => $showroom_id,
+                        'line_number' => $line_number,
+                    ]);
+                }
+                if (empty($site_phone) && (int) $id === 8) {
                     $site_phone = Site::where('id', 2013)->first();
                 }
                 $def = substr($phone, 1, 3);
@@ -308,11 +324,13 @@ class MangoEventController extends Controller
                 sleep(2);
                 $order = Order::where('showroom_id', $showroom_id)->phone4($phone)->with(['operator', 'region', 'status'])->first();
                 if (empty($info)) {
-                    Log::warning("empty region phone: " . $phone);
+                    $this->mangoLog('warning', 'empty region phone', ['phone' => $phone]);
                 }
                 if (empty($order)) {
-
-                    Log::warning('phone not found ' . $showroom_id . '_' . $phone);
+                    $this->mangoLog('warning', 'phone not found, creating order', [
+                        'showroom_id' => $showroom_id,
+                        'phone' => $phone,
+                    ]);
 
                     $order = new Order();
                     $order->client_name = "Новый клиент";
@@ -321,26 +339,29 @@ class MangoEventController extends Controller
                     $order->phone = $phone;
                     $order->site_id = $site_phone->id ?? null;
                     $order->source_id = 20; //Источник звонок
-                    $order->line_number = $response->to->line_number ?? null;
+                    $order->line_number = $line_number;
 
                     $currentDateTime = Carbon::now();
                     $isBetween8and20 = $currentDateTime->isBetween(
-                        Carbon::createFromTime(8, 0, 0), // Start time: 8 AM
-                        Carbon::createFromTime(20, 0, 0), // End time: 8 PM
-                        true // Inclusive of start and end time
+                        Carbon::createFromTime(8, 0, 0),
+                        Carbon::createFromTime(20, 0, 0),
+                        true
                     );
 
-                    //если рабочая время, то ставить временного оператора до распределения
                     if ($isBetween8and20) {
-                        Log::warning("если рабоч.");
                         $order->operator_id = 1000;
                     }
 
-                    $order->comment = (@$info->region !== null ? @$info->region->name : null) . " " . Carbon::createFromTimestamp($response->timestamp)->format('d.m.Y H:i:s');;
+                    $order->comment = (@$info->region !== null ? @$info->region->name : null) . " " . Carbon::createFromTimestamp($response->timestamp)->format('d.m.Y H:i:s');
                     $order->save();
-                    OrderCreated::dispatch($order, $showroom_id);
-
-
+                    try {
+                        OrderCreated::dispatch($order, $showroom_id);
+                    } catch (Throwable $e) {
+                        $this->mangoLog('error', 'OrderCreated broadcast failed', [
+                            'order_id' => $order->id,
+                            'message' => $e->getMessage(),
+                        ]);
+                    }
                 }
 
 
@@ -362,11 +383,18 @@ class MangoEventController extends Controller
                     "site_name" => $site_phone->title ?? 'Сайт не определён',
                     "date" => $order->created_at ?? null
                 );
-                MangoIncome::dispatch($data, $showroom_id);
+                try {
+                    MangoIncome::dispatch($data, $showroom_id);
+                } catch (Throwable $e) {
+                    $this->mangoLog('error', 'MangoIncome broadcast failed', [
+                        'order_id' => $order->id ?? null,
+                        'message' => $e->getMessage(),
+                    ]);
+                }
             }
 
             //income
-            if (strlen($phone) === 11 && $response->call_state === "Connected" && $response->location === "abonent" && $response->seq === 2) {
+            if ($phone && $response->call_state === "Connected" && $response->location === "abonent" && (int) $response->seq === 2) {
 
 
                 //Log::warning("income:" . $phone);
@@ -541,6 +569,55 @@ class MangoEventController extends Controller
         $def = substr($phone, 1, 3);
         $last = substr($phone, -7, 7);
         return PhoneCode::with(['region', 'operator'])->where('abc_def', $def)->where('from', '<=', $last)->where('to', '>=', $last)->first();
+    }
+
+    protected function normalizeMangoPhone($number): ?string
+    {
+        $digits = preg_replace('/\D+/', '', (string) $number);
+        if ($digits === '') {
+            return null;
+        }
+        if (strlen($digits) === 11 && $digits[0] === '8') {
+            $digits = '7' . substr($digits, 1);
+        }
+        if (strlen($digits) === 10) {
+            $digits = '7' . $digits;
+        }
+
+        return strlen($digits) === 11 ? $digits : null;
+    }
+
+    protected function findSiteByLineNumber($lineNumber): ?Site
+    {
+        if (empty($lineNumber)) {
+            return null;
+        }
+
+        $lineNumber = (string) $lineNumber;
+        $sipPart = str_contains($lineNumber, 'mangosip.ru')
+            ? Str::after($lineNumber, 'sip:')
+            : $lineNumber;
+        $normalized = $this->normalizeMangoPhone($lineNumber);
+        $last10 = $normalized ? substr($normalized, -10) : null;
+
+        return Site::query()
+            ->where(function ($query) use ($lineNumber, $sipPart, $normalized, $last10) {
+                $query->where('phone', $lineNumber)
+                    ->orWhere('second_phone', $lineNumber)
+                    ->orWhere('sip', 'LIKE', '%' . $sipPart . '%');
+                if ($normalized) {
+                    $query->orWhere('phone', $normalized)
+                        ->orWhere('second_phone', $normalized)
+                        ->orWhere('phone', '8' . substr($normalized, 1))
+                        ->orWhere('second_phone', '8' . substr($normalized, 1));
+                }
+                if ($last10) {
+                    $query->orWhere('phone', 'LIKE', '%' . $last10)
+                        ->orWhere('second_phone', 'LIKE', '%' . $last10);
+                }
+            })
+            ->latest()
+            ->first();
     }
 
 }
