@@ -35,13 +35,18 @@ class MangoEventController extends Controller
     protected function mangoLog(string $level, string $message, array $context = []): void
     {
         try {
-            Log::channel('mango')->{$level}($message, $context);
+            // On-demand channel: does not depend on config:cache / logging.channels.mango
+            Log::build([
+                'driver' => 'single',
+                'path' => storage_path('logs/mango.log'),
+                'level' => 'debug',
+            ])->{$level}($message, $context);
         } catch (Throwable $e) {
-            try {
-                Log::{$level}('[mango] ' . $message, $context);
-            } catch (Throwable $ignored) {
-                // Logger itself can fail on PHP 8.4 (implicit nullable deprecation recursion)
-            }
+            @file_put_contents(
+                storage_path('logs/mango.log'),
+                date('Y-m-d H:i:s') . " {$level}: {$message} " . json_encode($context, JSON_UNESCAPED_UNICODE) . PHP_EOL,
+                FILE_APPEND | LOCK_EX
+            );
         }
     }
 
@@ -233,7 +238,6 @@ class MangoEventController extends Controller
                 'showroom_id' => $id,
                 'message' => $e->getMessage(),
             ]);
-            Log::error('event summary error: ' . $e);
         }
     }
 
@@ -474,7 +478,6 @@ class MangoEventController extends Controller
                 'showroom_id' => $id,
                 'message' => $e->getMessage(),
             ]);
-            Log::error("event call error: " . $e);
         }
 
 
@@ -510,15 +513,17 @@ class MangoEventController extends Controller
             ]);
 
             if (isset($response->recording_id)) {
-                Log::emergency("(job) handled mevt". $response->entry_id);
                 ProcessRecord::dispatch($response->entry_id, $response->recording_id)->delay(now()->addMinutes(8));
+                $this->mangoLog('info', 'record dispatched', [
+                    'entry_id' => $response->entry_id,
+                    'recording_id' => $response->recording_id,
+                ]);
             }
         } catch (Throwable $e) {
             $this->mangoLog('error', 'record_added error', [
                 'showroom_id' => $id,
                 'message' => $e->getMessage(),
             ]);
-            Log::error('event record_added error: ' . $e);
         }
     }
 
