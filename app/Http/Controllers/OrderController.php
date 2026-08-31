@@ -18,6 +18,7 @@ use App\Models\CarModel;
 use App\Models\DeferredPurchase;
 use App\Models\JustweBrand;
 use App\Models\JustweModel;
+use App\Models\MangoCallRecording;
 use App\Models\MissedCall;
 use App\Models\Order;
 use App\Models\OrderArrival;
@@ -236,6 +237,30 @@ class OrderController extends Controller
     {
         $id = $request->id;
         $items = ActivityLog::with(['user'])->where('subject_type', 2)->where('subject_id', $id)->orderBy('created_at', 'DESC')->get();
+
+        $entryIds = $items
+            ->whereIn('description', ['5', '6', '7'])
+            ->pluck('entry_id')
+            ->filter()
+            ->unique()
+            ->values();
+
+        $recordings = MangoCallRecording::query()
+            ->whereIn('entry_id', $entryIds)
+            ->when($request->showroom_id, function ($query, $showroomId) {
+                $query->where('mango_account_id', $showroomId);
+            })
+            ->orderBy('recorded_at')
+            ->get(['entry_id', 'recording_id', 'recorded_at'])
+            ->groupBy('entry_id');
+
+        $items->each(function (ActivityLog $activity) use ($recordings) {
+            $activity->setAttribute(
+                'recordings',
+                $recordings->get($activity->entry_id, collect())->values()
+            );
+        });
+
         return response()->json($items, 200);
     }
 

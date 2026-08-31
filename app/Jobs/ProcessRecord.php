@@ -40,7 +40,10 @@ class ProcessRecord implements ShouldQueue
      */
     public function handle()
     {
-        $activity = ActivityLog::where('entry_id', $this->entry_id)->latest('created_at')->first();
+        $activity = ActivityLog::where('entry_id', $this->entry_id)
+            ->whereIn('description', [5, 6, 7])
+            ->latest('id')
+            ->first();
         if (!$activity) {
             Log::channel('records')->warning('Mango recording waits for call history', [
                 'entry_id' => $this->entry_id,

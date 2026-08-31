@@ -834,11 +834,13 @@
                         <td colspan="2">
                           <template
                             v-if="
-                              item.recording_id &&
+                              recordingsFor(item).length &&
                               listen_record.includes(role_id)
                             "
                           >
                             <div
+                              v-for="recordingId in recordingsFor(item)"
+                              :key="recordingId"
                               class="d-flex align-center justify-center mb-2"
                             >
                               <v-sheet class="ma-2 pa-2">
@@ -847,7 +849,7 @@
                                     '/api/record2/' +
                                     showroom_id +
                                     '/' +
-                                    item.recording_id
+                                    recordingId
                                   "
                                   controls
                                   controlsList="nodownload"
@@ -860,7 +862,7 @@
                                       '/record3/' +
                                         showroom_id +
                                         '/' +
-                                        item.recording_id
+                                        recordingId
                                     )
                                   "
                                 >
@@ -1721,6 +1723,21 @@ export default {
   },
 
   methods: {
+    recordingsFor(item) {
+      const recordings = Array.isArray(item.recordings)
+        ? item.recordings
+            .map((recording) =>
+              typeof recording === 'object'
+                ? recording.recording_id
+                : recording
+            )
+            .filter(Boolean)
+        : []
+
+      if (recordings.length) return recordings
+
+      return item.recording_id ? [item.recording_id] : []
+    },
     async save(after) {
       try {
         if (!this.$refs.form.validate() || !this.valid) {
