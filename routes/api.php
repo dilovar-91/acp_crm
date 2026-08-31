@@ -19,7 +19,7 @@ use App\Http\Controllers\ImportAgencyController;
 use App\Http\Controllers\ImportRequestController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\MangoController;
-use App\Http\Controllers\MangoEventController;
+use App\Http\Controllers\MangoCommandController;
 use App\Http\Controllers\OperatorController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderCountController;
@@ -518,7 +518,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     //Route::post('/events/{id}', [MangoController::class, 'checkPhone2']);
     Route::post('clear-notify', [MangoController::class, 'clearNotify']);
-    Route::post('call', [MangoEventController::class, 'makeCall'])->name('makeCall');
+    Route::post('call', [MangoCommandController::class, 'makeCall'])->name('makeCall');
     Route::post('checkPhone2', [MangoController::class, 'checkPhone2'])->name('checkPhone2');
     //Route::get('testrest', [OrderController::class, 'test']);
     Route::post('request-report', [DataAvController::class, 'report']);

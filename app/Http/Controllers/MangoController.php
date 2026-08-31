@@ -247,7 +247,15 @@ class MangoController extends Controller
 
     public function clearNotify(Request $request)
     {
-        ClearNotify::dispatch($request->all());
+        $showroomId = (int) ($request->input('showroom_id')
+            ?: optional($request->user())->showroom_id);
+        if (!$showroomId) {
+            return response()->json(['message' => 'showroom_id is required'], 422);
+        }
+
+        ClearNotify::dispatch($showroomId, $request->input('entry_id'));
+
+        return response()->json(['status' => 'ok']);
     }
 
 

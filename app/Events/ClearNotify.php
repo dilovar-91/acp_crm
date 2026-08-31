@@ -13,14 +13,13 @@ use Illuminate\Queue\SerializesModels;
 class ClearNotify implements  ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    //public $info;
     public $showroom_id;
+    public $entry_id;
 
-
-    public function __construct($showroom_id)
+    public function __construct($showroom_id, $entry_id = null)
     {
-        //$this->info = $info;
-        $this->showroom_id = $showroom_id;
+        $this->showroom_id = (int) $showroom_id;
+        $this->entry_id = $entry_id;
     }
 
     /**

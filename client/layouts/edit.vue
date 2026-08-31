@@ -155,16 +155,22 @@ export default {
     if ([1, 2, 3, 6].includes(this.$auth.user?.role_id)) {
       this.$echo.channel('calling_' + this.$auth.user?.showroom_id)
         .listen('MangoIncome', (e) => {
-          console.log(e)
+          const data = e.response || e
+          if (data.direction !== 'inbound') return
+
+          const toastId =
+            data.entry_id !== null && data.entry_id !== undefined
+              ? `mango-call-${data.entry_id}`
+              : `mango-call-legacy-${data.phone || Date.now()}`
           const toastContent = {
             component: ToastComponent,
             props: {
-              data: e.response,
-              sites: this.sites,
+              data,
+              toastId,
             }
           }
-          this.$toast.clear();
           this.$toast(toastContent, {
+            id: toastId,
             position: "bottom-right",
             timeout: 70000,
             closeOnClick: false,
@@ -180,10 +186,18 @@ export default {
             toastClassName: "call_info",
           });
         })
-      this.$echo.channel('clear_' + this.$route.params?.id)
+      this.$echo.channel('clear_' + this.$auth.user?.showroom_id)
         .listen('ClearNotify', (e) => {
-          console.log(e)
-          this.$toast.clear();
+          const data = e.response || e
+          if (
+            data.showroom_id &&
+            Number(data.showroom_id) !== Number(this.$auth.user?.showroom_id)
+          ) {
+            return
+          }
+          if (data.entry_id !== null && data.entry_id !== undefined) {
+            this.$toast.dismiss(`mango-call-${data.entry_id}`)
+          }
         })
     }
   },

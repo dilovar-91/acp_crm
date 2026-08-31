@@ -682,9 +682,6 @@ export default {
         l => l.status_id === this.status_id
       )
     },
-    sites() {
-      return this.$store.state.showroom.sites
-    }
   },
   created() {
     this.$store.dispatch('operator/fetchWorkPlaces', {id: this.$auth.user?.showroom_id})
@@ -694,17 +691,23 @@ export default {
     //console.log('calling_' + this.$auth.user?.showroom_id + '_' + this.work_place)
     this.$echo.channel('calling_' + this.$auth.user?.showroom_id)
       .listen('MangoIncome', (e) => {
-        console.log(e)
+        const data = e.response || e
+        if (data.direction !== 'inbound') return
+
+        const toastId =
+          data.entry_id !== null && data.entry_id !== undefined
+            ? `mango-call-${data.entry_id}`
+            : `mango-call-legacy-${data.phone || Date.now()}`
         const toastContent = {
           component: ToastComponent,
           props: {
-            data: e.response,
-            sites: this.sites,
+            data,
+            toastId,
             isMini: true,
           }
         }
-        this.$toast.clear();
         this.$toast(toastContent, {
+          id: toastId,
           position: "bottom-right",
           timeout: 70000,
           closeOnClick: false,
@@ -722,8 +725,16 @@ export default {
       })
     this.$echo.channel('clear_' + this.$auth.user?.showroom_id)
       .listen('ClearNotify', (e) => {
-        console.log(e)
-        this.$toast.clear();
+        const data = e.response || e
+        if (
+          data.showroom_id &&
+          Number(data.showroom_id) !== Number(this.$auth.user?.showroom_id)
+        ) {
+          return
+        }
+        if (data.entry_id !== null && data.entry_id !== undefined) {
+          this.$toast.dismiss(`mango-call-${data.entry_id}`)
+        }
       })
     /*
     this.$echo.channel('orders_' + this.$auth.user?.showroom_id).listen('OrderProcessed', (e) => {
