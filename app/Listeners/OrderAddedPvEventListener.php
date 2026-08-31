@@ -40,6 +40,11 @@ class OrderAddedPvEventListener
 
             $this->blacklistService->checkPhoneInBlacklistOrSpam($phone, $order);
 
+            if (!empty($order) && (int) $order->showroom_id === 16) {
+                $event->order->showroom_id = 16;
+                return;
+            }
+
             if (count($res) > 1) {
                 if (!empty($order) && ($order->operator_id === null || $order->operator_id === 1000)) {
                     $owner = Order::where('id', '<>', $order->id)->where('showroom_id', $order->showroom_id)->searchPhone($phone)->first();

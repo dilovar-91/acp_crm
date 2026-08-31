@@ -11,6 +11,34 @@ use Illuminate\Support\Facades\Log;
  */
 class GeneralHelper
 {
+    /**
+     * Нормализует номер в 11 цифр плана +7 (Россия 3/4/8/9, Казахстан 7).
+     * Коды 70, 71, 72, 75, 76 в нумерации не выделяются.
+     */
+    public static function normalizePlus7Phone(?string $phone): ?string
+    {
+        $digits = preg_replace('/\D+/', '', (string) $phone);
+        if ($digits === '') {
+            return null;
+        }
+        if (strlen($digits) === 11 && $digits[0] === '8') {
+            $digits = '7' . substr($digits, 1);
+        }
+        if (strlen($digits) === 10) {
+            $digits = '7' . $digits;
+        }
+        if (strlen($digits) !== 11 || !preg_match('/^7[34789]/', $digits)) {
+            return null;
+        }
+
+        return $digits;
+    }
+
+    public static function isValidPlus7Phone(?string $phone): bool
+    {
+        return self::normalizePlus7Phone($phone) !== null;
+    }
+
     public static function isValidTelephoneNumber(string $telephone, int $minDigits = 9, int $maxDigits = 14): bool {
         if (preg_match('/^[+][0-9]/', $telephone)) { //is the first character + followed by a digit
             $count = 1;

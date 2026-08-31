@@ -6,6 +6,7 @@ use App\Events\ClearNotify;
 use App\Events\MangoIncome;
 use App\Events\OrderCreated;
 use App\Events\OrderProcessed;
+use App\Helpers\GeneralHelper;
 use App\Helpers\ShowroomHelper;
 use App\Jobs\ProcessCall;
 use App\Jobs\ProcessRecord;
@@ -106,15 +107,13 @@ class MangoEventController extends Controller
 
         if (isset($response->line_number)) {
             try {
-                $site_phone = Site::where('phone', $response->line_number)->orWhere('second_phone', $response->line_number)->orWhere('sip', $response->line_number)->latest()->first();
+                $site_phone = $this->findSiteByLineNumber($response->line_number);
             } catch (Throwable $e) {
                 Log::error($e);
                 Log::info('resp:', [$response]);
             }
-            //if(empty($site_phone)) return;
             if (empty($site_phone)) {
                 Log::notice("Unknown phone(summary - " . $showroom_id . "):" . @$response->line_number);
-                //return;
             }
         }
 
@@ -276,6 +275,15 @@ class MangoEventController extends Controller
 
             $rawPhone = $response->from->number ?? null;
             $phone = $this->normalizeMangoPhone($rawPhone);
+            if ($rawPhone && !$phone) {
+                $isSip = str_contains((string) $rawPhone, 'sip:')
+                    || str_contains((string) $rawPhone, '@')
+                    || str_contains((string) $rawPhone, 'mangosip.ru');
+                $this->mangoLog('info', $isSip ? 'call skip, sip from' : 'call skip, invalid phone', [
+                    'showroom_id' => $id,
+                    'raw_phone' => $rawPhone,
+                ]);
+            }
 
             $groups = [300, 400, 776];
 
@@ -313,6 +321,7 @@ class MangoEventController extends Controller
                 $this->mangoLog('info', 'call duplicate skipped', [
                     'showroom_id' => $showroom_id,
                     'phone' => $phone,
+                    'line_number' => $response->to->line_number ?? null,
                     'location' => $location,
                     'entry_id' => $entryId,
                 ]);
@@ -349,9 +358,20 @@ class MangoEventController extends Controller
                         ->first();
                 }
                 if (empty($info)) {
-                    $this->mangoLog('warning', 'empty region phone', ['phone' => $phone]);
+                    $this->mangoLog('warning', 'empty region phone', [
+                        'phone' => $phone,
+                        'raw_phone' => $rawPhone,
+                    ]);
                 }
-                if (empty($order)) {
+                // Не создаём заявку source=20, если номера нет в плане нумерации РФ (754/764 и т.п.).
+                if (empty($order) && empty($info)) {
+                    $this->mangoLog('info', 'call skip create, number not in RU plan', [
+                        'showroom_id' => $showroom_id,
+                        'raw_phone' => $rawPhone,
+                        'phone' => $phone,
+                        'entry_id' => $entryId,
+                    ]);
+                } elseif (empty($order)) {
                     $this->mangoLog('warning', 'phone not found, creating order', [
                         'showroom_id' => $showroom_id,
                         'phone' => $phone,
@@ -389,32 +409,30 @@ class MangoEventController extends Controller
                     }
                 }
 
-
-
-
-
-                $data = array(
-                    "phone" => $phone,
-                    "phone_region" => $info->region ?? null,
-                    "region" => $order->region ?? null,
-                    "line_number" => $line_number ?? null,
-                    "client_name" => $order->client_name ?? null,
-                    "operator" => $order->operator ?? null,
-                    "status" => $order->status ?? null,
-                    "work_place" => $response->to->extension ?? null,
-                    "order_id" => $order->id ?? null,
-                    "showroom_id" => $order->showroom_id ?? null,
-                    "site_id" => $site_phone->id ?? null,
-                    "site_name" => $site_phone->title ?? 'Сайт не определён',
-                    "date" => $order->created_at ?? null
-                );
-                try {
-                    MangoIncome::dispatch($data, $showroom_id);
-                } catch (Throwable $e) {
-                    $this->mangoLog('error', 'MangoIncome broadcast failed', [
-                        'order_id' => $order->id ?? null,
-                        'message' => $e->getMessage(),
-                    ]);
+                if (!empty($order)) {
+                    $data = array(
+                        "phone" => $phone,
+                        "phone_region" => $info->region ?? null,
+                        "region" => $order->region ?? null,
+                        "line_number" => $line_number ?? null,
+                        "client_name" => $order->client_name ?? null,
+                        "operator" => $order->operator ?? null,
+                        "status" => $order->status ?? null,
+                        "work_place" => $response->to->extension ?? null,
+                        "order_id" => $order->id ?? null,
+                        "showroom_id" => $order->showroom_id ?? null,
+                        "site_id" => $site_phone->id ?? null,
+                        "site_name" => $site_phone->title ?? 'Сайт не определён',
+                        "date" => $order->created_at ?? null
+                    );
+                    try {
+                        MangoIncome::dispatch($data, $showroom_id);
+                    } catch (Throwable $e) {
+                        $this->mangoLog('error', 'MangoIncome broadcast failed', [
+                            'order_id' => $order->id ?? null,
+                            'message' => $e->getMessage(),
+                        ]);
+                    }
                 }
             }
 
@@ -598,18 +616,16 @@ class MangoEventController extends Controller
 
     protected function normalizeMangoPhone($number): ?string
     {
-        $digits = preg_replace('/\D+/', '', (string) $number);
-        if ($digits === '') {
+        $number = trim((string) $number);
+        if ($number === '') {
             return null;
         }
-        if (strlen($digits) === 11 && $digits[0] === '8') {
-            $digits = '7' . substr($digits, 1);
-        }
-        if (strlen($digits) === 10) {
-            $digits = '7' . $digits;
+        // sip:line75@vpbx400371758.mangosip.ru → цифры 75400371758, это линия ВАТС, не клиент.
+        if (str_contains($number, 'sip:') || str_contains($number, '@') || str_contains($number, 'mangosip.ru')) {
+            return null;
         }
 
-        return strlen($digits) === 11 ? $digits : null;
+        return GeneralHelper::normalizePlus7Phone($number);
     }
 
     protected function findSiteByLineNumber($lineNumber): ?Site
@@ -619,17 +635,36 @@ class MangoEventController extends Controller
         }
 
         $lineNumber = (string) $lineNumber;
-        $sipPart = str_contains($lineNumber, 'mangosip.ru')
-            ? Str::after($lineNumber, 'sip:')
-            : $lineNumber;
-        $normalized = $this->normalizeMangoPhone($lineNumber);
+        $isSip = str_contains($lineNumber, 'sip:')
+            || str_contains($lineNumber, '@')
+            || str_contains($lineNumber, 'mangosip.ru');
+
+        $sipPart = $lineNumber;
+        $sipUser = null;
+        if ($isSip) {
+            $sipPart = str_contains($lineNumber, 'sip:')
+                ? Str::after($lineNumber, 'sip:')
+                : $lineNumber;
+            $sipUser = Str::contains($sipPart, '@')
+                ? Str::before($sipPart, '@')
+                : $sipPart;
+        }
+
+        $normalized = $isSip ? null : $this->normalizeMangoPhone($lineNumber);
         $last10 = $normalized ? substr($normalized, -10) : null;
 
         return Site::query()
-            ->where(function ($query) use ($lineNumber, $sipPart, $normalized, $last10) {
+            ->where(function ($query) use ($lineNumber, $sipPart, $sipUser, $normalized, $last10) {
                 $query->where('phone', $lineNumber)
                     ->orWhere('second_phone', $lineNumber)
+                    ->orWhere('sip', $lineNumber)
+                    ->orWhere('sip', $sipPart)
                     ->orWhere('sip', 'LIKE', '%' . $sipPart . '%');
+                if ($sipUser) {
+                    $query->orWhere('sip', $sipUser)
+                        ->orWhere('sip', 'LIKE', 'sip:' . $sipUser . '@%')
+                        ->orWhere('sip', 'LIKE', $sipUser . '@%');
+                }
                 if ($normalized) {
                     $query->orWhere('phone', $normalized)
                         ->orWhere('second_phone', $normalized)

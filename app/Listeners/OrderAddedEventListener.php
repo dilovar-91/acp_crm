@@ -45,6 +45,11 @@ class OrderAddedEventListener
             if ($order) {
                 $this->blacklistService->checkPhoneInBlacklistOrSpam($phone, $order);
 
+                if ((int) $order->showroom_id === 16) {
+                    $event->order->showroom_id = 16;
+                    return;
+                }
+
                 // Получаем количество заказов с тем же телефоном и в том же шоуруме
                 $resCount = Order::phone4($phone)
                     ->where('showroom_id', $event->order->showroom_id)

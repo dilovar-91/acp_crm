@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helpers\GeneralHelper;
 use App\Models\Blacklist;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -30,7 +31,7 @@ class BlacklistService
         }
         if ($blacklist) {
             $this->updateOrderWithBlacklist($order, "ЧС");
-        } else if (preg_match($pattern, $phone)) {
+        } else if (!GeneralHelper::isValidPlus7Phone($phone) || preg_match($pattern, $phone)) {
             $this->updateOrderWithBlacklist($order, "Спам");
         }
     }
