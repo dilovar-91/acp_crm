@@ -11,6 +11,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use RuntimeException;
+use Throwable;
 
 class ProcessRecord implements ShouldQueue
 {
@@ -41,7 +42,7 @@ class ProcessRecord implements ShouldQueue
     {
         $activity = ActivityLog::where('entry_id', $this->entry_id)->latest('created_at')->first();
         if (!$activity) {
-            Log::warning('Mango recording waits for call history', [
+            Log::channel('records')->warning('Mango recording waits for call history', [
                 'entry_id' => $this->entry_id,
                 'recording_id' => $this->recording_id,
                 'attempt' => $this->attempts(),
@@ -54,5 +55,22 @@ class ProcessRecord implements ShouldQueue
 
         MangoCallRecording::where('recording_id', $this->recording_id)
             ->update(['attached_at' => now()]);
+
+        Log::channel('records')->info('Mango recording attached to call history', [
+            'entry_id' => $this->entry_id,
+            'recording_id' => $this->recording_id,
+            'activity_id' => $activity->id,
+            'attempt' => $this->attempts(),
+        ]);
+    }
+
+    public function failed(Throwable $exception): void
+    {
+        Log::channel('records')->error('Mango recording attachment failed permanently', [
+            'entry_id' => $this->entry_id,
+            'recording_id' => $this->recording_id,
+            'message' => $exception->getMessage(),
+            'attempts' => $this->attempts(),
+        ]);
     }
 }

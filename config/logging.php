@@ -66,6 +66,18 @@ return [
             'level' => 'debug',
         ],
 
+        'records' => [
+            'driver' => 'stack',
+            'channels' => ['records_file'],
+            'ignore_exceptions' => false,
+        ],
+
+        'records_file' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/records.log'),
+            'level' => 'debug',
+        ],
+
         'single' => [
             'driver' => 'single',
             'path' => storage_path('logs/laravel.log'),

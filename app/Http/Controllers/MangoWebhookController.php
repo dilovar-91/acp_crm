@@ -34,10 +34,15 @@ class MangoWebhookController extends Controller
     {
         return $this->process($id, 'record_added', function (object $payload, int $accountId) {
             $this->calls->handleRecording($payload, $accountId);
-        });
+        }, 'records');
     }
 
-    protected function process($id, string $event, callable $handler)
+    protected function process(
+        $id,
+        string $event,
+        callable $handler,
+        string $logChannel = 'mango'
+    )
     {
         $accountId = (int) $id;
 
@@ -45,7 +50,7 @@ class MangoWebhookController extends Controller
             MangoHelper::setApiKey(config('mango.api_key_' . $accountId))
                 ->setApiSalt(config('mango.api_salt_' . $accountId));
             $payload = MangoHelper::getMethodData();
-            $this->log('info', $event, [
+            $this->log($logChannel, 'info', $event, [
                 'account_id' => $accountId,
                 'entry_id' => $payload->entry_id ?? null,
                 'payload' => $payload,
@@ -53,9 +58,14 @@ class MangoWebhookController extends Controller
 
             $handler($payload, $accountId);
 
+            $this->log($logChannel, 'info', $event . ' processed', [
+                'account_id' => $accountId,
+                'entry_id' => $payload->entry_id ?? null,
+            ]);
+
             return response()->json(['status' => 'ok']);
         } catch (Throwable $e) {
-            $this->log('error', $event . ' failed', [
+            $this->log($logChannel, 'error', $event . ' failed', [
                 'account_id' => $accountId,
                 'message' => $e->getMessage(),
             ]);
@@ -64,16 +74,23 @@ class MangoWebhookController extends Controller
         }
     }
 
-    protected function log(string $level, string $message, array $context = []): void
+    protected function log(
+        string $channel,
+        string $level,
+        string $message,
+        array $context = []
+    ): void
     {
         try {
+            Log::channel($channel)->{$level}($message, $context);
+        } catch (Throwable $e) {
             Log::build([
                 'driver' => 'single',
-                'path' => storage_path('logs/mango.log'),
+                'path' => storage_path(
+                    'logs/' . ($channel === 'records' ? 'records.log' : 'mango.log')
+                ),
                 'level' => 'debug',
             ])->{$level}($message, $context);
-        } catch (Throwable $e) {
-            Log::{$level}('Mango: ' . $message, $context);
         }
     }
 }

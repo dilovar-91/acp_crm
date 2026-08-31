@@ -250,6 +250,11 @@ class MangoCallService
         $entryId = trim((string) ($payload->entry_id ?? ''));
         $recordingId = trim((string) ($payload->recording_id ?? ''));
         if ($entryId === '' || $recordingId === '') {
+            Log::channel('records')->warning('Mango recording ignored: identifiers are missing', [
+                'account_id' => $accountId,
+                'entry_id' => $entryId ?: null,
+                'recording_id' => $recordingId ?: null,
+            ]);
             return;
         }
 
@@ -270,6 +275,21 @@ class MangoCallService
 
         if ($recording->wasRecentlyCreated || !$recording->attached_at) {
             ProcessRecord::dispatch($entryId, $recordingId)->delay(now()->addMinute());
+            Log::channel('records')->info('Mango recording queued for attachment', [
+                'account_id' => $accountId,
+                'entry_id' => $entryId,
+                'recording_id' => $recordingId,
+                'mango_call_id' => $call->id ?? null,
+                'recording_row_id' => $recording->id,
+                'is_new' => $recording->wasRecentlyCreated,
+            ]);
+        } else {
+            Log::channel('records')->info('Mango recording already attached', [
+                'account_id' => $accountId,
+                'entry_id' => $entryId,
+                'recording_id' => $recordingId,
+                'recording_row_id' => $recording->id,
+            ]);
         }
     }
 
