@@ -354,6 +354,10 @@ class MangoCallService
         }
 
         if ($state === 'Appeared' && !$call->popup_sent && $order) {
+            // Плашка только для реального входящего, не для callback/исходящих.
+            if ($this->callData->isCallback($payload)) {
+                return;
+            }
             // Не запоминаем extension с Appeared: при параллельном звонке
             // на группу сюда попадает не тот, кто потом поднимет трубку.
             $operator = $this->resolveOperator($extension, $accountId, $showroomId);

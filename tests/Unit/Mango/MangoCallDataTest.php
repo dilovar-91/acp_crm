@@ -65,6 +65,46 @@ class MangoCallDataTest extends TestCase
         $this->assertSame('79037776964', $this->data->clientPhone($payload, $direction));
     }
 
+    public function test_api_callback_looking_like_inbound_is_outgoing(): void
+    {
+        // Click-to-call: Mango сначала звонит оператору, from = номер клиента.
+        $payload = $this->payload([
+            'call_state' => 'Appeared',
+            'location' => 'abonent',
+            'callback_initiator' => 'API',
+            'from' => ['number' => '79037776964'],
+            'to' => [
+                'extension' => '106',
+                'number' => 'sip:user106@vpbx.mangosip.ru',
+                'line_number' => '74951234567',
+            ],
+        ]);
+
+        $this->assertTrue($this->data->isCallback($payload));
+        $this->assertSame(
+            MangoCallData::OUTGOING,
+            $this->data->directionFromRealtime($payload)
+        );
+    }
+
+    public function test_obdial_task_is_outgoing(): void
+    {
+        $payload = $this->payload([
+            'call_state' => 'Appeared',
+            'task_id' => 12345,
+            'from' => ['number' => '79037776964'],
+            'to' => [
+                'extension' => '106',
+                'line_number' => '74951234567',
+            ],
+        ]);
+
+        $this->assertSame(
+            MangoCallData::OUTGOING,
+            $this->data->directionFromRealtime($payload)
+        );
+    }
+
     public function test_sip_line_is_never_treated_as_client_phone(): void
     {
         $this->assertNull(

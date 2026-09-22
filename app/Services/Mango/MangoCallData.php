@@ -19,11 +19,22 @@ class MangoCallData
         $toPhone = $this->externalPhone($payload->to->number ?? null);
         $lineNumber = $payload->to->line_number ?? null;
 
+        // Callback/click-to-call: первый leg звонит оператору и выглядит как
+        // входящий (клиент в from, оператор в to). По доке Mango — исходящий.
+        if ($this->isCallback($payload)) {
+            return self::OUTGOING;
+        }
+
         if ($fromExtension !== null && $toExtension !== null && !$fromPhone && !$toPhone) {
             return self::INTERNAL;
         }
 
         if ($fromExtension !== null && $toPhone) {
+            return self::OUTGOING;
+        }
+
+        // Оба конца — внешние номера (исходящий с линии без extension в событии).
+        if ($fromPhone && $toPhone) {
             return self::OUTGOING;
         }
 
@@ -38,6 +49,21 @@ class MangoCallData
         }
 
         return self::UNKNOWN;
+    }
+
+    /**
+     * Исходящий callback / кампания ИО.
+     * Первый leg звонит оператору и выглядит как входящий (клиент в from).
+     * @see MangoOffice VPBX API §3.1.2 callback_initiator, task_id
+     */
+    public function isCallback(object $payload): bool
+    {
+        if (trim((string) ($payload->callback_initiator ?? '')) !== '') {
+            return true;
+        }
+
+        // ObDial / CallbackWidget / MissGroupCallCallback
+        return isset($payload->task_id) && $payload->task_id !== '' && $payload->task_id !== null;
     }
 
     public function clientPhone(object $payload, int $direction): ?string
