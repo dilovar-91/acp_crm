@@ -355,17 +355,14 @@ class MangoCallService
 
         if ($state === 'Appeared' && !$call->popup_sent && $order) {
             // Плашка только для реального входящего, не для callback/исходящих.
-            if ($this->callData->isCallback($payload)) {
-                return;
+            if (!$this->callData->isCallback($payload)) {
+                $operator = $this->resolveOperator($extension, $accountId, $showroomId);
+                MangoIncome::dispatch(
+                    $this->popupPayload($call, $payload, $order, $site, $operator),
+                    $showroomId
+                );
+                $call->popup_sent = true;
             }
-            // Не запоминаем extension с Appeared: при параллельном звонке
-            // на группу сюда попадает не тот, кто потом поднимет трубку.
-            $operator = $this->resolveOperator($extension, $accountId, $showroomId);
-            MangoIncome::dispatch(
-                $this->popupPayload($call, $payload, $order, $site, $operator),
-                $showroomId
-            );
-            $call->popup_sent = true;
         }
 
         if (
@@ -374,6 +371,7 @@ class MangoCallService
             && $order
             && $extension
         ) {
+            // Кто поднял трубку — перезаписывает автораздачу.
             $operator = $this->resolveOperator($extension, $accountId, $showroomId);
             if ($operator) {
                 $order->operator_id = $operator->id;

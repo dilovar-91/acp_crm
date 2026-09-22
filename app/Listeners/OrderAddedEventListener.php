@@ -55,17 +55,6 @@ class OrderAddedEventListener
                     ->where('showroom_id', $event->order->showroom_id)
                     ->count();
 
-                // Звонки Mango (source 20): не раздаём по нагрузке —
-                // оператор ставится только при Connected (кто поднял трубку).
-                if ((int) $order->source_id === 20) {
-                    $order->phone = $phone;
-                    if ($resCount > 1) {
-                        $order->retries = $resCount - 1;
-                    }
-                    $order->save();
-                    return;
-                }
-
                 if ($resCount > 1) {
                     // Проверяем оператора и при необходимости присваиваем
                     if ($order->operator_id === null || $order->operator_id === 1000) {
