@@ -27,7 +27,13 @@ class MangoCallData
             return self::OUTGOING;
         }
 
-        if ($fromPhone && $lineNumber !== null && $fromExtension === null) {
+        // Входящий: внешний номер в from. Connected иногда без line_number —
+        // достаточно to.extension (кто принимает) или line_number.
+        if (
+            $fromPhone
+            && $fromExtension === null
+            && ($lineNumber !== null || ($toExtension !== null && $toExtension !== ''))
+        ) {
             return self::INCOMING;
         }
 

@@ -31,6 +31,24 @@ class MangoCallDataTest extends TestCase
         $this->assertSame('79037776964', $this->data->clientPhone($payload, $direction));
     }
 
+    public function test_connected_without_line_number_is_still_incoming(): void
+    {
+        $payload = $this->payload([
+            'call_state' => 'Connected',
+            'location' => 'abonent',
+            'from' => ['number' => '79037776964'],
+            'to' => [
+                'extension' => '106',
+                'number' => 'sip:user106@vpbx.mangosip.ru',
+            ],
+        ]);
+
+        $direction = $this->data->directionFromRealtime($payload);
+
+        $this->assertSame(MangoCallData::INCOMING, $direction);
+        $this->assertSame('106', $this->data->operatorExtension($payload, $direction));
+    }
+
     public function test_it_detects_outgoing_call_and_uses_to_number(): void
     {
         $payload = $this->payload([

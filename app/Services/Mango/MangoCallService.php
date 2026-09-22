@@ -49,7 +49,6 @@ class MangoCallService
         $lock = Cache::lock("mango:call:{$accountId}:" . sha1($entryId), 10);
         try {
             $lock->block(3, function () use ($payload, $accountId, $entryId, $callId) {
-                $direction = $this->callData->directionFromRealtime($payload);
                 $showroomId = $this->resolveShowroomId($payload, $accountId);
                 $call = MangoCall::firstOrCreate(
                     ['mango_account_id' => $accountId, 'entry_id' => $entryId],
@@ -62,6 +61,13 @@ class MangoCallService
                     return;
                 }
                 $sequences[$callId] = $seq;
+
+                // Connected иногда приходит без line_number — тогда direction из payload = null.
+                // Берём направление с предыдущего Appeared того же entry_id.
+                $direction = $this->callData->directionFromRealtime($payload);
+                if ($direction === null && $call->direction !== null) {
+                    $direction = (int) $call->direction;
+                }
 
                 $call->call_sequences = $sequences;
                 $call->payload = $this->payloadToArray($payload);
@@ -135,8 +141,13 @@ class MangoCallService
                     if (!$site && $call->site_id) {
                         $site = Site::find($call->site_id);
                     }
-                    $extension = $this->callData->operatorExtension($payload, $direction);
-                    $operator = $this->resolveOperator($extension, $accountId, $showroomId);
+                    $extension = $this->callData->operatorExtension($payload, $direction)
+                        ?: $call->operator_extension;
+                    // Кто поднял трубку уже зафиксирован на Connected — не переназначаем
+                    // по summary (там иногда другой/первый добавочный из очереди).
+                    $operator = $call->operator_id
+                        ? User::find($call->operator_id)
+                        : $this->resolveOperator($extension, $accountId, $showroomId);
                     $order = $call->order_id ? Order::find($call->order_id) : null;
 
                     if (!$order && $phone) {
@@ -162,15 +173,25 @@ class MangoCallService
 
                     if ($order) {
                         if ($isAnsweredIncoming && $operator) {
-                            $order->operator_id = $operator->id;
-                            $order->source_id = 25;
-                            $order->save();
-                            DB::afterCommit(function () use ($order) {
-                                OrderProcessed::dispatch($order);
-                            });
+                            $alreadyAssignedToAnswerer = (int) $call->operator_id === (int) $operator->id
+                                && (int) $order->operator_id === (int) $operator->id;
+                            if (!$alreadyAssignedToAnswerer) {
+                                $order->operator_id = $operator->id;
+                                $order->source_id = 25;
+                                $order->save();
+                                DB::afterCommit(function () use ($order) {
+                                    OrderProcessed::dispatch($order);
+                                });
+                            } elseif ((int) $order->source_id !== 25) {
+                                $order->source_id = 25;
+                                $order->save();
+                            }
                         } elseif ($isMissedIncoming) {
                             if ($call->order_id === $order->id && $order->client_name === 'Новый клиент') {
                                 $order->client_name = 'Пропущенный звонок';
+                                if ((int) $order->operator_id === 1000) {
+                                    $order->operator_id = null;
+                                }
                                 $order->save();
                             }
                             $missed = new MissedCall();
@@ -310,9 +331,8 @@ class MangoCallService
         $state = (string) ($payload->call_state ?? '');
 
         $call->client_phone = $phone;
-        $call->line_number = $lineNumber;
+        $call->line_number = $lineNumber ?: $call->line_number;
         $call->site_id = $site->id ?? $call->site_id;
-        $call->operator_extension = $extension ?: $call->operator_extension;
         $call->status = strtolower($state ?: 'new');
 
         $order = $call->order_id ? Order::find($call->order_id) : null;
@@ -334,6 +354,8 @@ class MangoCallService
         }
 
         if ($state === 'Appeared' && !$call->popup_sent && $order) {
+            // Не запоминаем extension с Appeared: при параллельном звонке
+            // на группу сюда попадает не тот, кто потом поднимет трубку.
             $operator = $this->resolveOperator($extension, $accountId, $showroomId);
             MangoIncome::dispatch(
                 $this->popupPayload($call, $payload, $order, $site, $operator),
@@ -342,13 +364,19 @@ class MangoCallService
             $call->popup_sent = true;
         }
 
-        if ($state === 'Connected' && ($payload->location ?? null) === 'abonent' && $order) {
+        if (
+            $state === 'Connected'
+            && ($payload->location ?? null) === 'abonent'
+            && $order
+            && $extension
+        ) {
             $operator = $this->resolveOperator($extension, $accountId, $showroomId);
             if ($operator) {
                 $order->operator_id = $operator->id;
                 $order->source_id = 25;
                 $order->save();
                 $call->operator_id = $operator->id;
+                $call->operator_extension = $extension;
                 OrderProcessed::dispatch($order);
             }
             ClearNotify::dispatch($showroomId, $call->entry_id);
@@ -421,20 +449,34 @@ class MangoCallService
             return null;
         }
 
-        $showrooms = array_values(array_unique([$accountId, $showroomId]));
+        // Сначала салон заявки, потом аккаунт Mango (парные шоурумы).
+        $showrooms = array_values(array_unique(array_filter([$showroomId, $accountId])));
         $day = strtolower(Carbon::now()->format('l'));
-        $scheduled = User::where('work_place', $extension)
-            ->whereIn('showroom_id', $showrooms)
-            ->whereHas('operatorSchedule', function ($query) use ($day) {
-                $query->where($day, '1');
-            })
-            ->latest('updated_at')
-            ->first();
 
-        return $scheduled ?: User::where('work_place', $extension)
-            ->whereIn('showroom_id', $showrooms)
-            ->latest('updated_at')
-            ->first();
+        foreach ($showrooms as $sid) {
+            $scheduled = User::where('work_place', $extension)
+                ->where('showroom_id', $sid)
+                ->whereHas('operatorSchedule', function ($query) use ($day) {
+                    $query->where($day, '1');
+                })
+                ->latest('updated_at')
+                ->first();
+            if ($scheduled) {
+                return $scheduled;
+            }
+        }
+
+        foreach ($showrooms as $sid) {
+            $user = User::where('work_place', $extension)
+                ->where('showroom_id', $sid)
+                ->latest('updated_at')
+                ->first();
+            if ($user) {
+                return $user;
+            }
+        }
+
+        return null;
     }
 
     protected function phoneInfo(string $phone): ?PhoneCode
