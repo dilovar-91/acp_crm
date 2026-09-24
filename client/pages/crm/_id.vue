@@ -120,6 +120,13 @@ export default {
           count: 800,
           link: this.showroom_id + '/orders-mini/4',
         },
+        {
+          title: 'Заявки (JivoSite)',
+          text: 'Упрощенная',
+          icon: 'mdi-cash-usd-outline',
+          count: 800,
+          link: this.showroom_id + '/orders-mini/6',
+        },
 
         {
           title: 'Отчёты InHouse',
@@ -135,6 +142,14 @@ export default {
           icon: 'mdi-cash-usd-outline',
           count: 800,
           link: this.showroom_id + '/report/4',
+        },
+
+        {
+          title: 'Отчёты JivoSite',
+          text: 'Отчёты ',
+          icon: 'mdi-cash-usd-outline',
+          count: 800,
+          link: this.showroom_id + '/report/6',
         },
       ]
     },
