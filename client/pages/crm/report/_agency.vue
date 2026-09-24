@@ -437,6 +437,7 @@ export default {
       return {
         showroom_id: this.showroom_id,
         site_id: this.site_id,
+        agency_id: this.agency_id != null ? Number(this.agency_id) : null,
         from: this.date_from
           ? this.$moment(this.date_from, 'DD.MM.YYYY HH:mm:ss').format(
               'YYYY-MM-DD HH:mm:ss'
@@ -459,7 +460,6 @@ export default {
         loader.hide()
       }, 300)
       this.site_id = null
-      this.agency_id = null
       this.date_from = null
       this.date_to = null
       this.report = false
