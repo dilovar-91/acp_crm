@@ -62,11 +62,19 @@ class MangoCallService
                 }
                 $sequences[$callId] = $seq;
 
-                // Connected иногда приходит без line_number — тогда direction из payload = null.
+                // Connected иногда без line_number — direction из payload = null.
                 // Берём направление с предыдущего Appeared того же entry_id.
                 $direction = $this->callData->directionFromRealtime($payload);
                 if ($direction === null && $call->direction !== null) {
                     $direction = (int) $call->direction;
+                }
+                // Исходящий entry_id нельзя «переквалифицировать» во входящий
+                // (callback/click-to-call даёт похожие Appeared на оператора).
+                if (
+                    (int) $call->direction === MangoCallData::OUTGOING
+                    && $direction === MangoCallData::INCOMING
+                ) {
+                    $direction = MangoCallData::OUTGOING;
                 }
 
                 $call->call_sequences = $sequences;
@@ -79,8 +87,10 @@ class MangoCallService
                 if ($direction === MangoCallData::INCOMING) {
                     $this->handleIncomingRealtime($call, $payload, $accountId);
                 } elseif ($direction === MangoCallData::OUTGOING) {
-                    $call->client_phone = $this->callData->clientPhone($payload, $direction);
-                    $call->operator_extension = $this->callData->operatorExtension($payload, $direction);
+                    $call->client_phone = $this->callData->clientPhone($payload, $direction)
+                        ?: $call->client_phone;
+                    $call->operator_extension = $this->callData->operatorExtension($payload, $direction)
+                        ?: $call->operator_extension;
                     $call->status = strtolower((string) ($payload->call_state ?? 'new'));
                 } elseif ($direction === MangoCallData::INTERNAL) {
                     $call->status = strtolower((string) ($payload->call_state ?? 'new'));
@@ -319,6 +329,18 @@ class MangoCallService
         object $payload,
         int $accountId
     ): void {
+        // Защита: исходящий/callback не должен создавать заявку и плашку.
+        $fromExtension = $payload->from->extension ?? null;
+        if (
+            $this->callData->isOutboundApiCall($payload)
+            || ($fromExtension !== null && $fromExtension !== '')
+            || (int) $call->direction === MangoCallData::OUTGOING
+        ) {
+            $call->direction = MangoCallData::OUTGOING;
+            $call->status = strtolower((string) ($payload->call_state ?? $call->status ?: 'new'));
+            return;
+        }
+
         $phone = $this->callData->clientPhone($payload, MangoCallData::INCOMING);
         if (!$phone) {
             return;
@@ -329,6 +351,7 @@ class MangoCallService
         $site = $this->sites->resolve($lineNumber, [$accountId, $showroomId]);
         $extension = $this->callData->operatorExtension($payload, MangoCallData::INCOMING);
         $state = (string) ($payload->call_state ?? '');
+        $location = (string) ($payload->location ?? '');
 
         $call->client_phone = $phone;
         $call->line_number = $lineNumber ?: $call->line_number;
@@ -340,7 +363,11 @@ class MangoCallService
             $order = $this->findOrder($phone, $showroomId);
         }
 
-        if ($state === 'Appeared' && !$order) {
+        // Заявку создаём только на старте реального входящего (IVR/очередь/абонент).
+        $isInboundStart = $state === 'Appeared'
+            && in_array($location, ['ivr', 'queue', 'abonent'], true);
+
+        if ($isInboundStart && !$order) {
             $order = $this->createIncomingOrder(
                 $phone,
                 $showroomId,
@@ -353,21 +380,18 @@ class MangoCallService
             $call->order_id = $order->id;
         }
 
-        if ($state === 'Appeared' && !$call->popup_sent && $order) {
-            // Плашка только для реального входящего, не для callback/исходящих.
-            if (!$this->callData->isCallback($payload)) {
-                $operator = $this->resolveOperator($extension, $accountId, $showroomId);
-                MangoIncome::dispatch(
-                    $this->popupPayload($call, $payload, $order, $site, $operator),
-                    $showroomId
-                );
-                $call->popup_sent = true;
-            }
+        if ($isInboundStart && !$call->popup_sent && $order) {
+            $operator = $this->resolveOperator($extension, $accountId, $showroomId);
+            MangoIncome::dispatch(
+                $this->popupPayload($call, $payload, $order, $site, $operator),
+                $showroomId
+            );
+            $call->popup_sent = true;
         }
 
         if (
             $state === 'Connected'
-            && ($payload->location ?? null) === 'abonent'
+            && $location === 'abonent'
             && $order
             && $extension
         ) {
