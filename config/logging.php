@@ -50,20 +50,22 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['single'],
+            'channels' => ['daily'],
             'ignore_exceptions' => false,
         ],
 
         'jivo' => [
-            'driver' => 'single',
+            'driver' => 'daily',
             'path' => storage_path('logs/jivo.log'),
             'level' => 'info',
+            'days' => 14,
         ],
 
         'mango' => [
-            'driver' => 'single',
+            'driver' => 'daily',
             'path' => storage_path('logs/mango.log'),
             'level' => 'debug',
+            'days' => 14,
         ],
 
         'records' => [
@@ -73,9 +75,10 @@ return [
         ],
 
         'records_file' => [
-            'driver' => 'single',
+            'driver' => 'daily',
             'path' => storage_path('logs/records.log'),
             'level' => 'debug',
+            'days' => 14,
         ],
 
         'single' => [
